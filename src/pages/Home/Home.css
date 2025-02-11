@@ -1,8 +1,9 @@
 .Home {
-  padding: 16px;
   border: 1px solid #ddd;
   margin: 10px;
-}
+  width: 100%;
+  min-height: 85vh;
+} 
 .Home h1 {
   color: #333;
 }
