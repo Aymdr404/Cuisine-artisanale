@@ -1,5 +1,7 @@
-.{{pascalCase name}} {
+.Actualite {
   padding: 16px;
   border: 1px solid #ddd;
   margin: 10px;
+  max-width: 35vh;
+  min-height: 50vh;
 }

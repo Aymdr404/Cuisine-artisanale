@@ -1,0 +1,16 @@
+.Posts {
+  padding: 16px;
+  margin: 10px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.Posts_section{
+  min-width: 65%;
+}
+
+.AddPost_section{
+  min-width: 35%;
+}

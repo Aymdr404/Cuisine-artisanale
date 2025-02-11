@@ -1,5 +1,6 @@
-.{{pascalCase name}} {
+.Post {
   padding: 16px;
   border: 1px solid #ddd;
   margin: 10px;
+  min-height: 50vh;
 }

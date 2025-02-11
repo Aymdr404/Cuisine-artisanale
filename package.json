@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@firebase/firestore": "^4.7.7",
     "firebase": "^11.3.0",
     "primereact": "^10.9.2",
     "react": "^19.0.0",
