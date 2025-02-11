@@ -19,7 +19,7 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type}) 
       <p>{type}</p>
 
       <Link to={`/recette/${recetteId}`}>
-            <button>Voir la recette</button>
+            <Button>Voir la recette</Button>
         </Link>
     </div>
   );
