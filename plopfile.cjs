@@ -47,5 +47,29 @@ module.exports = function (plop) {
         }
       ],
     });
+
+    //Générateur pour les services
+    plop.setGenerator('service', {
+      description: 'Créer une nouvelle page avec un template et un dossier',
+      prompts: [
+        {
+          type: 'input',
+          name: 'name',
+          message: 'Nom de la page (en PascalCase) :',
+        },
+      ],
+      actions: [
+        {
+          type: 'add',
+          path: 'src/services/{{pascalCase name}}/{{pascalCase name}}.tsx', 
+          templateFile: 'plop-templates/service.hbs',
+        },
+        {
+          type: 'add',
+          path: 'src/services/{{pascalCase name}}/{{pascalCase name}}.css',
+          templateFile: 'plop-templates/service.css.hbs',
+        }
+      ],
+    });
   };
   

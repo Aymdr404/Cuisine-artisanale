@@ -7,6 +7,7 @@ import App from './App';
 
 import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
+import "./global.css";
 
 
 // Création de la racine du composant

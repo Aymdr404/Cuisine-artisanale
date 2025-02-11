@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
         </section>
         <section className='auth'>
           {user ? (
-            <div>
+            <div className='auth_user'>
               <span>Welcome, {user.displayName || "User"}!</span>
               <Button label="Logout" onClick={logout} />
             </div>

@@ -10,6 +10,7 @@ interface Post {
   title: string;
   content: string;
   createdAt: any;
+  id: string;
 }
 
 const Posts: React.FC = () => {
@@ -24,7 +25,8 @@ const Posts: React.FC = () => {
         return {
           title: data.title,
           content: data.content,
-          createdAt: doc.data().createdAt.toDate()
+          createdAt: doc.data().createdAt.toDate(),
+          id: doc.id
         } as Post;
       });
 
@@ -51,7 +53,7 @@ const Posts: React.FC = () => {
     <div className="Posts">
       <section className="Posts_section">
         {posts.map((post, index) => (
-          <Post key={index} title={post.title} content={post.content} createdAt={formatDate(post.createdAt)} />
+          <Post key={index} postId={post.id} title={post.title} content={post.content} createdAt={formatDate(post.createdAt)} />
         ))}
       </section>
       <section className="AddPost_section">

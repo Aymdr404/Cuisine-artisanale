@@ -78,7 +78,10 @@ const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             placeholder="Enter post content"
           />
         </div>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" label='Submit'/>
+        <br />
+        <br />
+        <Button label='close' onClick={closeForm} />
       </form>
     </div>
   );
