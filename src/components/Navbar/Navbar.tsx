@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './Navbar.css';
+
 import { Link } from 'react-router-dom';
 import AuthButton from '@components/AuthButton/AuthButton';
+
 import { Button } from 'primereact/button';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
+import { ThemeContext } from '@/contexts/ThemeContext/ThemeContext';
 
 const Navbar: React.FC = () => {
 
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
 
   return (
@@ -37,6 +41,7 @@ const Navbar: React.FC = () => {
             <AuthButton />
           )}
         </section>
+        <Button onClick={() => toggleTheme()}> {theme === "dark"  ? "🌞 Light Mode" : "🌙 Dark Mode"} </Button>
     </div>
   );
 };

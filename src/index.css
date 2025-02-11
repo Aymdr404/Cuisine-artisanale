@@ -3,10 +3,6 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(33, 29, 29, 0.87);
-  background-color: #c0c0c0;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,9 +10,14 @@
 
   --primary-color: #007bff;
   --secondary-color: #6c757d;
-  --background-color: #f8f9fa;
-  --text-color: #b8b8b8;
+  --background-color: #c7c7c7;
+  --text-color: #252525;
   --border-radius: 8px;
+}
+
+.dark-theme {
+  --background-color: #1a1a1a;
+  --text-color: #ffffff;
 }
 
 a {
@@ -34,6 +35,9 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+    
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 h1 {
@@ -48,7 +52,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--secondary-color);
   cursor: pointer;
   transition: border-color 0.25s;
   color: var(--text-color);
