@@ -57,7 +57,7 @@ const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
   return (
     <div className="AddPostForm">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className='formPost'>
         <h3>Add a post</h3>
         <div>
           <label htmlFor="title">Title:</label>

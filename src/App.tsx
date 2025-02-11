@@ -7,6 +7,8 @@ import Home from '@pages/Home/Home';
 import Recipes from '@pages/Recettes/Recettes'; // Exemple de page "Recipes"
 import About from '@pages/About/About'; // Exemple de page "About"
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
+import AddRecetteForm from './components/AddRecetteForm/AddRecetteForm';
+import RecetteDesc from './components/RecetteDesc/RecetteDesc';
 
 const App = () => {
   return (
@@ -17,6 +19,8 @@ const App = () => {
           <Route path="/" element={<Home />} /> {/* Route pour la page d'accueil */}
           <Route path="/recipes" element={<Recipes />} /> {/* Route pour la page "Recipes" */}
           <Route path="/about" element={<About />} /> {/* Route pour la page "About" */}
+          <Route path="/recipes/add-recipe" element={<AddRecetteForm />} />
+          <Route path="/recette/:id" element={<RecetteDesc />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -16,7 +16,7 @@ const AddPost: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className='AddPost'>
       <h2>Add Post</h2>
       <p>Share your thoughts with the world!</p>
       <br />

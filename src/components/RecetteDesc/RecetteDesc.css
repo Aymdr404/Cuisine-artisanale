@@ -1,0 +1,77 @@
+
+/* Conteneur principal */
+.RecetteDesc {
+  width: 100vh;
+  margin: 2rem auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recette-title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Info recette */
+.recette-info {
+  margin-bottom: 20px;
+}
+
+.recette-info p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.recette-info strong {
+  color: #333;
+}
+
+/* Section ingrédients */
+.recette-ingredients h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #2d2d2d;
+}
+
+.recette-ingredients ul {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
+.recette-ingredients li {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+/* Section vidéo */
+.recette-video {
+  margin-top: 20px;
+}
+
+.recette-video a {
+  display: inline-block;
+  font-size: 1rem;
+  padding: 8px 20px;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.recette-video a:hover {
+  background-color: #2980b9;
+}
+
+/* Loading message */
+.RecetteDesc p {
+  font-size: 1.2rem;
+  text-align: center;
+  color: #777;
+}

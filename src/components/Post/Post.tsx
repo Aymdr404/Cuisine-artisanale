@@ -9,7 +9,7 @@ import { db } from '../../firebase';
 
 
 interface PostProps {
-  postId,
+  postId: string;
   title: string;
   content: string;
   createdAt: any;

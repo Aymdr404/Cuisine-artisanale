@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-form {
+.formPost {
   width: 100%;
   max-width: 600px; 
   margin: 0 auto; 
@@ -20,7 +20,7 @@ form {
   background-color: #f4f4f9;
 }
 
-form h3 {
+.formPost h3 {
   font-size: 1.8rem;
   font-weight: 600;
   color: #333;
@@ -28,18 +28,18 @@ form h3 {
   margin-bottom: 20px;
 }
 
-form div {
+.formPost div {
   margin-bottom: 20px;
 }
 
-form label {
+.formPost label {
   display: block;
   font-size: 1rem;
   color: #555;
   margin-bottom: 8px;
 }
 
-form input[type="text"], form textarea {
+.formPost input[type="text"], .formPost textarea {
   width: 100%;
   padding: 10px;
   font-size: 1rem;
@@ -48,17 +48,17 @@ form input[type="text"], form textarea {
   box-sizing: border-box;
 }
 
-form input[type="text"]:focus, form textarea:focus {
+.formPost input[type="text"]:focus, .formPost textarea:focus {
   border-color: #4CAF50; 
   outline: none;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); 
 }
 
-form input[type="text"]::placeholder, form textarea::placeholder {
+.formPost input[type="text"]::placeholder, .formPost textarea::placeholder {
   color: #888;
 }
 
-form button {
+.formPost button {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -71,11 +71,11 @@ form button {
   transition: background-color 0.3s ease;
 }
 
-form button:hover {
+.formPost button:hover {
   background-color: #07540b;
 }
 
-form button:disabled {
+.formPost button:disabled {
   background-color: #aaa;
   cursor: not-allowed;
 }
