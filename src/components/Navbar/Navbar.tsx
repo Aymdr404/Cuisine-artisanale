@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import './Navbar.css';
 
 import { Link } from 'react-router-dom';
@@ -13,17 +13,30 @@ const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
-
   return (
     <div className="Navbar">
         <section className='routing'>
           <nav>
-            <ul>
+            <ul className='menu'>
               <li>
                 <Link to="/">Home</Link> {/* Lien vers la page d'accueil */}
               </li>
-              <li>
-                <Link to="/recipes">Recipes</Link> {/* Lien vers une autre page */}
+              <li className="menu-item">
+                <Link to="/recipes" className="link">
+                  Recipes
+                </Link>
+                <ul className="dropdown">
+                  <li>
+                    <Link to="/recipes" className="dropdown-item">
+                      Voir les recettes
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/map" className="dropdown-item">
+                      Voir la carte
+                    </Link>
+                  </li>
+                </ul>
               </li>
               <li>
                 <Link to="/about">About</Link> {/* Lien vers une page "À propos" */}

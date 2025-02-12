@@ -18,7 +18,7 @@
   --background-color-button-hover: #263b52;
   
   --text-color: #252525;
-  --text-color-secondary: #e3e3e3;
+  --text-color-secondary: #626262;
 
   --border-radius: 8px;
 }
@@ -26,7 +26,7 @@
 .dark-theme {
   --background-color: #1a1a1a;
   --text-color: #ffffff;
-  --text-color-secondary: #323232;
+  --text-color-secondary: #a5a5a5;
 
   --primary-color-navbar: #252525;
   
