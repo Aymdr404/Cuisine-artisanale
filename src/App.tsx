@@ -9,6 +9,7 @@ import About from '@pages/About/About'; // Exemple de page "About"
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
 import AddRecetteForm from './components/AddRecetteForm/AddRecetteForm';
 import RecetteDesc from './components/RecetteDesc/RecetteDesc';
+import RecetteMap from '@pages/RecetteMap/RecetteMap';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/about" element={<About />} /> {/* Route pour la page "About" */}
           <Route path="/recipes/add-recipe" element={<AddRecetteForm />} />
           <Route path="/recette/:id" element={<RecetteDesc />} />
+          <Route path="/map" element={<RecetteMap/>} />
         </Routes>
       </Router>
     </AuthProvider>

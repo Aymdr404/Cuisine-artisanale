@@ -119,7 +119,7 @@ const AddRecetteForm: React.FC = () => {
 
 
   useEffect(() => {
-    fetch("https://geo.api.gouv.fr/regions").then(res => res.json()).then(data => setRegions(data));
+    fetch("https://geo.api.gouv.fr/departements").then(res => res.json()).then(data => setRegions(data));
   }, []);
 
 
@@ -181,7 +181,7 @@ const AddRecetteForm: React.FC = () => {
             </div>
 
             <div className='formRecette_region'>
-              <label htmlFor='position'>Position:</label>
+              <label htmlFor='position'>Département:</label>
               <Dropdown id='position' optionLabel='nom' value={position} options={regions} onChange={(e:DropdownChangeEvent) => setPosition(e.value)} optionValue='code' />
             </div>
 

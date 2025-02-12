@@ -10,6 +10,7 @@ import "primereact/resources/themes/lara-light-cyan/theme.css";
 import "./global.css";
 import { ThemeProvider } from '@contexts/ThemeContext/ThemeContext';
 
+import 'leaflet/dist/leaflet.css'
 
 // Création de la racine du composant
 createRoot(document.getElementById('root')!).render(
