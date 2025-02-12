@@ -57,7 +57,7 @@ const RecetteDesc: React.FC = () => {
 
   try {
     await deleteDoc(doc(db, "recipes", id));
-    navigate('/recipes');
+    navigate('/recettes');
     } catch (error) {
       console.error("Erreur lors de la suppression de la recette :", error);
     }
@@ -68,7 +68,7 @@ const RecetteDesc: React.FC = () => {
       {recette ? (
         <>
         <section className='button-container'>
-          <Button onClick={() => navigate('/recipes')}>Retour</Button>
+          <Button onClick={() => navigate('/recettes')}>Retour</Button>
           <section className='button-container-right'>
             <Button>Liker</Button>
             <Button onClick={() => suppRecette(recette.id)}>Supprimer</Button>

@@ -1,6 +1,10 @@
+.map{
+  width: 150vh;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
 
-.RecetteMap {
-  padding: 16px;
-  border: 1px solid #ddd;
-  margin: 10px;
+  ul{
+    text-align: left;
+  }
 }

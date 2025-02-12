@@ -8,7 +8,7 @@ const AddRecette: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/recipes/add-recipe");
+    navigate("/recettes/add-recipe");
   };
 
   return (

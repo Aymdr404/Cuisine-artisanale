@@ -22,12 +22,12 @@ const Navbar: React.FC = () => {
                 <Link to="/">Home</Link> {/* Lien vers la page d'accueil */}
               </li>
               <li className="menu-item">
-                <Link to="/recipes" className="link">
-                  Recipes
+                <Link to="/recettes" className="link">
+                  Recettes
                 </Link>
                 <ul className="dropdown">
                   <li>
-                    <Link to="/recipes" className="dropdown-item">
+                    <Link to="/recettes" className="dropdown-item">
                       Voir les recettes
                     </Link>
                   </li>

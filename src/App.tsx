@@ -18,10 +18,10 @@ const App = () => {
         <Navbar /> {/* Navbar visible sur toutes les pages */}
         <Routes>
           <Route path="/" element={<Home />} /> {/* Route pour la page d'accueil */}
-          <Route path="/recipes" element={<Recipes />} /> {/* Route pour la page "Recipes" */}
+          <Route path="/recettes" element={<Recipes />} /> {/* Route pour la page "Recipes" */}
           <Route path="/about" element={<About />} /> {/* Route pour la page "About" */}
-          <Route path="/recipes/add-recipe" element={<AddRecetteForm />} />
-          <Route path="/recette/:id" element={<RecetteDesc />} />
+          <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
+          <Route path="/recettes/:id" element={<RecetteDesc />} />
           <Route path="/map" element={<RecetteMap/>} />
         </Routes>
       </Router>
