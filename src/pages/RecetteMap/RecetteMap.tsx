@@ -12,13 +12,9 @@ import { Button } from "primereact/button";
 interface Recette {
   recetteId: string;
   title: string;
+  type: string;
   position: string;
 }
-
-const customIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/3448/3448592.png",
-  iconSize: [30, 30],
-});
 
 const RecetteMap = () => {
   
@@ -40,7 +36,8 @@ const RecetteMap = () => {
           title: data.title,
           description: data.description,
           position: data.position,
-          recetteId: doc.id
+          recetteId: doc.id,
+          type: data.type,
         } as Recette;
       });
       setRecettes(recettesData);
@@ -74,8 +71,9 @@ const RecetteMap = () => {
             <li
               key={recette.recetteId}
               style={{ padding: '5px', cursor: 'pointer' }}
-              onMouseEnter={() => handleMarkerHover(recette.recetteId)}  // Survol de la recette
-              onClick={() => handleClick(recette.recetteId)}  // Clic sur la recette
+              onMouseEnter={() => handleMarkerHover(recette.recetteId)}
+              onMouseLeave={() => setHoveredRecette(null)}
+              onClick={() => handleClick(recette.recetteId)}
             >
               {recette.title}
             </li>
@@ -102,19 +100,28 @@ const RecetteMap = () => {
           navigate(`/recettes/${recette.recetteId}`);
         };
 
+        const markerRadius = recette.recetteId === hoveredRecette ? 20 : 8;
+        const markerIcon = L.divIcon({
+          html: `<div style="background-color: #ff7800; width: ${markerRadius * 2}px; height: ${markerRadius * 2}px; border-radius: 50%; border: 1px solid #ff7800; opacity: 0.7;"></div>`,
+          className: '',
+          iconSize: [markerRadius * 2, markerRadius * 2], // Taille de l'icône en fonction du rayon
+          iconAnchor: [markerRadius, markerRadius], // L'ancrage de l'icône est au centre pour éviter le décalage
+        });
+
         if (Array.isArray(coord) && coord.length === 2) {
           return (
             <Marker
               key={recette.recetteId}
               position={coord}
               eventHandlers={{
-                mouseover: () => handleMarkerHover(recette.recetteId),  // Survol du marker
-                mouseout: () => setHoveredRecette(null),  // Quand on quitte le survol
+                mouseover: () => handleMarkerHover(recette.recetteId),
+                mouseout: () => setHoveredRecette(null),
               }}
-              icon={customIcon}
+              icon={markerIcon}
             >
             <Popup>
               <strong>{recette.title}</strong>
+              <p>{recette.type}</p>
               <br />
               <Button onClick={handleNavigate}>Voir la recette</Button>
             </Popup>
