@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const Filtre: React.FC = () => {
 
-  const [selectedType, setSelectedType] = React.useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
   const [position, setPosition] = useState({});
   const [departements, setDepartements] = useState([]);
 
@@ -30,11 +30,10 @@ const Filtre: React.FC = () => {
   const useFilter = () => {
     let query = '';
     if (selectedType) {
-      query += `type=${selectedType}&`;
+      query += `type=${encodeURIComponent(selectedType)}&`;
     }
-    if (position) {
-      console.log(position);
-      query += `position=${position}&`;
+    if (position && typeof position === 'string') {
+      query += `position=${encodeURIComponent(position)}&`;
     }
     if (query.length > 0) {
       query = query.slice(0, -1);
@@ -42,6 +41,12 @@ const Filtre: React.FC = () => {
     if (query.length !== 0) {
       navigate(`/recettes?${query}`);
     }
+  }
+
+  const resetFilter = () => {
+    setSelectedType(null);
+    setPosition({});
+    navigate('/recettes');
   }
 
   return (
@@ -53,7 +58,7 @@ const Filtre: React.FC = () => {
           <div className="Filtre_type">
             {typeRecette.map((type) => (
               <div key={type.id}>
-                <RadioButton inputId={type.id.toString()} name="type" value={type.id} onChange={(e) => setSelectedType(e.value)} checked={selectedType === type.id}/>
+                <RadioButton inputId={type.id.toString()} name="type" value={type.name} onChange={(e) => setSelectedType(e.value)} checked={selectedType === type.name}/>
                 <label htmlFor={type.id.toString()}>{type.name}</label>
               </div>
             ))}
@@ -65,6 +70,7 @@ const Filtre: React.FC = () => {
         </div>
       </section>
       <Button label='Filtrer' className='p-button-raised p-button-rounded' onClick={useFilter}/>
+      <Button label='Réinitialiser' className='p-button-raised p-button-rounded' onClick={resetFilter}/>
     </div>
   );
 };

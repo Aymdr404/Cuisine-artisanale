@@ -92,7 +92,6 @@ const RecetteMap = () => {
       ))}
       {recettes.map((recette, index) => {
         const coordEntry = Object.entries(departementsCoordinates).find(([code]) => code === recette.position);
-        console.log(coordEntry);
         if (!coordEntry) return null;
         const coord: [number, number] = coordEntry[1] as [number, number];
 
