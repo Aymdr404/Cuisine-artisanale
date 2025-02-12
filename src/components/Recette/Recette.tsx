@@ -1,20 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Recette.css';
+
 import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
+import { toggleLikePost, unlikePost } from '@/services/RecetteService/RecetteService';
+import { doc, onSnapshot } from '@firebase/firestore';
+import { db } from '../../firebase';
 
 interface RecetteProps {
-  recetteId: number;
+  recetteId: string;
   title: string;
   description: string;
   type: string;
 }
 
 const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type}) => {
+
+  const { user } = useAuth();
+  const [likes, setLikes] = useState<string[]>([]);
+  const userId = user?.uid;
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, "recipes", recetteId), (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        setLikes(docSnapshot.data().likes || []);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [recetteId]);
+
+  const hasLiked = userId ? likes.includes(userId) : false;
+
+  const handleLike = async () => {
+    if (!userId) return alert("You must be logged in to like a post!");
+    if (hasLiked) {
+      await unlikePost(recetteId, userId);
+    } else {
+      await toggleLikePost(recetteId, userId);
+    }
+  };
+  
   return (
     <div className="Recette">
-      <h1>{title}</h1>
+      <section className="Recette_header">
+        <Button className='Recette_likeButton'
+          label={hasLiked ? `❤️ ${likes.length}` : `🤍 ${likes.length}`}
+          onClick={handleLike}
+          severity={hasLiked ? "danger" : "secondary"}
+        />
+
+        <h1>{title}</h1>
+      </section>
+      
       <p>{description}</p>
       <p>{type}</p>
 

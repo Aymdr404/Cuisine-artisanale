@@ -42,8 +42,6 @@ const Post: React.FC<PostProps> = ({postId, title, content, createdAt}) => {
     }
   };
 
-
-
   return (
     <div className="Post">
       <h1>{title}</h1>

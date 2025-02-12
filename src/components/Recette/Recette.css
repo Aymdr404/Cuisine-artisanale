@@ -3,6 +3,29 @@
   height: 35vh;
   width: 30vh;
   margin: 1vh;
+  position: relative;
+}
+
+.Recette:hover {
+  border: 1px solid #000;
+  cursor: pointer;
+}
+
+.Recette_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.Recette_likeButton {
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  width: 5rem;
 }
 
 .Recette img {
