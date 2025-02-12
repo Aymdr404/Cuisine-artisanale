@@ -2,14 +2,13 @@
   min-width: 130vh;
   min-height: 85vh;
   padding: 2rem;
-  background-color: #ffffff;
+  background-color: var(--primary-color-navbar);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .AddRecetteForm h1 {
   text-align: center;
-  color: #333;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
 }
@@ -36,7 +35,7 @@
   max-width: 50%;
 }
 
-.formRecette_sectionText div {
+.formRecette_sectionText > div {
   display: flex;
   flex-direction: column;
 }
@@ -44,7 +43,7 @@
 .formRecette_sectionText label {
   font-weight: bold;
   margin-bottom: 0.5rem;
-  color: #555;
+  color: var(--color-text);
 }
 
 .p-inputtext, .p-multiselect-label{
@@ -66,6 +65,48 @@
   gap: 1rem;
 }
 
+/* --- Section steps --- */
+.step-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.step-container > input {
+  width: 100%;
+  flex: 1;
+}
+
+.steps-section > button {
+  background-color: var(--secondary-color);
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-step-btn {
+  display: block;
+  margin-top: 10px;
+}
+
+.add-step-btn:hover {
+  background-color: var(--background-color-button-hover);
+  color: white;
+}
+
+.delete-step-btn {
+  background-color: var(--background-color-danger);
+}
+
+.delete-step-btn:hover {
+  background-color: #c0392b;
+}
+
+
 /* --- Section Image --- */
 .formRecette_sectionImage {
   text-align: center;
@@ -75,24 +116,28 @@
   display: block;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  color: #555;
 }
 
 /* --- Bouton --- */
-.formRecette button {
-  width: 100%;
+.formRecette_sectionButtons > button {
   padding: 0.75rem;
   border: none;
   border-radius: 8px;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.formRecette button:hover {
-  background-color: #0056b3;
+.formRecette_sectionButtons > button:hover {
+  background-color: var(--background-color-button-hover);
+  color: white;
+}
+
+.formRecette_sectionButtons {
+  display: flex;
+  justify-content: space-between;
 }
 
 /* --- Responsive Design --- */

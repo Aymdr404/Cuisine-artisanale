@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import './RecetteDesc.css';
 
-import { useParams } from 'react-router-dom';
-import { doc, getDoc } from '@firebase/firestore';
+import { useNavigate, useParams } from 'react-router-dom';
+import { doc, getDoc, deleteDoc } from '@firebase/firestore';
 import { db } from '../../firebase';
+import { Button } from 'primereact/button';
 
 
 interface Recette{
-  id: number;
+  id: string;
   title: string;
   description: string;
   type: string;
@@ -15,10 +16,12 @@ interface Recette{
   preparationTime: number;
   ingredients: string[];
   video: string;
+  steps: string[];
 }
 
 const RecetteDesc: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [recette, setRecette] = React.useState<Recette | null>(null);
 
@@ -29,7 +32,6 @@ const RecetteDesc: React.FC = () => {
       const recetteSnap = await getDoc(recetteRef);
       
       if (recetteSnap.exists()) {
-        console.log('Recette:', recetteSnap.data());
         setRecette(recetteSnap.data() as Recette);
         return recetteSnap.data();  // Retourne les données du document
       } else {
@@ -46,34 +48,67 @@ const RecetteDesc: React.FC = () => {
     
   }, [id]);
 
+  const suppRecette = async(id:string) => {
+    if (!id) {
+      console.error("ID de la recette manquant !");
+      return;
+    }
+
+  try {
+    await deleteDoc(doc(db, "recipes", id));
+    navigate('/recipes');
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la recette :", error);
+    }
+  }
+
   return (
     <div className="RecetteDesc">
       {recette ? (
         <>
-          <h1 className="recette-title">{recette.title}</h1>
-          
-          <div className="recette-info">
-            <p className="recette-description">{recette.description}</p>
-            <p><strong>Type :</strong> {recette.type}</p>
-            <p><strong>Temps de préparation :</strong> {recette.preparationTime} minutes</p>
-            <p><strong>Temps de cuisson :</strong> {recette.cookingTime} minutes</p>
-          </div>
+        <section className='button-container'>
+          <Button className='button'>Liker</Button>
+          <Button className='button' onClick={() => suppRecette(recette.id)}>Supprimer</Button>
+        </section>
+        <h1 className="recette-title">{recette.title}</h1>
+        <section className='recette-description'>
+          <section className='recette-info'>
+            
+            <div className="recette-info">
+              <p><strong>Type :</strong> {recette.type}</p>
+            </div>
 
-          <div className="recette-ingredients">
-            <h3>Ingrédients</h3>
-            <ul>
-              {recette.ingredients.map((ingredient, index) => (
-                <li key={index}>{ingredient}</li>
+            <div className="recette-ingredients">
+              <h3>Ingrédients</h3>
+              <ul>
+                {recette.ingredients.map((ingredient, index) => (
+                  <li key={index}><p>{ingredient}</p></li>
+                ))}
+              </ul>
+            </div>
+          </section>
+          <section className='recette-steps'>
+            <div className='recette_timing'>
+              <p><strong>Temps de préparation :</strong> {recette.preparationTime} minutes</p>
+              <p><strong>Temps de cuisson :</strong> {recette.cookingTime} minutes</p>
+            </div>
+            <h2>Étapes de préparation:</h2>
+            <ol>
+              {recette.steps.map((step, index) => (
+                <li key={index}>
+                  <h3>Étape {index + 1}:</h3>
+                  <p>{step}</p>
+                </li>
               ))}
-            </ul>
-          </div>
-
+            </ol>
+          </section>
           {recette.video && (
             <div className="recette-video">
               <h3>Vidéo</h3>
               <a href={recette.video} target="_blank" rel="noopener noreferrer">Voir la vidéo</a>
             </div>
           )}
+        </section>
         </>
       ) : (
         <p>Chargement...</p>

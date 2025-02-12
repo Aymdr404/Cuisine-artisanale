@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './AddRecetteForm.css';
 
 import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
@@ -17,13 +16,13 @@ const AddRecetteForm: React.FC = () => {
 
   let recetteId: string = '';
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [type, setType] = useState<number | null>(null);
   const [ingredients, setIngredients] = useState<number[]>([]);
   const [preparationTime, setPreparationTime] = useState(0);
   const [cookingTime, setCookingTime] = useState(0);
   const [video, setVideo] = useState('');
   const [isRecetteCreated, setIsRecetteCreated] = useState<boolean>(false);
+  const [steps, setSteps] = useState<string[]>([]);
 
   const types = [
     { id: 1, name: 'Entrée' },
@@ -36,11 +35,26 @@ const AddRecetteForm: React.FC = () => {
     { id: 2, name: 'Tomate' },
   ];
 
+  const addStep = () => {
+    setSteps([...steps, '']);
+  };
+
+    // Supprimer une étape
+    const removeStep = (index: number) => {
+      setSteps(steps.filter((_, i) => i !== index)); // Supprime l'étape ciblée
+    };
+  
+    // Modifier une étape existante
+    const handleStepChange = (index: number, value: string) => {
+      const newSteps = [...steps];
+      newSteps[index] = value;
+      setSteps(newSteps);
+    };
   
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!title || !description || !type || !ingredients || !preparationTime || !cookingTime) {
+    if (!title || !type || !ingredients || !preparationTime || !cookingTime) {
       alert('Please fill out all fields');
       return;
     }
@@ -54,13 +68,13 @@ const AddRecetteForm: React.FC = () => {
       try{
         const docRef = await addDoc(collection(db, 'recipes'), {
           title: '',
-          description: '',
           type: '',
           ingredients: '',
           preparationTime: '',
           cookingTime: '',
           video: '',
           image: '',
+          steps: [],
         });
 
         recetteId = docRef.id;
@@ -73,7 +87,6 @@ const AddRecetteForm: React.FC = () => {
         const recetteRef = doc(db, 'recipes', recetteId);
         await updateDoc(recetteRef, {
           title,
-          description,
           type: selectedType,
           ingredients: selectedIngredients,  
           preparationTime,
@@ -81,15 +94,16 @@ const AddRecetteForm: React.FC = () => {
           video,
           id: recetteId,
           createdAt: new Date(),
+          steps,
         });
 
         setTitle('');
-        setDescription('');
         setType(null);
         setIngredients([]);
         setPreparationTime(0);
         setCookingTime(0);
         setVideo('');
+        setSteps([]);
         setIsRecetteCreated(false);
       }catch (error) {
         console.error('Error updating recette:', error);
@@ -107,9 +121,23 @@ const AddRecetteForm: React.FC = () => {
               <label  htmlFor="title">Titre</label>
               <InputText type="text" id="title" value={title} onChange={(e)=> setTitle(e.target.value)} />
             </div>
-            <div>
-              <label htmlFor="description">Description</label>
-              <InputTextarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} ></InputTextarea>
+            <div className="steps-section">
+              <h3>Étapes de préparation</h3>
+              {steps.map((step, index) => (
+                <div key={index} className="step-container">
+                  <InputText
+                    type="text"
+                    value={step}
+                    onChange={(e) => handleStepChange(index, e.target.value)}
+                    placeholder={`Étape ${index + 1}`}
+                    required
+                  />
+                  <Button type="button" onClick={() => removeStep(index)} className="delete-step-btn">
+                    ❌
+                  </Button>
+                </div>
+              ))}
+              <button type="button" onClick={addStep} className="add-step-btn">+ Ajouter une étape</button>
             </div>
             <section className="formRecette_sectionDetails">
               <div>
@@ -140,7 +168,10 @@ const AddRecetteForm: React.FC = () => {
 
           </section>
         </div>
-        <Button type="submit">Ajouter</Button>
+        <section className='formRecette_sectionButtons'>
+          <Button type="submit">Ajouter</Button>
+          <Button type="reset">Annuler</Button>
+        </section>
       </form>
     </div>
   );

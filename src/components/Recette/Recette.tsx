@@ -18,9 +18,11 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type}) 
       <p>{description}</p>
       <p>{type}</p>
 
+      {/* Ajout des images quand j'aurais */}
+
       <Link to={`/recette/${recetteId}`}>
-            <Button>Voir la recette</Button>
-        </Link>
+        <Button>Voir la recette</Button>
+      </Link>
     </div>
   );
 };
