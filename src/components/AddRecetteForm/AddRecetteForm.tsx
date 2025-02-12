@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './AddRecetteForm.css';
 
 import { InputText } from 'primereact/inputtext';
@@ -23,6 +23,9 @@ const AddRecetteForm: React.FC = () => {
   const [video, setVideo] = useState('');
   const [isRecetteCreated, setIsRecetteCreated] = useState<boolean>(false);
   const [steps, setSteps] = useState<string[]>([]);
+
+  const [regions, setRegions] = useState([]);
+  const [position, setPosition] = useState({});
 
   const types = [
     { id: 1, name: 'Entrée' },
@@ -54,7 +57,7 @@ const AddRecetteForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!title || !type || !ingredients || !preparationTime || !cookingTime) {
+    if (!title || !type || !ingredients || !preparationTime || !cookingTime || !steps) {
       alert('Please fill out all fields');
       return;
     }
@@ -111,6 +114,12 @@ const AddRecetteForm: React.FC = () => {
     }
   };
 
+
+  useEffect(() => {
+    fetch("https://geo.api.gouv.fr/regions").then(res => res.json()).then(data => setRegions(data));
+  }, []);
+
+
   return (
     <div className="AddRecetteForm">
       <h1>Composer votre propre recettes</h1>
@@ -118,11 +127,11 @@ const AddRecetteForm: React.FC = () => {
         <div>
           <section className="formRecette_sectionText">
             <div>
-              <label  htmlFor="title">Titre</label>
+              <label  htmlFor="title">Titre:</label>
               <InputText type="text" id="title" value={title} onChange={(e)=> setTitle(e.target.value)} />
             </div>
             <div className="steps-section">
-              <h3>Étapes de préparation</h3>
+              <h3>Étapes de préparation:</h3>
               {steps.map((step, index) => (
                 <div key={index} className="step-container">
                   <InputText
@@ -141,29 +150,36 @@ const AddRecetteForm: React.FC = () => {
             </div>
             <section className="formRecette_sectionDetails">
               <div>
-                <label htmlFor="type">Type</label>
+                <label htmlFor="type">Type:</label>
                 <Dropdown id="type" optionLabel="name" value={type} options={types} onChange={(e:DropdownChangeEvent) => setType(e.value)} optionValue="id" />
               </div>
               <div>
-                <label htmlFor="ingredients">Ingrédients</label>
+                <label htmlFor="ingredients">Ingrédients:</label>
                 <MultiSelect id="ingredients" value={ingredients} onChange={(e: MultiSelectChangeEvent) => setIngredients(e.value)} optionLabel="name" options={ingredientsList}  optionValue="id" />
               </div>
             </section>
-            <section className='cookingTime'>
+            <section className='cooking_recette'>
               <div>
-                <label htmlFor="preparationTime">Temps de préparation</label>
+                <label htmlFor="preparationTime">Temps de préparation:</label>
                 <InputNumber id="preparationTime" value={preparationTime} onChange={(e)=> setPreparationTime(e.value??0)}/>
               </div>
               <div>
-                <label htmlFor="cookingTime">Temps de cuisson</label>
+                <label htmlFor="cookingTime">Temps de cuisson:</label>
                 <InputNumber id="cookingTime" value={cookingTime} onChange={(e)=> setCookingTime(e.value ?? 0)}/>
               </div>
             </section>
           </section> 
           <section className="formRecette_sectionImage">
             <div>
-              <label htmlFor='video'>Vidéo</label>
+              {/* <Button onClick={getLocation}>Utiliser ma position</Button> */}
+
+              <label htmlFor='video'>Vidéo:</label>
               <InputText id='video'value={video} onChange={(e)=> setTitle(e.target.value)} />
+            </div>
+
+            <div className='formRecette_region'>
+              <label htmlFor='position'>Position:</label>
+              <Dropdown id='position' optionLabel='nom' value={position} options={regions} onChange={(e:DropdownChangeEvent) => setPosition(e.value)} optionValue='code' />
             </div>
 
           </section>

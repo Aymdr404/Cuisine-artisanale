@@ -36,22 +36,22 @@
   margin: 10px;
 }
 
-ul {
+.Navbar ul {
   list-style-type: none;
   display: flex;
   gap: 20px;
 }
 
-li {
+.Navbar li {
   display: inline;
 }
 
-a {
+.Navbar a {
   color: var(--text-color);
   text-decoration: none;
   font-size: 18px;
 }
 
-a:hover {
+.Navbar a:hover {
   text-decoration: underline;
 }

@@ -47,9 +47,8 @@
 }
 
 .p-inputtext, .p-multiselect-label{
-  color: #333;
+  color: var(--text-color-secondary);
   width: 100%;
-  padding: 0.5rem;
 }
 
 .formRecette_sectionDetails {
@@ -57,10 +56,12 @@
   gap: 1rem;
   > div {
     width: 100%;
+    display: flex;
+    flex-direction: column;
   }
 }
 
-.cookingTime {
+.cooking_recette {
   display: flex;
   gap: 1rem;
 }
@@ -117,6 +118,12 @@
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
+
+.formRecette_region > div {
+  width: 100%;
+  display: flex;
+}
+
 
 /* --- Bouton --- */
 .formRecette_sectionButtons > button {
