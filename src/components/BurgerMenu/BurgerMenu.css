@@ -78,7 +78,6 @@
   padding-bottom: 10px;
   width: 100%;
   cursor: pointer;
-  transition: background 0.3s;
 }
 
 .menu-container .dropdown li:hover {
@@ -94,6 +93,17 @@
   text-align: center;
   margin: 0;
   padding: 0;
+}
+
+.menu-item-link {
+  display: block;
+  padding: 10px; 
+  text-decoration: none; 
+  color: inherit;
+}
+
+.menu-item-link:hover {
+  background-color: var(--background-color-button-hover); 
 }
 
 .auth_user{

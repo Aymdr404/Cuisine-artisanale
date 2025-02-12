@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './BurgerMenu.css';
-import { Button } from 'primereact/button';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import AuthButton from '../AuthButton/AuthButton';
-import { ThemeContext } from '@/contexts/ThemeContext/ThemeContext';
+import { Link } from 'react-router-dom';
 
 const BurgerMenu: React.FC = () => {
   const [open, setOpen] = useState(true);
@@ -32,18 +31,12 @@ const BurgerMenu: React.FC = () => {
           <ul>
             {user && (
               <li>
-                <span>Acount</span>
+                <Link to="/account" onClick={() => setOpen(false)} className="menu-item-link">account</Link>
               </li>
             )}
-              {user ? (
-                <li>
-                  <Button label="Logout" onClick={logout} />  
-                </li>
-              ) : (
-                <li>
-                  <AuthButton />
-                </li>
-              )}
+            <li>
+              <AuthButton onClick={() => setOpen(false)}  />
+            </li>
           </ul>
         </div>
       )}

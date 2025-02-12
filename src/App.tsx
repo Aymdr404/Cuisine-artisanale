@@ -10,6 +10,7 @@ import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
 import AddRecetteForm from './components/AddRecetteForm/AddRecetteForm';
 import RecetteDesc from './components/RecetteDesc/RecetteDesc';
 import RecetteMap from '@pages/RecetteMap/RecetteMap';
+import Account from '@pages/Account/Account';
 
 const App = () => {
   return (
@@ -23,6 +24,8 @@ const App = () => {
           <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
           <Route path="/recettes/:id" element={<RecetteDesc />} />
           <Route path="/map" element={<RecetteMap/>} />
+          <Route path="*" element={<h1>404 - Not Found</h1>} /> {/* Route pour une page 404 */}
+          <Route path="/account" element={<Account/>} />
         </Routes>
       </Router>
     </AuthProvider>
