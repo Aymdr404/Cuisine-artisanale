@@ -67,8 +67,11 @@ const RecetteDesc: React.FC = () => {
       {recette ? (
         <>
         <section className='button-container'>
-          <Button className='button'>Liker</Button>
-          <Button className='button' onClick={() => suppRecette(recette.id)}>Supprimer</Button>
+          <Button onClick={() => navigate('/recipes')}>Retour</Button>
+          <section className='button-container-right'>
+            <Button>Liker</Button>
+            <Button onClick={() => suppRecette(recette.id)}>Supprimer</Button>
+          </section>
         </section>
         <h1 className="recette-title">{recette.title}</h1>
         <section className='recette-description'>

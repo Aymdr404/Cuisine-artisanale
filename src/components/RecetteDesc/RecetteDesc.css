@@ -24,6 +24,12 @@
 
 /* Bouton container */
 .button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.button-container-right {
   position: absolute;
   right: 0;
   display: flex;

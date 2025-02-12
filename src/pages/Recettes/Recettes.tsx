@@ -48,11 +48,16 @@ const Recettes: React.FC = () => {
         <Filtre />
         <AddRecette />
       </section>
-      <section className='recettes_section'>
-        {recettes.map((recette, index) => (
-          <Recette key={index} recetteId={recette.recetteId} title={recette.title} description={recette.description} type={recette.type} />
-        ))}
-      </section>
+      {recettes &&(
+          <section className='recettes_section'>
+            {recettes.map((recette, index) => (
+              <Recette key={index} recetteId={recette.recetteId} title={recette.title} description={recette.description} type={recette.type} />
+            ))}
+          </section>
+      )}
+      {!recettes && (
+        <p>Chargement...</p>
+      )}
     </div>
   );
 };
