@@ -2,10 +2,10 @@ import React, { useContext, useState } from 'react';
 import './Navbar.css';
 
 import { Link } from 'react-router-dom';
-import AuthButton from '@components/AuthButton/AuthButton';
 
-import { Button } from 'primereact/button';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
+import BurgerMenu from '@components/BurgerMenu/BurgerMenu';
+import { Button } from 'primereact/button';
 import { ThemeContext } from '@/contexts/ThemeContext/ThemeContext';
 
 const Navbar: React.FC = () => {
@@ -45,16 +45,12 @@ const Navbar: React.FC = () => {
           </nav>
         </section>
         <section className='boutons_user'>
-          <section className='auth'>
-            {user ? (
-              <div className='auth_user'>
-                <span>Welcome, {user.displayName || "User"}!</span>
-                <Button label="Logout" onClick={logout} />
-              </div>
-            ) : (
-              <AuthButton />
-            )}
-          </section>
+          {user && (
+            <div >
+              <span>Welcome, {user.displayName || "User"}!</span>
+            </div>
+          )}
+          <BurgerMenu />
           <Button className='button_darkMode' onClick={() => toggleTheme()}> {theme === "dark"  ? "🌞" : "🌙"} </Button>
         </section>
     </div>

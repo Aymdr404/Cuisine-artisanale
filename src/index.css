@@ -16,6 +16,7 @@
   --background-color-danger: #9e000d;
   --background-color: #c7c7c7;
   --background-color-button-hover: #263b52;
+  --background-color-secondary: #272727;
   
   --text-color: #252525;
   --text-color-secondary: #626262;
@@ -25,6 +26,8 @@
 
 .dark-theme {
   --background-color: #1a1a1a;
+  --background-color-secondary: #a1a1a1;
+
   --text-color: #ffffff;
   --text-color-secondary: #a5a5a5;
 
