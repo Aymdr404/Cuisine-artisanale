@@ -5,8 +5,8 @@ import "./RecetteMap.css";
 import { MapContainer, Marker, Polygon, Popup, TileLayer,  } from 'react-leaflet';
 import L from "leaflet";
 import { useNavigate } from 'react-router-dom';
-import geojsonData from './departementsGeoJson.json';
-import departementsCoordinates from './departementsCoord.json';
+import geojsonData from '@assets/departementsGeoJson.json';
+import departementsCoordinates from '@assets/departementsCoord.json';
 import { Button } from "primereact/button";
 
 interface Recette {

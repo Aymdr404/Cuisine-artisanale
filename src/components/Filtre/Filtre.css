@@ -2,4 +2,18 @@
   padding: 16px;
   border: 1px solid #ddd;
   margin: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.filtre_input{
+  text-align: left;
+}
+
+.Filtre_type{
+  display: flex;
+  justify-content: space-between;
 }
