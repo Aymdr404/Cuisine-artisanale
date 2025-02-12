@@ -109,14 +109,29 @@
 
 
 /* --- Section Image --- */
-.formRecette_sectionImage {
+.formRecette_sectionMedia {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
 }
 
-.formRecette_sectionImage label {
+.formRecette_sectionMedia label {
   display: block;
   font-weight: bold;
   margin-bottom: 0.5rem;
+}
+
+.formRecette_image {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formRecette_media {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 }
 
 .formRecette_region > div {
@@ -159,7 +174,7 @@
     flex: 1;
   }
 
-  .formRecette_sectionImage {
+  .formRecette_sectionMedia {
     flex: 0.5;
     display: flex;
     flex-direction: column;

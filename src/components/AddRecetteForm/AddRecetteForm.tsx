@@ -7,8 +7,10 @@ import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
 
-import { db } from '../../firebase';
+import { db, storage } from '../../firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { ref } from 'firebase/storage';
+import { getDownloadURL, uploadBytes } from 'firebase/storage';
 
 
 
@@ -26,6 +28,9 @@ const AddRecetteForm: React.FC = () => {
 
   const [regions, setRegions] = useState([]);
   const [position, setPosition] = useState({});
+
+  const [file, setFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
 
   const types = [
     { id: 1, name: 'Entrée' },
@@ -116,12 +121,29 @@ const AddRecetteForm: React.FC = () => {
       }
     }
   };
-
-
+  
   useEffect(() => {
     fetch("https://geo.api.gouv.fr/departements").then(res => res.json()).then(data => setRegions(data));
   }, []);
 
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+
+    const storageRef = ref(storage, `images/${file.name}`);
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      console.log("Image téléchargée avec succès");
+      const url = await getDownloadURL(snapshot.ref);
+      setImageUrl(url);
+    } catch (error) {
+      console.error("Erreur lors du téléchargement", error);
+    }
+  };
 
   return (
     <div className="AddRecetteForm">
@@ -172,12 +194,17 @@ const AddRecetteForm: React.FC = () => {
               </div>
             </section>
           </section> 
-          <section className="formRecette_sectionImage">
-            <div>
-              {/* <Button onClick={getLocation}>Utiliser ma position</Button> */}
+          <section className="formRecette_sectionMedia">
+            <div className='formRecette_media'>
+              <div>
+                <label htmlFor='video'>Vidéo:</label>
+                <InputText id='video'value={video} onChange={(e)=> setTitle(e.target.value)} />
+              </div>
 
-              <label htmlFor='video'>Vidéo:</label>
-              <InputText id='video'value={video} onChange={(e)=> setTitle(e.target.value)} />
+              <div className='formRecette_image'>
+                <input type="file" onChange={handleFileChange} />
+                <button type="button" onClick={handleUpload}>Uploader</button>
+              </div>
             </div>
 
             <div className='formRecette_region'>
