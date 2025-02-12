@@ -17,6 +17,7 @@ interface Recette{
   ingredients: string[];
   video: string;
   steps: string[];
+  position: string;
 }
 
 const RecetteDesc: React.FC = () => {
@@ -80,6 +81,12 @@ const RecetteDesc: React.FC = () => {
             <div className="recette-info">
               <p><strong>Type :</strong> {recette.type}</p>
             </div>
+
+            {recette.position &&(
+              <div className='recette-position'>
+                <p><strong>Position:</strong>{recette.position}</p>
+              </div>
+            )}
 
             <div className="recette-ingredients">
               <h3>Ingrédients</h3>

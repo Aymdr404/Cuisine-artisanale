@@ -78,6 +78,7 @@ const AddRecetteForm: React.FC = () => {
           video: '',
           image: '',
           steps: [],
+          position: '',
         });
 
         recetteId = docRef.id;
@@ -98,6 +99,7 @@ const AddRecetteForm: React.FC = () => {
           id: recetteId,
           createdAt: new Date(),
           steps,
+          position,
         });
 
         setTitle('');
@@ -107,6 +109,7 @@ const AddRecetteForm: React.FC = () => {
         setCookingTime(0);
         setVideo('');
         setSteps([]);
+        setPosition({});
         setIsRecetteCreated(false);
       }catch (error) {
         console.error('Error updating recette:', error);

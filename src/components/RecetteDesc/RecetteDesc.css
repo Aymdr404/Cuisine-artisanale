@@ -9,6 +9,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: var(--text-color);
   position: relative;
+
 }
 
 .recette-title {
@@ -67,6 +68,10 @@
 
   p, h3{
     text-align: left;
+  }
+
+  ol{
+    list-style-type: none;
   }
 }
 
