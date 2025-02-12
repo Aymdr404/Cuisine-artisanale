@@ -31,17 +31,19 @@ const Navbar: React.FC = () => {
             </ul>
           </nav>
         </section>
-        <section className='auth'>
-          {user ? (
-            <div className='auth_user'>
-              <span>Welcome, {user.displayName || "User"}!</span>
-              <Button label="Logout" onClick={logout} />
-            </div>
-          ) : (
-            <AuthButton />
-          )}
+        <section className='boutons_user'>
+          <section className='auth'>
+            {user ? (
+              <div className='auth_user'>
+                <span>Welcome, {user.displayName || "User"}!</span>
+                <Button label="Logout" onClick={logout} />
+              </div>
+            ) : (
+              <AuthButton />
+            )}
+          </section>
+          <Button className='button_darkMode' onClick={() => toggleTheme()}> {theme === "dark"  ? "🌞" : "🌙"} </Button>
         </section>
-        <Button onClick={() => toggleTheme()}> {theme === "dark"  ? "🌞 Light Mode" : "🌙 Dark Mode"} </Button>
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { ReactNode } from "react";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const [isFading, setIsFading] = useState(false);
 
   // Appliquer le thème au chargement
   useEffect(() => {
@@ -19,6 +20,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       document.body.classList.remove("dark-theme");
     }
     localStorage.setItem("theme", theme);
+
+    setIsFading(true);
+    setTimeout(() => setIsFading(false), 500);
   }, [theme]);
 
   // Fonction pour basculer entre light/dark
@@ -28,7 +32,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
+      <div className={`fade ${isFading ? "" : "show"}`}>{children}</div>
     </ThemeContext.Provider>
   );
 }

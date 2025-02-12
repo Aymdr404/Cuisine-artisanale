@@ -9,24 +9,19 @@
   -moz-osx-font-smoothing: grayscale;
 
   --primary-color: #007bff;
-  --secondary-color: #6c757d;
+  --secondary-color: #8896a2;
   --background-color: #c7c7c7;
   --text-color: #252525;
   --border-radius: 8px;
+
+  --primary-color-navbar: #aeaeae;
 }
 
 .dark-theme {
   --background-color: #1a1a1a;
   --text-color: #ffffff;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  --primary-color-navbar: #252525;
+  --secondary-color: #8896a2;
 }
 
 body {
@@ -38,6 +33,25 @@ body {
     
   color: var(--text-color);
   background-color: var(--background-color);
+  transition: background-color 1s ease, color 1s ease;
+}
+
+.fade {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fade.show {
+  opacity: 1;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
 }
 
 h1 {
