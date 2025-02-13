@@ -50,7 +50,7 @@ const AccountRecettes: React.FC = () => {
 
   return (
     <div className="AccountRecettes">
-      <h1>Vos recette créée</h1>
+      <h2>Vos recette créée</h2>
       {recettes &&(
           <section className='recettes_section'>
             {recettes.map((recette, index) => (

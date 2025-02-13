@@ -22,8 +22,8 @@ const AddRecetteForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [type, setType] = useState<number | null>(null);
   const [ingredients, setIngredients] = useState<number[]>([]);
-  const [preparationTime, setPreparationTime] = useState(0);
-  const [cookingTime, setCookingTime] = useState(0);
+  const [preparationTime, setPreparationTime] = useState<number | null>(null);
+  const [cookingTime, setCookingTime] = useState<number | null>(null);
   const [video, setVideo] = useState('');
   const [isRecetteCreated, setIsRecetteCreated] = useState<boolean>(false);
   const [steps, setSteps] = useState<string[]>([]);
@@ -64,7 +64,10 @@ const AddRecetteForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!title || !type || !ingredients || !preparationTime || !cookingTime || !steps) {
+    setPreparationTime(preparationTime ?? 0);
+    setCookingTime(cookingTime ?? 0);
+
+    if (!title || !type || !ingredients || preparationTime === null || cookingTime === null || !steps || !position) {
       alert('Please fill out all fields');
       return;
     }
@@ -120,6 +123,7 @@ const AddRecetteForm: React.FC = () => {
         setSteps([]);
         setPosition({});
         setIsRecetteCreated(false);
+        navigateBack();
       }catch (error) {
         console.error('Error updating recette:', error);
       }
@@ -149,18 +153,23 @@ const AddRecetteForm: React.FC = () => {
     }
   };
 
+  const navigateBack = () => {
+    window.history.back();
+  };
+
   return (
     <div className="AddRecetteForm">
       <h1>Composer votre propre recettes</h1>
+      <p>Remplissez les champs avec un * pour créer une recette</p>
       <form onSubmit={handleSubmit} className='formRecette'>
         <div>
           <section className="formRecette_sectionText">
             <div>
-              <label  htmlFor="title">Titre:</label>
+              <label  htmlFor="title">*Titre:</label>
               <InputText type="text" id="title" value={title} onChange={(e)=> setTitle(e.target.value)} />
             </div>
             <div className="steps-section">
-              <h3>Étapes de préparation:</h3>
+              <h3>*Étapes de préparation:</h3>
               {steps.map((step, index) => (
                 <div key={index} className="step-container">
                   <InputText
@@ -179,21 +188,21 @@ const AddRecetteForm: React.FC = () => {
             </div>
             <section className="formRecette_sectionDetails">
               <div>
-                <label htmlFor="type">Type:</label>
+                <label htmlFor="type">*Type:</label>
                 <Dropdown id="type" optionLabel="name" value={type} options={types} onChange={(e:DropdownChangeEvent) => setType(e.value)} optionValue="id" />
               </div>
               <div>
-                <label htmlFor="ingredients">Ingrédients:</label>
+                <label htmlFor="ingredients">*Ingrédients:</label>
                 <MultiSelect id="ingredients" value={ingredients} onChange={(e: MultiSelectChangeEvent) => setIngredients(e.value)} optionLabel="name" options={ingredientsList}  optionValue="id" />
               </div>
             </section>
             <section className='cooking_recette'>
               <div>
-                <label htmlFor="preparationTime">Temps de préparation:</label>
+                <label htmlFor="preparationTime">*Temps de préparation:</label>
                 <InputNumber id="preparationTime" value={preparationTime} onChange={(e)=> setPreparationTime(e.value??0)}/>
               </div>
               <div>
-                <label htmlFor="cookingTime">Temps de cuisson:</label>
+                <label htmlFor="cookingTime">*Temps de cuisson:</label>
                 <InputNumber id="cookingTime" value={cookingTime} onChange={(e)=> setCookingTime(e.value ?? 0)}/>
               </div>
             </section>
@@ -212,7 +221,7 @@ const AddRecetteForm: React.FC = () => {
             </div>
 
             <div className='formRecette_region'>
-              <label htmlFor='position'>Département:</label>
+              <label htmlFor='position'>*Département:</label>
               <Dropdown id='position' optionLabel='nom' value={position} options={regions} onChange={(e:DropdownChangeEvent) => setPosition(e.value)} optionValue='code' />
             </div>
 
@@ -220,7 +229,7 @@ const AddRecetteForm: React.FC = () => {
         </div>
         <section className='formRecette_sectionButtons'>
           <Button type="submit">Ajouter</Button>
-          <Button type="reset">Annuler</Button>
+          <Button type="reset" onClick={navigateBack}>Annuler</Button>
         </section>
       </form>
     </div>
