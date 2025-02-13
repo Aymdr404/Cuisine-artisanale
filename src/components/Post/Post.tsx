@@ -47,11 +47,9 @@ const Post: React.FC<PostProps> = ({postId, title, content, createdAt}) => {
       <h1>{title}</h1>
       <p>{content}</p>
       <p>{createdAt}</p>
-      <Button className='Post_likeButton'
-        label={hasLiked ? `❤️ ${likes.length}` : `🤍 ${likes.length}`}
-        onClick={handleLike}
-        severity={hasLiked ? "danger" : "secondary"}
-      />
+      <Button className='Post_likeButton' onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} >
+          {hasLiked ? `❤️ ${likes.length}` : `🤍 ${likes.length}`}
+      </Button>
     </div>
   );
 };

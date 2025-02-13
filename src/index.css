@@ -14,7 +14,9 @@
   --primary-color-navbar: #b8a498;
 
   --background-color: #DDD0C8;
-  --background-color-super-light: #b8a498;
+  --background-color-light: #b8a498;
+  --background-color-super-light: #f5f5f5;
+
   --background-color-secondary: #3e3d3d;
   --background-color-danger: #9e000d;
 
@@ -23,6 +25,9 @@
 
   --text-color: #000000;
   --text-color-secondary: #ffffff;
+  --a-hover-color: #5b5b5b;
+
+  --dropdown-color: #b4b898;
 
   --border-radius: 8px;
 }
@@ -34,7 +39,8 @@
   --primary-color-navbar: #2b2b2b;
 
   --background-color: #1a1a1a;
-  --background-color-super-light: #2b2b2b;
+  --background-color-super-light: #414141;
+  --background-color-light: #2b2b2b;
   --background-color-secondary: #a1a1a1;
 
   --background-color-button-primary: #474a65;
@@ -74,7 +80,7 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: var(--text-color-secondary);
+  color: var(--a-hover-color);
 }
 
 h1 {
@@ -92,15 +98,44 @@ button {
   background-color: var(--background-color-button-primary);
   cursor: pointer;
   transition: background-color 0.25s;
-  color: var(--text-color-secondary);
+  color: var(--text-color-secondary) ;
 }
 
 button:hover {
-  color: var(--text-color-secondary);
   background-color: var(--background-color-button-hover);
 }
 
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.p-dropdown ,.p-multiselect{
+  background-color: rgb(184, 184, 184);
+  border-radius: var(--border-radius);
+  padding: 0.3em;
+  border: 1px solid var(--dropdown-color);
+}
+
+.p-dropdown-panel{
+  background-color: var(--background-color-super-light);
+  border-radius: var(--border-radius);
+  padding: 0.3em;
+  border: 1px solid var(--dropdown-color);
+}
+
+.p-multiselect-panel {
+  background-color: var(--background-color-super-light);
+  border-radius: var(--border-radius);
+  padding: 0.3em;
+  border: 1px solid var(--dropdown-color);
+  .p-multiselect-items-wrapper ul{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5em;
+  }
+}
+
+.p-dropdown-item {
+  padding: 0.3em;
 }

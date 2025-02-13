@@ -3,7 +3,8 @@
   display: flex;
   justify-content: space-between;
   flex-direction: row;
-
+  background-color: var(--background-color-super-light);
+  border-radius: 15px;
   ul{
     text-align: left;
   }

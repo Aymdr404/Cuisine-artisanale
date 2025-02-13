@@ -4,6 +4,9 @@
   margin: 10px;
   min-height: 50vh;
   transition: transform 0.2s ease-in-out;
+  background-color: var(--background-color-light);
+  border-radius: 15px;
+  color: var(--text-color);
 }
 
 .Post:hover {

@@ -1,5 +1,6 @@
 .AccountRecetteFavoris {
   padding: 16px;
-  border: 1px solid #ddd;
   margin: 10px;
+  background-color: var(--background-color-super-light);
+  border-radius: 15px;
 }

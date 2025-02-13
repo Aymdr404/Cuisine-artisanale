@@ -1,24 +1,24 @@
 .Recette {
-  border: 1px solid #ddd;
   height: 35vh;
   width: 30vh;
   margin: 1vh;
   position: relative;
-  background-color: var(--background-color-super-light);
+  background-color: var(--background-color-light);
   border-radius: 15px;
   color: var(--text-color);
+  transition: transform 0.2s ease-in-out;
 }
 
 .Recette:hover {
-  border: 1px solid #000;
+  transform: scale(1.02);
   cursor: pointer;
 }
 
 .Recette_header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem;
+  padding: 0.3rem;
+  text-align: left;
 }
 
 .Recette_likeButton {
@@ -27,8 +27,8 @@
   background-color: transparent;
   border: none;
   padding: 0.5rem;
-  cursor: pointer;
-  width: 5rem;
+  width: 3rem;
+  height: 3rem;
 }
 
 .Recette img {
