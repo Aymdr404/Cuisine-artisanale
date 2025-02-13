@@ -7,6 +7,7 @@ import AddRecette from '@/components/AddRecette/AddRecette';
 import { db } from '../../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 
 interface Recette {
@@ -17,6 +18,8 @@ interface Recette {
 }
 
 const Recettes: React.FC = () => {
+
+  const {role } = useAuth();
 
   const [recettes, setRecettes] = useState<any[]>([]);
   const location = useLocation();
@@ -60,12 +63,13 @@ const Recettes: React.FC = () => {
     }
   };
 
-
   return (
     <div className="Recettes">
       <section className='filter_section'>
         <Filtre />
-        <AddRecette />
+        {role === 'admin' && (
+          <AddRecette />
+        )}
       </section>
       {recettes &&(
           <section className='recettes_section'>

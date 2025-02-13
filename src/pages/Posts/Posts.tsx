@@ -3,38 +3,23 @@ import './Posts.css';
 import Post from '@/components/Post/Post';
 import AddPost from '@/components/AddPost/AddPost';
 import { db } from '../../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
 
 
 interface Post {
+  id: string;
   title: string;
   content: string;
-  createdAt: any;
-  id: string;
+  createdAt: Date;
 }
 
 const Posts: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [lastVisible, setLastVisible] = useState<any>(null); // Dernier post visible pour la pagination
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMorePosts, setHasMorePosts] = useState<boolean>(true);
 
-  const [posts, setPosts] = useState<any[]>([]);
-
-  const fetchPosts = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "posts"));
-      const postsData: Post[] = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          title: data.title,
-          content: data.content,
-          createdAt: doc.data().createdAt.toDate(),
-          id: doc.id
-        } as Post;
-      });
-
-      setPosts(postsData);
-    } catch (error) {
-      console.error("Error getting posts: ", error);
-    }
-  };
+  const nbPostsToDisplay = 3;
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -45,16 +30,93 @@ const Posts: React.FC = () => {
     });
   };
 
+  const fetchPosts = async () => {
+    setLoading(true);
+
+    try {
+      const postsQuery = query(
+        collection(db, "posts"),
+        orderBy("createdAt", "desc"),
+        limit(nbPostsToDisplay)
+      );
+
+      const querySnapshot = await getDocs(postsQuery);
+      const postsData: Post[] = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          title: data.title,
+          content: data.content,
+          createdAt: doc.data().createdAt.toDate(),
+          id: doc.id,
+        } as Post;
+      });
+
+      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
+      setPosts(postsData);
+      setLastVisible(lastVisiblePost); // Sauvegarde du dernier post visible pour la pagination
+    } catch (error) {
+      console.error("Error getting posts: ", error);
+    }
+
+    setLoading(false);
+  };
+
+  const loadMorePosts = async () => {
+    if (!lastVisible) return;
+
+    setLoading(true);
+
+    try {
+      const postsQuery = query(
+        collection(db, "posts"),
+        orderBy("createdAt", "desc"),
+        startAfter(lastVisible),
+        limit(nbPostsToDisplay)
+      );
+
+      const querySnapshot = await getDocs(postsQuery);
+      const postsData: Post[] = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          title: data.title,
+          content: data.content,
+          createdAt: doc.data().createdAt.toDate(),
+          id: doc.id,
+        } as Post;
+      });
+
+      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
+      setPosts((prevPosts) => [...prevPosts, ...postsData]);
+      setLastVisible(lastVisiblePost);
+
+      if (querySnapshot.size < nbPostsToDisplay) {
+        setHasMorePosts(false);
+      }
+    } catch (error) {
+      console.error("Error getting more posts: ", error);
+    }
+
+    setLoading(false);
+  };
+
   useEffect(() => {
     fetchPosts();
   }, []);
-  
+
+
   return (
     <div className="Posts">
       <section className="Posts_section">
         {posts.map((post, index) => (
           <Post key={index} postId={post.id} title={post.title} content={post.content} createdAt={formatDate(post.createdAt)} />
         ))}
+        <section className="LoadMore_section">
+          {!loading && hasMorePosts && lastVisible && (
+            <button onClick={loadMorePosts}>Charger plus</button>
+          )}
+          {loading && <p>Chargement...</p>}
+          {!hasMorePosts && <p>Il n'y a plus de posts à charger.</p>}
+      </section>
       </section>
       <section className="AddPost_section">
         <AddPost />
