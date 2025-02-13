@@ -25,7 +25,7 @@ const App = () => {
           <Route path="/recettes/:id" element={<RecetteDesc />} />
           <Route path="/map" element={<RecetteMap/>} />
           <Route path="*" element={<h1>404 - Not Found</h1>} /> {/* Route pour une page 404 */}
-          <Route path="/account" element={<Account/>} />
+          <Route path="/account/*" element={<Account/>} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,5 +1,44 @@
 .Account {
-  padding: 16px;
   border: 1px solid #ddd;
-  margin: 10px;
+  min-width: 115vh;
+  min-height: 85vh;
+}
+
+.account-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.panel-left{
+  width: 30%;
+  height: 100%;
+  border-right: 1px solid #ddd;
+}
+
+.panel-left ul{
+  list-style-type: none;
+  padding: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.panel-left ul li{
+  padding: 10px;
+}
+
+.panel-left ul li a{
+  text-decoration: none;
+}
+
+.info-user{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.panel-right{
+  width: 70%;
+  height: 100%;
 }

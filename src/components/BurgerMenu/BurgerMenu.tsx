@@ -5,7 +5,7 @@ import AuthButton from '../AuthButton/AuthButton';
 import { Link } from 'react-router-dom';
 
 const BurgerMenu: React.FC = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
 

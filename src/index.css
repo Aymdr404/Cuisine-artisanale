@@ -37,6 +37,10 @@
   --background-color-button-hover: #263b52;
 }
 
+.theme-transition {
+  transition: background-color 1s ease, color 1s ease;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -46,7 +50,6 @@ body {
     
   color: var(--text-color);
   background-color: var(--background-color);
-  transition: background-color 1s ease, color 1s ease;
 }
 
 .fade {

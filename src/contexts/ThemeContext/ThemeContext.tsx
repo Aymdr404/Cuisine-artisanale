@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
 // Création du contexte du thème
 export const ThemeContext = createContext({
@@ -12,8 +12,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [isFading, setIsFading] = useState(false);
 
-  // Appliquer le thème au chargement
   useEffect(() => {
+    const currentTheme = localStorage.getItem("theme");
+
+    if (currentTheme === theme) {
+      return;
+    }
+
+    document.body.classList.add("theme-transition");
+
     if (theme === "dark") {
       document.body.classList.add("dark-theme");
     } else {
@@ -21,11 +28,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
     localStorage.setItem("theme", theme);
 
+    setTimeout(() => {
+      document.body.classList.remove("theme-transition");
+    }, 1000);
+
     setIsFading(true);
     setTimeout(() => setIsFading(false), 500);
   }, [theme]);
 
-  // Fonction pour basculer entre light/dark
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
   };

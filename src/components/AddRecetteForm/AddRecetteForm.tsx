@@ -11,10 +11,12 @@ import { db, storage } from '../../firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { ref } from 'firebase/storage';
 import { getDownloadURL, uploadBytes } from 'firebase/storage';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 
 
 const AddRecetteForm: React.FC = () => {
+  const { user } = useAuth();
 
   let recetteId: string = '';
   const [title, setTitle] = useState('');
@@ -84,6 +86,7 @@ const AddRecetteForm: React.FC = () => {
           image: '',
           steps: [],
           position: '',
+          createdBy: '',
         });
 
         recetteId = docRef.id;
@@ -105,6 +108,7 @@ const AddRecetteForm: React.FC = () => {
           createdAt: new Date(),
           steps,
           position,
+          createdBy: user?.uid,
         });
 
         setTitle('');

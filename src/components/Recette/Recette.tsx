@@ -46,13 +46,12 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type}) 
   return (
     <div className="Recette">
       <section className="Recette_header">
+        <h1>{title}</h1>
         <Button className='Recette_likeButton'
           label={hasLiked ? `❤️ ${likes.length}` : `🤍 ${likes.length}`}
           onClick={handleLike}
           severity={hasLiked ? "danger" : "secondary"}
         />
-
-        <h1>{title}</h1>
       </section>
       
       <p>{description}</p>

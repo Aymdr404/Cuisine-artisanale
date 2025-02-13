@@ -1,6 +1,10 @@
 import React from 'react';
 import './Account.css';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
+import { Route, Routes } from 'react-router-dom';
+import AccountRecettes from '@pages/AccountRecettes/AccountRecettes';
+import AccountDetail from '@pages/AccountDetail/AccountDetail';
+import AccountRecetteFavoris from '@pages/AccountRecetteFavoris/AccountRecetteFavoris';
 
 const Account: React.FC = () => {
 
@@ -10,12 +14,38 @@ const Account: React.FC = () => {
   return (
     <div className="Account">
       {user ? (
-        <div>
-          <h1>Welcome, {user.displayName || "User"}!</h1>
-          <button onClick={logout}>Logout</button>
+        <div className='account-container'>
+          <section className="panel-left">
+            <div className='info-user'>
+              <h3>Welcome, {user.displayName ?? "User"}!</h3>
+              <button onClick={logout}>Logout</button>
+            </div>
+            <section className="navigation-bar">
+              <nav>
+                <ul>
+                  <li>
+                    <a href="/account">Mon compte</a>
+                  </li>
+                  <li>
+                    <a href="/account/mes-recettes">Mes recettes</a>
+                  </li>
+                  <li>
+                    <a href="/account/mes-favoris">Mes favoris</a>
+                  </li>
+                </ul>
+              </nav>
+            </section>
+          </section>
+          <section className="panel-right">
+            <Routes>
+            <Route path="*" element={<AccountDetail/> } />
+              <Route path="mes-recettes" element={<AccountRecettes/>} />
+              <Route path="mes-favoris" element={<AccountRecetteFavoris/>} />
+            </Routes>
+          </section>
         </div>
       ) : (
-        <h1>Not logged in</h1>
+        <h1>Chargement ...</h1>
       )}
     </div>
   );
