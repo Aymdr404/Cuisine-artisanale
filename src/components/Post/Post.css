@@ -23,7 +23,3 @@
 .Post_likeButton:hover {
   transform: scale(1.05);
 }
-
-.Post h1 {
-  color: var(--primary-color);
-}

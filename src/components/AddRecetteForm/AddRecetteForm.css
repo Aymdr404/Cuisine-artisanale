@@ -20,6 +20,26 @@
   gap: 1.5rem;
 }
 
+.formRecette input[type="text"], .formRecette textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.formRecette input[type="text"]:focus, .formRecette textarea:focus {
+  border-color: #4CAF50; 
+  outline: none;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); 
+}
+
+.formRecette input[type="text"]::placeholder, .formRecette textarea::placeholder {
+  color: #888;
+}
+
+
 /* Conteneur principal des sections */
 .formRecette > div {
   display: flex;
@@ -81,7 +101,6 @@
 }
 
 .steps-section > button {
-  background-color: var(--secondary-color);
   padding: 8px 12px;
   border: none;
   border-radius: 5px;
@@ -145,16 +164,9 @@
   padding: 0.75rem;
   border: none;
   border-radius: 8px;
-  background-color: var(--secondary-color);
-  color: var(--text-color);
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-}
-
-.formRecette_sectionButtons > button:hover {
-  background-color: var(--background-color-button-hover);
-  color: white;
 }
 
 .formRecette_sectionButtons {

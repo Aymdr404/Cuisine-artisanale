@@ -6,11 +6,10 @@ import App from './App';
 
 
 import { PrimeReactProvider } from 'primereact/api';
-import "primereact/resources/themes/lara-light-cyan/theme.css";
-import "./global.css";
 import { ThemeProvider } from '@contexts/ThemeContext/ThemeContext';
 
 import 'leaflet/dist/leaflet.css'
+import 'primeicons/primeicons.css';
 
 // Création de la racine du composant
 createRoot(document.getElementById('root')!).render(

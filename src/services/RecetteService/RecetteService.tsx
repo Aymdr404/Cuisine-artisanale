@@ -1,7 +1,7 @@
 import { db } from "../../firebase"; // Assure-toi que le chemin est correct
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
-export const toggleLikePost = async (recetteId: string, userId: string) => {
+export const toggleLikeRecipes = async (recetteId: string, userId: string) => {
   try {
     const postRef = doc(db, "recipes", recetteId);
 
@@ -14,7 +14,7 @@ export const toggleLikePost = async (recetteId: string, userId: string) => {
   }
 };
 
-export const unlikePost = async (recetteId: string, userId: string) => {
+export const unlikeRecipes = async (recetteId: string, userId: string) => {
   try {
     const postRef = doc(db, "recipes", recetteId);
 

@@ -4,6 +4,7 @@ import Post from '@/components/Post/Post';
 import AddPost from '@/components/AddPost/AddPost';
 import { db } from '../../firebase';
 import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
+import { Button } from 'primereact/button';
 
 
 interface Post {
@@ -111,8 +112,9 @@ const Posts: React.FC = () => {
           <Post key={index} postId={post.id} title={post.title} content={post.content} createdAt={formatDate(post.createdAt)} />
         ))}
         <section className="LoadMore_section">
+          <Button onClick={() => window.scrollTo({top: 0, behavior:'smooth'})}><i className="pi pi-angle-up" style={{ fontSize: '1.5rem' }}></i></Button>
           {!loading && hasMorePosts && lastVisible && (
-            <button onClick={loadMorePosts}>Charger plus</button>
+            <Button onClick={loadMorePosts}>Charger plus</Button>
           )}
           {loading && <p>Chargement...</p>}
           {!hasMorePosts && <p>Il n'y a plus de posts à charger.</p>}

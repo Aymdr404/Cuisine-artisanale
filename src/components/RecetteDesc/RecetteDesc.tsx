@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './RecetteDesc.css';
 
 import { useNavigate, useParams } from 'react-router-dom';
-import { doc, getDoc, deleteDoc } from '@firebase/firestore';
+import { doc, getDoc, deleteDoc, onSnapshot } from '@firebase/firestore';
 import { db } from '../../firebase';
 import { Button } from 'primereact/button';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
+import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
+import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 
 
 interface Recette{
@@ -23,8 +26,14 @@ interface Recette{
 const RecetteDesc: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const {role, user} = useAuth();
+  const [likes, setLikes] = useState<string[]>([]);
+  const userId = user?.uid;
 
+  const hasLiked = userId ? likes.includes(userId) : false;
   const [recette, setRecette] = React.useState<Recette | null>(null);
+
+
 
   const getRecette = async(id:string) => {
     const recetteRef = doc(db, 'recipes', id!);
@@ -46,7 +55,14 @@ const RecetteDesc: React.FC = () => {
 
   useEffect(() => {
     getRecette(id!);
-    
+
+    const unsubscribe = onSnapshot(doc(db, "recipes", id!), (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        setLikes(docSnapshot.data().likes || []);
+      }
+    });
+
+    return () => unsubscribe();    
   }, [id]);
 
   const suppRecette = async(id:string) => {
@@ -63,15 +79,42 @@ const RecetteDesc: React.FC = () => {
     }
   }
 
+  const handleLike = async () => {
+    if (!userId) return alert("You must be logged in to like a post!");
+    if (hasLiked) {
+      await unlikeRecipes(recette!.id, userId);
+    } else {
+      await toggleLikeRecipes(recette!.id, userId);
+    }
+  };
+
+  const confirmDelete = () => {
+    confirmDialog({
+          message: 'Do you want to delete this record?',
+          header: 'Delete Confirmation',
+          icon: 'pi pi-info-circle',
+          defaultFocus: 'reject',
+          acceptClassName: 'p-button-danger',
+          accept: () => suppRecette(id!),
+      });
+  };
+
   return (
     <div className="RecetteDesc">
       {recette ? (
         <>
         <section className='button-container'>
-          <Button onClick={() => navigate('/recettes')}>Retour</Button>
           <section className='button-container-right'>
-            <Button>Liker</Button>
-            <Button onClick={() => suppRecette(recette.id)}>Supprimer</Button>
+            <Button onClick={() => navigate('/recettes')}>Retour</Button>
+            {role === 'admin' && (
+              <div>
+                <ConfirmDialog />
+                <Button onClick={confirmDelete}>Supprimer</Button>
+              </div>
+            )}
+          </section>
+          <section className='button-container-left'>
+            <Button label={hasLiked ? `❤️` : `🤍`} onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} ></Button>
           </section>
         </section>
         <h1 className="recette-title">{recette.title}</h1>

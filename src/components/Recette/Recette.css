@@ -4,6 +4,9 @@
   width: 30vh;
   margin: 1vh;
   position: relative;
+  background-color: var(--background-color-super-light);
+  border-radius: 15px;
+  color: var(--text-color);
 }
 
 .Recette:hover {

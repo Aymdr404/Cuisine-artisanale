@@ -5,7 +5,7 @@ import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
-import { toggleLikePost, unlikePost } from '@/services/RecetteService/RecetteService';
+import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
 import { doc, onSnapshot } from '@firebase/firestore';
 import { db } from '../../firebase';
 
@@ -21,6 +21,7 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type}) 
   const { user } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
   const userId = user?.uid;
+  const hasLiked = userId ? likes.includes(userId) : false;
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "recipes", recetteId), (docSnapshot) => {
@@ -32,14 +33,12 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type}) 
     return () => unsubscribe();
   }, [recetteId]);
 
-  const hasLiked = userId ? likes.includes(userId) : false;
-
   const handleLike = async () => {
     if (!userId) return alert("You must be logged in to like a post!");
     if (hasLiked) {
-      await unlikePost(recetteId, userId);
+      await unlikeRecipes(recetteId, userId);
     } else {
-      await toggleLikePost(recetteId, userId);
+      await toggleLikeRecipes(recetteId, userId);
     }
   };
   
