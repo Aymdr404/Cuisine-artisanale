@@ -31,17 +31,16 @@ const Posts: React.FC = () => {
     });
   };
 
-  const fetchPosts = async () => {
+  const fetchPosts = () => {
     setLoading(true);
 
-    try {
-      const postsQuery = query(
-        collection(db, "posts"),
-        orderBy("createdAt", "desc"),
-        limit(nbPostsToDisplay)
-      );
+    const postsQuery = query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      limit(nbPostsToDisplay)
+    );
 
-      const querySnapshot = await getDocs(postsQuery);
+    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
       const postsData: Post[] = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
@@ -54,12 +53,11 @@ const Posts: React.FC = () => {
 
       const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
       setPosts(postsData);
-      setLastVisible(lastVisiblePost); // Sauvegarde du dernier post visible pour la pagination
-    } catch (error) {
-      console.error("Error getting posts: ", error);
-    }
+      setLastVisible(lastVisiblePost);
+      setLoading(false);
+    });
 
-    setLoading(false);
+    return unsubscribe;
   };
 
   const loadMorePosts = async () => {
@@ -101,7 +99,9 @@ const Posts: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    const unsubscribe = fetchPosts();
+
+    return () => unsubscribe();
   }, []);
 
 

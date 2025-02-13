@@ -4,7 +4,6 @@ import './index.css';
 
 import App from './App';
 
-
 import { PrimeReactProvider } from 'primereact/api';
 import { ThemeProvider } from '@contexts/ThemeContext/ThemeContext';
 

@@ -1,0 +1,10 @@
+.PostsAdmin {
+  padding: 16px;
+  border: 1px solid #ddd;
+  margin: 10px;
+}
+
+.PostsAdmin__list {
+  display: flex;
+  flex-wrap: wrap;
+}

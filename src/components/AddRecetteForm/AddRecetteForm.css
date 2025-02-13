@@ -66,11 +66,6 @@
   color: var(--color-text);
 }
 
-.p-inputtext, .p-multiselect-label{
-  color: var(--text-color-secondary);
-  width: 100%;
-}
-
 .formRecette_sectionDetails {
   display: flex;
   gap: 1rem;

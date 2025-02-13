@@ -1,7 +1,7 @@
 import React from 'react';
 import './Account.css';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
-import { Route, Routes } from 'react-router-dom';
+import { NavLink, Route, Routes } from 'react-router-dom';
 import AccountRecettes from '@pages/AccountRecettes/AccountRecettes';
 import AccountDetail from '@pages/AccountDetail/AccountDetail';
 import AccountRecetteFavoris from '@pages/AccountRecetteFavoris/AccountRecetteFavoris';
@@ -24,13 +24,13 @@ const Account: React.FC = () => {
               <nav>
                 <ul>
                   <li>
-                    <a href="/account">Mon compte</a>
+                    <NavLink to="/account">Mon compte</NavLink>
                   </li>
                   <li>
-                    <a href="/account/mes-recettes">Mes recettes</a>
+                    <NavLink to="/account/mes-recettes">Mes recettes</NavLink>
                   </li>
                   <li>
-                    <a href="/account/mes-favoris">Mes favoris</a>
+                    <NavLink to="/account/mes-favoris">Mes favoris</NavLink>
                   </li>
                 </ul>
               </nav>
@@ -38,7 +38,7 @@ const Account: React.FC = () => {
           </section>
           <section className="panel-right">
             <Routes>
-            <Route path="*" element={<AccountDetail/> } />
+              <Route path="*" element={<AccountDetail/> } />
               <Route path="mes-recettes" element={<AccountRecettes/>} />
               <Route path="mes-favoris" element={<AccountRecetteFavoris/>} />
             </Routes>

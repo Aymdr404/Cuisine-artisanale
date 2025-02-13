@@ -13,6 +13,12 @@
   transform: scale(1.02);
 }
 
+.Section_buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
 .Post_likeButton {
   border: none;
   cursor: pointer;

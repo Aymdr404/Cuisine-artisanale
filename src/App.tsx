@@ -11,21 +11,28 @@ import AddRecetteForm from './components/AddRecetteForm/AddRecetteForm';
 import RecetteDesc from './components/RecetteDesc/RecetteDesc';
 import RecetteMap from '@pages/RecetteMap/RecetteMap';
 import Account from '@pages/Account/Account';
+import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
+import AdminPanel from '@pages/AdminPanel/AdminPanel';
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <Navbar /> {/* Navbar visible sur toutes les pages */}
+        <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} /> {/* Route pour la page d'accueil */}
-          <Route path="/recettes" element={<Recipes />} /> {/* Route pour la page "Recipes" */}
-          <Route path="/about" element={<About />} /> {/* Route pour la page "About" */}
+          <Route path="/" element={<Home />} /> 
+          <Route path="/recettes" element={<Recipes />} />
+          <Route path="/about" element={<About />} /> 
           <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
           <Route path="/recettes/:id" element={<RecetteDesc />} />
           <Route path="/map" element={<RecetteMap/>} />
-          <Route path="*" element={<h1>404 - Not Found</h1>} /> {/* Route pour une page 404 */}
           <Route path="/account/*" element={<Account/>} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/admin-panel/*" element={<AdminPanel />} />
+          </Route>
+
+          <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>
       </Router>
     </AuthProvider>

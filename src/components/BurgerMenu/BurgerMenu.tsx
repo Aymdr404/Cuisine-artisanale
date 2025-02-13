@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const BurgerMenu: React.FC = () => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { user, logout } = useAuth();
+  const { user, role } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,6 +32,11 @@ const BurgerMenu: React.FC = () => {
             {user && (
               <li>
                 <Link to="/account" onClick={() => setOpen(false)} className="menu-item-link">account</Link>
+              </li>
+            )}
+            {user && role === 'admin' && (
+              <li>
+                <Link to="/admin-panel" onClick={() => setOpen(false)} className="menu-item-link">admin</Link>
               </li>
             )}
             <li>

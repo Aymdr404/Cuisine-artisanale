@@ -1,0 +1,28 @@
+.Users {
+  padding: 16px;
+  border: 1px solid #ddd;
+  margin: 10px;
+}
+
+.Users .p-datatable table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.Users .p-datatable th {
+  background: var(--background-color);
+  text-align: left;
+  padding: 10px;
+}
+
+.Users .p-datatable td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.Users .p-paginator-bottom{
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}

@@ -25,7 +25,7 @@ const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
     if (!isPostCreated) {
       try {
-        const docRef = await addDoc(collection(db, 'posts'), {
+        const docRef = await addDoc(collection(db, 'postsRequest'), {
           title: '',
           content: '',
         });
@@ -37,7 +37,7 @@ const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       }
 
       try {
-        const postRef = doc(db, 'posts', postId);
+        const postRef = doc(db, 'postsRequest', postId);
         await updateDoc(postRef, {
           title,
           content,

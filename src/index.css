@@ -110,6 +110,10 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.p-inputtext {
+  color: black;
+}
+
 .p-dropdown ,.p-multiselect{
   background-color: rgb(184, 184, 184);
   border-radius: var(--border-radius);
@@ -138,4 +142,25 @@ button:focus-visible {
 
 .p-dropdown-item {
   padding: 0.3em;
+}
+
+.p-dialog-mask {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.p-confirm-dialog  {
+  background-color: var(--background-color-super-light);
+  border-radius: var(--border-radius);
+  padding: 0.3em;
+  border: 1px solid var(--dropdown-color);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.p-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1em;
 }
