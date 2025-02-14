@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import './Navbar.css';
 
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import BurgerMenu from '@components/BurgerMenu/BurgerMenu';
@@ -19,17 +19,17 @@ const Navbar: React.FC = () => {
           <nav>
             <ul className='menu'>
               <li>
-                <Link to="/">Home</Link> {/* Lien vers la page d'accueil */}
+                <NavLink to="/">Home</NavLink>
               </li>
               <li className="menu-item">
-                <Link to="/recettes" className="link">
+                <NavLink to="/recettes" className="link">
                   Recettes
-                </Link>
+                </NavLink>
                 <ul className="dropdown">
                   <li>
-                    <Link to="/recettes" className="dropdown-item">
+                    <NavLink to="/recettes" className="dropdown-item">
                       Voir les recettes
-                    </Link>
+                    </NavLink>
                   </li>
                   <li>
                     <Link to="/map" className="dropdown-item">
@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
                 </ul>
               </li>
               <li>
-                <Link to="/about">About</Link> {/* Lien vers une page "À propos" */}
+                <NavLink to="/about">About</NavLink> {/* Lien vers une page "À propos" */}
               </li>
             </ul>
           </nav>

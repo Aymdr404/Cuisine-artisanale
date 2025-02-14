@@ -20,7 +20,7 @@
   --background-color-secondary: #3e3d3d;
   --background-color-danger: #9e000d;
 
-  --background-color-button-primary: #323232;
+  --background-color-button-primary: #868585;
   --background-color-button-hover: #071e54;
 
   --text-color: #000000;
@@ -101,10 +101,11 @@ button {
   background-color: var(--background-color-button-primary);
   cursor: pointer;
   transition: background-color 0.25s;
-  color: var(--text-color-secondary) ;
+  text-align: center;
+  color: var(--text-color);
 }
 
-button:hover {
+button:hover, .p-button:hover {
   background-color: var(--background-color-button-hover);
 }
 
@@ -113,89 +114,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.p-inputtext {
-  color: black;
-}
-
-.p-dropdown ,.p-multiselect{
-  background-color: rgb(184, 184, 184);
-  border-radius: var(--border-radius);
-  padding: 0.3em;
-  border: 1px solid var(--dropdown-color);
-}
-
-.p-multiselect{
-  max-width: 100%;
-}
-
-.p-dropdown-items li:hover, .p-multiselect-items li:hover {
-  background-color: var(--background-color-light);
-  border-radius: var(--border-radius);
-}
-
-.p-dropdown-panel{
-  background-color: var(--background-color-super-light);
-  border-radius: var(--border-radius);
-  padding: 0.3em;
-  border: 1px solid var(--dropdown-color);
-}
-
-.p-multiselect-panel {
-  background-color: var(--background-color-super-light);
-  border-radius: var(--border-radius);
-  padding: 0.3em;
-  border: 1px solid var(--dropdown-color);
-  .p-multiselect-items-wrapper ul{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5em;
-  }
-}
-
-.p-dropdown-item {
-  padding: 0.3em;
-}
-
-.p-dialog-mask {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.p-confirm-dialog  {
-  background-color: var(--background-color-super-light);
-  border-radius: var(--border-radius);
-  padding: 0.3em;
-  border: 1px solid var(--dropdown-color);
-
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-}
-
-.p-dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1em;
-}
-
-.p-datatable table {
-  border-collapse: collapse;
-  width: 100%;
-  border: 1px solid #ddd;
-}
-
-.p-datatable th {
-  background: var(--background-color);
-  text-align: left;
-  padding: 10px;
-}
-
-.p-datatable td {
-  padding: 10px;
-  border: 1px solid #ddd;
-}
-
-.p-paginator-bottom{
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+.p-button {
+  background-color: var(--background-color-button-primary) !important;
 }

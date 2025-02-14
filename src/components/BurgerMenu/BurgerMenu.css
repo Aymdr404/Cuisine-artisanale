@@ -89,7 +89,7 @@
 
 .menu-container .dropdown button {
   color: var(--text-color);
-  background: none;
+  background-color: transparent !important;
   text-decoration: none;
   height: auto;
   cursor: pointer;

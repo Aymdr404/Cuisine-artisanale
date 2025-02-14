@@ -214,7 +214,7 @@ const AddRecetteForm: React.FC = () => {
                   </Button>
                 </div>
               ))}
-              <button type="button" onClick={addStep} className="add-step-btn">+ Ajouter une étape</button>
+              <Button type="button" onClick={addStep} className="add-step-btn">+ Ajouter une étape</Button>
             </div>
             <section className="formRecette_sectionDetails">
               <div>
@@ -266,7 +266,7 @@ const AddRecetteForm: React.FC = () => {
 
               <div className='formRecette_image'>
                 <input type="file" onChange={handleFileChange} />
-                <button type="button" onClick={handleUpload}>Uploader</button>
+                <Button type="button" onClick={handleUpload}>Uploader</Button>
               </div>
             </div>
 
