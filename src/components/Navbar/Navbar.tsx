@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './Navbar.css';
 
 import { Link, NavLink } from 'react-router-dom';
@@ -12,6 +12,23 @@ const Navbar: React.FC = () => {
 
   const { user } = useAuth();
   const { theme, toggleTheme } = useContext(ThemeContext);
+  
+  const [recettePath, setRecettePath] = useState("/recettes");
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setRecettePath("/");
+      } else {
+        setRecettePath("/recettes");
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="Navbar">
@@ -22,7 +39,7 @@ const Navbar: React.FC = () => {
                 <NavLink to="/">Home</NavLink>
               </li>
               <li className="menu-item">
-                <NavLink to="/recettes" className="link">
+                <NavLink to={recettePath} className="link">
                   Recettes
                 </NavLink>
                 <ul className="dropdown">
