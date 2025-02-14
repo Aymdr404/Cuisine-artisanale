@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
 import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, updateDoc } from '@firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '@firebaseModule';
 
 interface RecetteProps {
   recetteId: string;

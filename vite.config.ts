@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
@@ -11,6 +12,7 @@ export default defineConfig({
       '@services': '/src/services',
       '@contexts': '/src/contexts',
       '@assets': '/src/assets',
+      '@firebaseModule': path.resolve(__dirname, 'src/firebase')
     },
   },
 });

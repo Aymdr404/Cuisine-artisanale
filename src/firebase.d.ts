@@ -1,4 +1,4 @@
-declare module '@firebase' {
+declare module '@firebaseModule' {
     export const db: any;
     export const storage: any;
     export const collection: any;

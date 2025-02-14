@@ -1,4 +1,4 @@
-import { db } from "../../firebase"; // Assure-toi que le chemin est correct
+import { db } from "@firebaseModule";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 export const toggleLikeRecipes = async (recetteId: string, userId: string) => {

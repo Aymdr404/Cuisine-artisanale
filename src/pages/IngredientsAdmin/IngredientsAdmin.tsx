@@ -6,7 +6,7 @@ import { Column } from 'primereact/column';
 import AddIngredient from '@/components/AddIngredient/AddIngredient';
 
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '@firebaseModule';
 import { Button } from 'primereact/button';
 
 

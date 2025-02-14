@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "primereact/button";
-import { auth } from "../../firebase";
+import { auth } from "@firebaseModule";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useAuth } from "@contexts/AuthContext/AuthContext";
 

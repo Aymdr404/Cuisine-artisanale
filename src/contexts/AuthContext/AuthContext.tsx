@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../../firebase"; // Assure-toi que l'importation est correcte
+import { auth } from "@firebaseModule"; // Assure-toi que l'importation est correcte
 import { User, onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 

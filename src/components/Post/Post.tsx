@@ -5,8 +5,8 @@ import { toggleLikePost, unlikePost } from '@/services/PostService/PostService';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from '@firebase/firestore';
 
-import { db } from '../../firebase';
-import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
+import { db } from '@firebaseModule';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 
 
 interface PostProps {
@@ -48,9 +48,8 @@ const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromReque
     try {
       const postRef = doc(db, 'posts', postId);
       await deleteDoc(postRef);
-      setUsers((prevUsers) => prevUsers.filter((user: { userId: string | undefined; }) => user.userId !== userId)); 
     } catch (error) {
-      console.error('Erreur de suppression de l\'utilisateur : ', error);
+      console.error('Erreur de suppression du post : ', error);
     }
   };
 
@@ -123,7 +122,3 @@ const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromReque
 };
 
 export default Post;
-function setUsers(arg0: (prevUsers: any) => any) {
-  throw new Error('Function not implemented.');
-}
-

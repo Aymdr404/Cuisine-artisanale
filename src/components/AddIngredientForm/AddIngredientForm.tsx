@@ -6,7 +6,7 @@ import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 
 import { addDoc, collection, doc, updateDoc } from '@firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '@firebaseModule';
 
 const AddIngredientForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 

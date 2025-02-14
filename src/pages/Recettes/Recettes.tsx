@@ -4,7 +4,7 @@ import Filtre from '@components/Filtre/Filtre';
 import Recette from '@components/Recette/Recette';
 import AddRecette from '@components/AddRecette/AddRecette';
 
-import { db } from '../../firebase';
+import { db } from '@firebaseModule';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';

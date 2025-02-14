@@ -3,7 +3,7 @@ import './RecetteDesc.css';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { doc, getDoc, deleteDoc, onSnapshot } from '@firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '@firebaseModule';
 import { Button } from 'primereact/button';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';

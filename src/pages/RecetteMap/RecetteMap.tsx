@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import "./RecetteMap.css";
 
@@ -90,7 +90,7 @@ const RecetteMap = () => {
             <Popup>{departement.properties.nom}</Popup>
           </Polygon>
       ))}
-      {recettes.map((recette, index) => {
+      {recettes.map((recette) => {
         const coordEntry = Object.entries(departementsCoordinates).find(([code]) => code === recette.position);
         if (!coordEntry) return null;
         const coord: [number, number] = coordEntry[1] as [number, number];

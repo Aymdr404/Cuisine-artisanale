@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import './Navbar.css';
 
 import { Link, NavLink } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { ThemeContext } from '@/contexts/ThemeContext/ThemeContext';
 
 const Navbar: React.FC = () => {
 
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (

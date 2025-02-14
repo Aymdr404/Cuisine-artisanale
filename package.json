@@ -7,12 +7,15 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@firebase/firestore": "^4.7.7",
     "@google-cloud/storage": "^7.15.1",
     "firebase": "^11.3.0",
+    "gh-pages": "^6.3.0",
     "leaflet": "^1.9.4",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.2",

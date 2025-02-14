@@ -1,4 +1,4 @@
-import { db } from "../../firebase"; // Assure-toi que le chemin est correct
+import { db } from "@firebaseModule"; // Assure-toi que le chemin est correct
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 export const toggleLikePost = async (postId: string, userId: string) => {

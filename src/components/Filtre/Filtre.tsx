@@ -3,7 +3,7 @@ import './Filtre.css';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Filtre: React.FC = () => {
 
@@ -11,8 +11,6 @@ const Filtre: React.FC = () => {
   const [position, setPosition] = useState({});
   const [departements, setDepartements] = useState([]);
 
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
 
   const typeRecette = [

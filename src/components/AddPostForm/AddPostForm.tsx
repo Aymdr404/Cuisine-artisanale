@@ -5,7 +5,7 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 
-import { db } from '../../firebase';
+import { db } from '@firebaseModule';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 
 const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {

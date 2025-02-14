@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import { db } from "../../firebase"; // Import Firestore
+import { db } from "@firebaseModule"; // Import Firestore
 
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "@/contexts/AuthContext/AuthContext";

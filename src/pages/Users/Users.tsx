@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Users.css';
 
-import { collection, deleteDoc, doc, getDocs, query, updateDoc } from '@firebase/firestore';
-import { db } from '../../firebase';
+import { collection, deleteDoc, doc, getDocs } from '@firebase/firestore';
+import { db } from '@firebaseModule';
 
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -44,21 +44,6 @@ const Users: React.FC = () => {
       setUsers((prevUsers) => prevUsers.filter((user) => user.userId !== userId)); 
     } catch (error) {
       console.error('Erreur de suppression de l\'utilisateur : ', error);
-    }
-  };
-
-  const onCellEditComplete = async (e: any) => {
-    const { field, newValue, data } = e;
-    const userRef = doc(db, 'users', data.id);
-
-    try {
-      await updateDoc(userRef, { [field]: newValue }); // Mise à jour de la valeur dans Firestore
-      const updatedUsers = users.map((user) =>
-        user.userId === data.id ? { ...user, [field]: newValue } : user
-      );
-      setUsers(updatedUsers); // Mise à jour de l'état local
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
     }
   };
 

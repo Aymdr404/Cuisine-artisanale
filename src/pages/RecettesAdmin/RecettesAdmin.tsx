@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './RecettesAdmin.css';
 
-import {  db } from '../../firebase';
+import {  db } from '@firebaseModule';
 import {collection, onSnapshot, orderBy, query } from '@firebase/firestore';
 import Recette from '@components/Recette/Recette';
 
 
-interface Recette {
+interface RecetteInterface {
   recetteId: string;
   title: string;
   description: string;
@@ -16,7 +16,7 @@ interface Recette {
 
 const RecettesAdmin: React.FC = () => {
 
-  const [recettes, setRecettes] = useState<Recette[]>([]);
+  const [recettes, setRecettes] = useState<RecetteInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -33,15 +33,15 @@ const RecettesAdmin: React.FC = () => {
       );
 
     const unsubscribe = onSnapshot(recettesCollection, (querySnapshot) => {
-      const recettesData: Recette[] = querySnapshot.docs.map((doc) => {
+      const recettesData: RecetteInterface[] = querySnapshot.docs.map((doc) => {
         const data = doc.data();
-        const recetteData = data as Recette;
+        const recetteData = data as RecetteInterface;
         return {
           title: recetteData.title,
           type: recetteData.type,
           recetteId: doc.id,
           createdBy: recetteData.createdBy,
-        } as Recette;
+        } as RecetteInterface;
       });
       setRecettes(recettesData);
       setLoading(false);

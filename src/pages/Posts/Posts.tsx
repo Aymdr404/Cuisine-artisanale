@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Posts.css';
 import Post from '@/components/Post/Post';
 import AddPost from '@/components/AddPost/AddPost';
-import { db } from '../../firebase';
+import { db } from '@firebaseModule';
 import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
 import { Button } from 'primereact/button';
 

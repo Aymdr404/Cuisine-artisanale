@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './PostsAdmin.css';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '@firebaseModule';
 import Post from '@/components/Post/Post';
 
 

@@ -7,7 +7,7 @@ import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
 
-import { db, storage } from '../../firebase';
+import { db, storage } from '@firebaseModule';
 import { collection, addDoc, updateDoc, doc, query, getDocs } from 'firebase/firestore';
 import { getDownloadURL, uploadBytes, ref } from 'firebase/storage';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
@@ -40,7 +40,7 @@ const AddRecetteForm: React.FC = () => {
   const [position, setPosition] = useState({});
 
   const [file, setFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
+  const [, setImageUrl] = useState("");
 
   const types = [
     { id: 1, name: 'Entrée' },
@@ -165,8 +165,8 @@ const AddRecetteForm: React.FC = () => {
     }
   }
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(event.target.files![0]);
   };
 
   const handleUpload = async () => {
@@ -265,7 +265,7 @@ const AddRecetteForm: React.FC = () => {
               </div>
 
               <div className='formRecette_image'>
-                <input type="file" onChange={handleFileChange} />
+                <input type="file" onChange={(e) => handleFileChange(e)} />
                 <Button type="button" onClick={handleUpload}>Uploader</Button>
               </div>
             </div>
