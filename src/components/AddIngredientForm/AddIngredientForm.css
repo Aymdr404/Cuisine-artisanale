@@ -25,13 +25,6 @@
   justify-content: space-between;
 }
 
-.formIngredients h3 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
 .formIngredients div {
   margin-bottom: 20px;
 }

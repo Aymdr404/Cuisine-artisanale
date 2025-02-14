@@ -8,6 +8,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  --container-width: 115vh;
+
   --primary-color: #ffffff;
   --secondary-color: #000000;
 
@@ -63,7 +65,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-    
+
   color: var(--text-color);
   background-color: var(--background-color);
 }
@@ -84,11 +86,6 @@ a {
 }
 a:hover {
   color: var(--a-hover-color);
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
 }
 
 button {
@@ -116,4 +113,24 @@ button:focus-visible {
 
 .p-button {
   background-color: var(--background-color-button-primary) !important;
+}
+
+/* Pour les très grands écrans (PC) */
+@media (min-width: 1200px) {
+  :root{
+    --container-width: 1200px;
+  }
+}
+
+/* Pour les tablettes et petits écrans */
+@media (min-width: 768px) and (max-width: 1199px) {
+  :root{
+    --container-width: 768px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root{
+    --container-width: 100%;
+  }
 }

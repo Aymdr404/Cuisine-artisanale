@@ -1,5 +1,5 @@
 .map{
-  width: 150vh;
+  margin: 10px;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
@@ -8,4 +8,33 @@
   ul{
     text-align: left;
   }
+}
+
+.recette-container{
+  text-align: 'center';
+  overflow-y: scroll;
+  height: 80vh;
+  width: 20vw;
+}
+
+.map-container{
+  width: 80vw;
+  height: 80vh;
+  background-color: wheat;
+  border-radius: 0px 0px 15px 15px;
+}
+
+@media screen and (max-width: 768px){
+  .map{
+    flex-direction: column;
+  }
+  .recette-container{
+    width: 90vw;
+    height: 20vh;
+  }
+  .map-container{
+    width: 90vw;
+    height: 40vh;
+  }
+  
 }

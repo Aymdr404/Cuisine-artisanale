@@ -8,6 +8,11 @@
 
 .AccountRecettes .recettes_section {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
+}
+
+.AccountRecettes .recettes_section .Recette {
+  background-color: var(--background-color-super-light) !important;
 }

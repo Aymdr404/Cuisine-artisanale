@@ -1,6 +1,6 @@
 .Recette {
   height: 35vh;
-  width: 30vh;
+  min-width: 25vh;
   margin: 1vh;
   position: relative;
   background-color: var(--background-color-light);

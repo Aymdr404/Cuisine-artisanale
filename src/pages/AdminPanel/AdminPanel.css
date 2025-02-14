@@ -5,5 +5,10 @@
 
 .admin-content {
   padding: 20px;
-  width: 150vh;
+}
+
+@media screen and (max-width: 768px) {
+  .AdminPanel {
+    flex-direction: column;
+  }
 }

@@ -81,7 +81,7 @@ const IngredientsAdmin: React.FC = () => {
           <AddIngredient />
         </div>
         <div className='table-container'>
-          <DataTable value={ingredients} tableStyle={{ minWidth: '50rem' }} paginator rows={10} loading={loading}>
+          <DataTable value={ingredients}  paginator rows={10} loading={loading}>
             <Column field="id" header="ID"></Column>
             <Column field="name" header="Name"></Column>
             <Column field="price" header="Price"></Column>

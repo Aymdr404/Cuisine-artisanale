@@ -33,3 +33,23 @@
 .sidebar a.active {
   background: #444;
 }
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    display: flex;
+    overflow: auto;
+  }
+
+  .sidebar ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .sidebar li {
+    margin: 10px;
+  }
+  
+}

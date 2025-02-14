@@ -1,6 +1,5 @@
 .Home {
   margin: 10px;
-  min-width: 115vh;
   min-height: 85vh;
   background-color: var(--background-color-super-light);
   border-radius: 15px;

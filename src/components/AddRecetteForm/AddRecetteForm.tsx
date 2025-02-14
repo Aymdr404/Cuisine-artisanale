@@ -159,7 +159,6 @@ const AddRecetteForm: React.FC = () => {
       });
       
       setIngredientsList(recettesData);
-      console.log("Recettes: ", recettesData);
     } catch (error) {
       console.error("Error getting recettes: ", error);
     }

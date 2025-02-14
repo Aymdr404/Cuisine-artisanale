@@ -64,7 +64,7 @@ const RecetteMap = () => {
 
   return (
     <section className="map">
-      <div style={{ width: '250px', marginRight: '20px', height: '80vh', overflowY: 'scroll' }}>
+      <div className="recette-container" style={{ textAlign: 'center', overflowY: 'scroll' }}>
         <h3>Liste des Recettes</h3>
         <ul>
           {recettes.map((recette) => (
@@ -81,9 +81,7 @@ const RecetteMap = () => {
         </ul>
       </div>
 
-      <MapContainer center={[46.603354, 1.888334]} zoom={6} scrollWheelZoom={false} 
-        style={{ height:"80vh",backgroundColor:"white", width:"80vw",
-            }} >
+      <MapContainer center={[46.603354, 1.888334]} zoom={6} scrollWheelZoom={false} className="map-container"  >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         {geojsonData.features.map((departement, index) => (
           <Polygon key={index} positions={getDepartementPolygon(departement.properties.nom)} color="blue" weight={1}>

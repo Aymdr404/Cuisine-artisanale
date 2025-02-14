@@ -1,6 +1,6 @@
 .Recettes {
   border: 1px solid #ddd;
-  min-width: 115vh;
+  margin: 15px;
   min-height: 85vh;
 
   display: flex;
@@ -21,4 +21,23 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+}
+
+@media screen and (max-width: 768px) {
+  .Recettes {
+    flex-direction: column;
+  }
+
+  .filter_section{
+    width: 100%;
+  }
+
+  .Recettes .recettes_section{
+    width: 100%;
+  }
+
+  .Recettes .recettes_section .Recette{
+    width: 100%;
+  }
+  
 }

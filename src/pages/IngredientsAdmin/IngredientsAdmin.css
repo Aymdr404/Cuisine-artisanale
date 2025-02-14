@@ -3,3 +3,10 @@
   border: 1px solid #ddd;
   margin: 10px;
 }
+
+@media screen and (max-width: 768px) {
+  .IngredientsAdmin {
+    padding: 10px;
+  }
+  
+}

@@ -15,4 +15,9 @@ export default defineConfig({
       '@firebaseModule': path.resolve(__dirname, 'src/firebase')
     },
   },
+  build: {
+    chunkSizeWarningLimit: 3000,
+  },
+  base: '/Recettes-cuisine/',
+
 });

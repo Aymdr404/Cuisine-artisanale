@@ -1,6 +1,5 @@
 .Account {
   border: 1px solid #ddd;
-  min-width: 115vh;
   min-height: 85vh;
   background-color: var(--background-color-super-light);
   border-radius: 15px;
@@ -8,11 +7,13 @@
 
 .account-container{
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
 }
 
 .panel-left{
+  min-width: 150px;
   width: 30%;
   height: 100%;
   border-right: 1px solid #ddd;
@@ -43,4 +44,16 @@
 .panel-right{
   width: 70%;
   height: 100%;
+}
+
+@media screen and (max-width: 768px){
+  .panel-left{
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .panel-right{
+    width: 100%;
+  }
 }

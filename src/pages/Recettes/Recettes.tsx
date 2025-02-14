@@ -19,7 +19,7 @@ interface RecetteData {
 
 const Recettes: React.FC = () => {
 
-  const {role } = useAuth();
+  const {user } = useAuth();
 
   const [recettes, setRecettes] = useState<RecetteData[]>([]);
   const location = useLocation();
@@ -67,7 +67,7 @@ const Recettes: React.FC = () => {
     <div className="Recettes">
       <section className='filter_section'>
         <Filtre />
-        {role === 'admin' && (
+        {user  && (
           <AddRecette />
         )}
       </section>

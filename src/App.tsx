@@ -1,11 +1,11 @@
 // src/App.tsx
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 
 import Navbar from '@components/Navbar/Navbar';
 import Home from '@pages/Home/Home';
-import Recipes from '@pages/Recettes/Recettes'; // Exemple de page "Recipes"
-import About from '@pages/About/About'; // Exemple de page "About"
+import Recipes from '@pages/Recettes/Recettes';
+import About from '@pages/About/About';
 import { AuthProvider } from '@/contexts/AuthContext/AuthContext';
 import AddRecetteForm from './components/AddRecetteForm/AddRecetteForm';
 import RecetteDesc from './components/RecetteDesc/RecetteDesc';
