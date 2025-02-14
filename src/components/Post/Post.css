@@ -9,6 +9,10 @@
   color: var(--text-color);
 }
 
+.Post_request {
+  background-color: var(--background-color-super-light);
+}
+
 .Post:hover {
   transform: scale(1.02);
 }

@@ -107,6 +107,7 @@
 
 .menu-item-link:hover {
   background-color: var(--background-color-button-hover); 
+  color: var(--text-color);
 }
 
 .auth_user{

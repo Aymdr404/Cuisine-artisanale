@@ -7,11 +7,15 @@
   border-radius: 15px;
   color: var(--text-color);
   transition: transform 0.2s ease-in-out;
+  padding: 10px;
+}
+
+.Recette_request{
+  background-color: var(--background-color-super-light);
 }
 
 .Recette:hover {
   transform: scale(1.02);
-  cursor: pointer;
 }
 
 .Recette_header {
@@ -39,4 +43,15 @@
 .Recette h1 {
   font-size: 1.5rem;
   margin: 0.5rem;
+}
+
+.Recette .bouton_section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.Recette_acceptButton{
+  display: flex;
+  justify-content: space-around;
 }

@@ -79,7 +79,7 @@ const AddRecetteForm: React.FC = () => {
 
     if (!isRecetteCreated) {
       try{
-        const docRef = await addDoc(collection(db, 'recipes'), {
+        const docRef = await addDoc(collection(db, 'recipesRequest'), {
           title: '',
           type: '',
           ingredients: '',
@@ -99,7 +99,7 @@ const AddRecetteForm: React.FC = () => {
       }
 
       try{
-        const recetteRef = doc(db, 'recipes', recetteId);
+        const recetteRef = doc(db, 'recipesRequest', recetteId);
         await updateDoc(recetteRef, {
           title,
           type: selectedType,

@@ -95,7 +95,7 @@ const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromReque
   }
 
   return (
-    <div className="Post">
+    <div className={`Post ${fromRequest ? 'Post_request' : ''}`}>
       <h1>{title}</h1>
       <p>{content}</p>
       <p>{createdAt}</p>

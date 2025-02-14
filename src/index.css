@@ -121,6 +121,11 @@ button:focus-visible {
   border: 1px solid var(--dropdown-color);
 }
 
+.p-dropdown-items li:hover, .p-multiselect-items li:hover {
+  background-color: var(--background-color-light);
+  border-radius: var(--border-radius);
+}
+
 .p-dropdown-panel{
   background-color: var(--background-color-super-light);
   border-radius: var(--border-radius);

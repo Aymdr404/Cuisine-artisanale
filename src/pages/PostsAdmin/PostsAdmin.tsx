@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './PostsAdmin.css';
-import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../../firebase';
 import Post from '@/components/Post/Post';
 
@@ -76,6 +76,7 @@ const PostsAdmin: React.FC = () => {
           ))}
         </div>
       )}
+      {posts.length === 0 && !loading && <p>No posts found</p>}
     </div>
   );
 };
