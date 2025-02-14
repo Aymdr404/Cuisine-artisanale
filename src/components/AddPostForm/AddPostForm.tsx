@@ -60,7 +60,7 @@ const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
       <form onSubmit={handleSubmit} className='formPost'>
         <h3>Add a post</h3>
         <div>
-          <label htmlFor="title">Title:</label>
+          <label htmlFor="title">*Title:</label>
           <InputText
             type="text"
             id="title"
@@ -70,7 +70,7 @@ const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
           />
         </div>
         <div>
-          <label htmlFor="content">Content:</label>
+          <label htmlFor="content">*Content:</label>
           <InputTextarea
             id="content"
             value={content}
@@ -78,10 +78,12 @@ const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
             placeholder="Enter post content"
           />
         </div>
-        <Button type="submit" label='Submit'/>
-        <br />
-        <br />
-        <Button label='close' onClick={closeForm} />
+        <section className='buttons-form'>
+          <Button type="submit" label='Submit'/>
+          <br />
+          <br />
+          <Button label='close' onClick={closeForm} />
+        </section>
       </form>
     </div>
   );

@@ -17,10 +17,17 @@ interface Recette{
   type: string;
   cookingTime: number;
   preparationTime: number;
-  ingredients: string[];
+  ingredients: Ingredient[];
   video: string;
   steps: string[];
   position: string;
+}
+
+interface Ingredient {
+  id: string;
+  name: string;
+  quantity: string;
+  unit: string;
 }
 
 const RecetteDesc: React.FC = () => {
@@ -35,23 +42,47 @@ const RecetteDesc: React.FC = () => {
 
 
 
-  const getRecette = async(id:string) => {
-    const recetteRef = doc(db, 'recipes', id!);
-
+  const getRecette = async (id: string) => {
+    const recetteRef = doc(db, 'recipes', id);
+  
     try {
       const recetteSnap = await getDoc(recetteRef);
       
-      if (recetteSnap.exists()) {
-        setRecette(recetteSnap.data() as Recette);
-        return recetteSnap.data();  // Retourne les données du document
-      } else {
+      if (!recetteSnap.exists()) {
         console.log("Pas de recette trouvée avec cet ID");
         return null;
       }
+  
+      const recetteData = recetteSnap.data() as Recette;
+  
+      const ingredientsDetails = await Promise.all(
+        recetteData.ingredients.map(async (ingredient) => {
+          const ingredientRef = doc(db, 'ingredients', ingredient.id);
+          const ingredientSnap = await getDoc(ingredientRef);
+  
+          if (ingredientSnap.exists()) {
+            const ingredientData = ingredientSnap.data();
+            return {
+              id: ingredient.id,
+              name: ingredientData.name,
+              quantity: ingredient.quantity,
+              unit: ingredientData.unit,
+            };
+          } else {
+            console.warn(`Ingrédient avec l'ID ${ingredient.id} introuvable`);
+            return null;
+          }
+        })
+      );
+  
+      const filteredIngredients = ingredientsDetails.filter((ing) => ing !== null);
+  
+      setRecette({ ...recetteData, ingredients: filteredIngredients });
     } catch (error) {
       console.error("Erreur lors de la récupération de la recette :", error);
     }
-  }
+  };
+  
 
   useEffect(() => {
     getRecette(id!);
@@ -122,21 +153,27 @@ const RecetteDesc: React.FC = () => {
           <section className='recette-info'>
             
             <div className="recette-info">
-              <p><strong>Type :</strong> {recette.type}</p>
+              <p><strong>Type: </strong> {recette.type}</p>
             </div>
 
             {recette.position &&(
               <div className='recette-position'>
-                <p><strong>Position:</strong>{recette.position}</p>
+                <p><strong>Departement: </strong>{recette.position}</p>
               </div>
             )}
 
             <div className="recette-ingredients">
               <h3>Ingrédients</h3>
               <ul>
-                {recette.ingredients.map((ingredient, index) => (
-                  <li key={index}><p>{ingredient}</p></li>
-                ))}
+              {recette.ingredients.map((ingredient, index) => (
+                <li key={index}>
+                  {typeof ingredient === "string" ? (
+                    <p>{ingredient}</p>
+                  ) : (
+                    <p>{ingredient.name} - {ingredient.quantity} {ingredient.unit}</p>
+                  )}
+                </li>
+              ))}
               </ul>
             </div>
           </section>

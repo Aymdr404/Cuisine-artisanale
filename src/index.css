@@ -25,6 +25,7 @@
 
   --text-color: #000000;
   --text-color-secondary: #ffffff;
+  --text-color-light: #4a545b;
   --a-hover-color: #5b5b5b;
 
   --dropdown-color: #b4b898;
@@ -48,6 +49,8 @@
 
   --text-color: #ffffff;
   --text-color-secondary: #000000;
+  --text-color-light: #8896a2;
+  --a-hover-color: #b8a498;
 }
 
 .theme-transition {
@@ -121,6 +124,10 @@ button:focus-visible {
   border: 1px solid var(--dropdown-color);
 }
 
+.p-multiselect{
+  max-width: 100%;
+}
+
 .p-dropdown-items li:hover, .p-multiselect-items li:hover {
   background-color: var(--background-color-light);
   border-radius: var(--border-radius);
@@ -168,4 +175,27 @@ button:focus-visible {
   display: flex;
   justify-content: flex-end;
   gap: 1em;
+}
+
+.p-datatable table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.p-datatable th {
+  background: var(--background-color);
+  text-align: left;
+  padding: 10px;
+}
+
+.p-datatable td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.p-paginator-bottom{
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }

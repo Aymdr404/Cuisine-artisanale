@@ -1,4 +1,4 @@
-.AddPostForm {
+.AddIngredientForm {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.formPost {
+.formIngredients {
   width: 100%;
   max-width: 600px; 
   margin: 0 auto; 
@@ -20,25 +20,30 @@
   background-color: var(--primary-color-navbar);
 }
 
-.formPost h3 {
+.price-quantity {
+  display: flex;
+  justify-content: space-between;
+}
+
+.formIngredients h3 {
   font-size: 1.8rem;
   font-weight: 600;
   text-align: center;
   margin-bottom: 20px;
 }
 
-.formPost div {
+.formIngredients div {
   margin-bottom: 20px;
 }
 
-.formPost label {
+.formIngredients label {
   display: block;
   font-size: 1rem;
   color: var(--text-color-light);
   margin-bottom: 8px;
 }
 
-.formPost input[type="text"], .formPost textarea {
+.formIngredients input[type="text"], .formIngredients textarea {
   width: 100%;
   padding: 10px;
   font-size: 1rem;
@@ -47,13 +52,13 @@
   box-sizing: border-box;
 }
 
-.formPost input[type="text"]:focus, .formPost textarea:focus {
+.formIngredients input[type="text"]:focus, .formIngredients textarea:focus {
   border-color: #4CAF50; 
   outline: none;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); 
 }
 
-.formPost button {
+.formIngredients button {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -62,18 +67,12 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.formPost button:disabled {
-  background-color: #aaa;
-  cursor: not-allowed;
-}
-
-.formPost .buttons-form {
+.formIngredients .buttons-form {
   display: flex;
   justify-content: space-between;
-
+  
   button {
     width: 48%;
   }

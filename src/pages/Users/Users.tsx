@@ -46,6 +46,7 @@ const Users: React.FC = () => {
       console.error('Erreur de suppression de l\'utilisateur : ', error);
     }
   };
+
   const onCellEditComplete = async (e: any) => {
     const { field, newValue, data } = e;
     const userRef = doc(db, 'users', data.id);
@@ -77,6 +78,7 @@ const Users: React.FC = () => {
     <div className="Users">
       <h1>Voici les différents Utilisateurs</h1>
       <DataTable value={users} tableStyle={{ minWidth: '50rem' }} paginator rows={10} editMode="cell">
+        <Column field="userId" header="ID" style={{ width: '5%' }}></Column>
         <Column field="email" header="Email" editor={cellEditor}></Column>
         <Column field="role" header="Role" editor={cellEditor}></Column>
         <Column body={(rowData) => (

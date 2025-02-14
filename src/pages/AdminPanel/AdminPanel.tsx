@@ -5,10 +5,10 @@ import Sidebar from '@/components/SideBarAdminPanel/SideBarAdminPanel';
 import PostsAdmin from '@pages/PostsAdmin/PostsAdmin';
 import RecettesAdmin from '@pages/RecettesAdmin/RecettesAdmin';
 import Dashboard from '@pages/Dashboard/Dashboard';
+import Users from '@pages/Users/Users';
+import IngredientsAdmin from '@pages/IngredientsAdmin/IngredientsAdmin';
 
 import { Route, Routes } from 'react-router-dom';
-import Users from '../Users/Users';
-
 
 
 const AdminPanel: React.FC = () => {
@@ -21,6 +21,7 @@ const AdminPanel: React.FC = () => {
           <Route path="users" element={<Users />} />
           <Route path="posts" element={<PostsAdmin />} />
           <Route path="recettes" element={<RecettesAdmin />} />
+          <Route path="ingredients" element={<IngredientsAdmin/>} />
         </Routes>
       </div>
     </div>

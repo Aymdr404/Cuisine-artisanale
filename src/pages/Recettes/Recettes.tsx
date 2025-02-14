@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Recettes.css';
-import Filtre from '@/components/Filtre/Filtre';
-import Recette from '@/components/Recette/Recette';
-import AddRecette from '@/components/AddRecette/AddRecette';
+import Filtre from '@components/Filtre/Filtre';
+import Recette from '@components/Recette/Recette';
+import AddRecette from '@components/AddRecette/AddRecette';
 
 import { db } from '../../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -10,7 +10,7 @@ import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 
-interface Recette {
+interface RecetteData {
   recetteId: string;
   title: string;
   description: string;
@@ -21,7 +21,7 @@ const Recettes: React.FC = () => {
 
   const {role } = useAuth();
 
-  const [recettes, setRecettes] = useState<any[]>([]);
+  const [recettes, setRecettes] = useState<RecetteData[]>([]);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
@@ -47,7 +47,7 @@ const Recettes: React.FC = () => {
       }
 
       const querySnapshot = await getDocs(recettesQuery);
-      const recettesData: Recette[] = querySnapshot.docs.map((doc) => {
+      const recettesData: RecetteData[] = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
           title: data.title,
@@ -55,7 +55,7 @@ const Recettes: React.FC = () => {
           type: data.type,
           position: data.position,
           recetteId: doc.id,
-        } as Recette;
+        } as RecetteData;
       });
       setRecettes(recettesData);
     } catch (error) {

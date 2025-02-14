@@ -8,12 +8,17 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
 
 import { db, storage } from '../../firebase';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { ref } from 'firebase/storage';
-import { getDownloadURL, uploadBytes } from 'firebase/storage';
+import { collection, addDoc, updateDoc, doc, query, getDocs } from 'firebase/firestore';
+import { getDownloadURL, uploadBytes, ref } from 'firebase/storage';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 
+
+interface Ingredient {
+  id: string;
+  name: string;
+  quantity?: string;
+}
 
 const AddRecetteForm: React.FC = () => {
   const { user } = useAuth();
@@ -29,6 +34,9 @@ const AddRecetteForm: React.FC = () => {
   const [steps, setSteps] = useState<string[]>([]);
 
   const [regions, setRegions] = useState([]);
+  const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
+  const [ingredientQuantities, setIngredientQuantities] = useState<{ [key: string]: string }>({});
+
   const [position, setPosition] = useState({});
 
   const [file, setFile] = useState<File | null>(null);
@@ -40,21 +48,15 @@ const AddRecetteForm: React.FC = () => {
     { id: 3, name: 'Dessert' },
   ];
 
-  const ingredientsList = [
-    { id: 1, name: 'Pomme de terre' },
-    { id: 2, name: 'Tomate' },
-  ];
 
   const addStep = () => {
     setSteps([...steps, '']);
   };
 
-    // Supprimer une étape
     const removeStep = (index: number) => {
-      setSteps(steps.filter((_, i) => i !== index)); // Supprime l'étape ciblée
+      setSteps(steps.filter((_, i) => i !== index));
     };
   
-    // Modifier une étape existante
     const handleStepChange = (index: number, value: string) => {
       const newSteps = [...steps];
       newSteps[index] = value;
@@ -74,9 +76,16 @@ const AddRecetteForm: React.FC = () => {
 
     const selectedType = types.find(t => t.id === type)?.name;
 
-    const selectedIngredients = ingredientsList.filter(ingredient => ingredients.includes(ingredient.id))
-                                              .map(ingredient => ingredient.name);
-
+    const selectedIngredients = ingredients.map(id => {
+      const ingredient = ingredientsList.find(i => i.id === id.toString());
+      return ingredient ? { 
+        id: ingredient.id, 
+        name: ingredient.name, 
+        quantity: ingredientQuantities[id] || 'N/A'
+      } : null;
+    }).filter(Boolean);
+    
+    
     if (!isRecetteCreated) {
       try{
         const docRef = await addDoc(collection(db, 'recipesRequest'), {
@@ -132,8 +141,29 @@ const AddRecetteForm: React.FC = () => {
   
   useEffect(() => {
     fetch("https://geo.api.gouv.fr/departements").then(res => res.json()).then(data => setRegions(data));
+    fetchIngredients();
   }, []);
 
+  const fetchIngredients = async () => {
+    try {
+      const recettesCollection = collection(db, "ingredients");
+      let recettesQuery = query(recettesCollection);
+
+      const querySnapshot = await getDocs(recettesQuery);
+      const recettesData: Ingredient[] = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          name: data.name,
+          id: doc.id,
+        };
+      });
+      
+      setIngredientsList(recettesData);
+      console.log("Recettes: ", recettesData);
+    } catch (error) {
+      console.error("Error getting recettes: ", error);
+    }
+  }
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -193,8 +223,28 @@ const AddRecetteForm: React.FC = () => {
               </div>
               <div>
                 <label htmlFor="ingredients">*Ingrédients:</label>
-                <MultiSelect id="ingredients" value={ingredients} onChange={(e: MultiSelectChangeEvent) => setIngredients(e.value)} optionLabel="name" options={ingredientsList}  optionValue="id" />
+                <MultiSelect 
+                  id="ingredients" 
+                  value={ingredients} 
+                  onChange={(e: MultiSelectChangeEvent) => setIngredients(e.value)} 
+                  optionLabel="name" 
+                  options={ingredientsList}  
+                  optionValue="id" 
+                />
               </div>
+            </section>
+            <section className='ingredients_part'>
+              {ingredients.map((id) => (
+                <div key={id}>
+                  <label>{ingredientsList.find(i => i.id === id.toString())?.name} - Quantité:</label>
+                  <input 
+                    type="text" 
+                    value={ingredientQuantities[id] || ''} 
+                    onChange={(e) => setIngredientQuantities(prev => ({ ...prev, [id]: e.target.value }))} 
+                    placeholder="Ex: 200g, 2 pièces..."
+                  />
+                </div>
+              ))}
             </section>
             <section className='cooking_recette'>
               <div>
