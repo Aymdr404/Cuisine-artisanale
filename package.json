@@ -1,6 +1,7 @@
 {
   "name": "recettes-cuisine",
   "private": true,
+  "homepage": "https://Aymdr404.github.io/Recettes-cuisine",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -9,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@firebase/firestore": "^4.7.7",
