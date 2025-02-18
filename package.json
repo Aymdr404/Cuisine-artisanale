@@ -1,7 +1,7 @@
 {
-  "name": "recettes-cuisine",
+  "name": "cuisine-artisanale",
   "private": true,
-  "homepage": "https://Aymdr404.github.io/Recettes-cuisine",
+  "homepage": "https://Aymdr404.github.io/Cuisine-artisanale",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

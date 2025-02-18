@@ -15,4 +15,5 @@
 
 .AccountRecettes .recettes_section .Recette {
   background-color: var(--background-color-super-light) !important;
+  width: 60vw;
 }
