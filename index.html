@@ -15,6 +15,20 @@
           a.appendChild(r);
       })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
     </script>
+    <script>
+      (function () {
+        const basePath = "/Cuisine-artisanale/"; 
+        const currentPath = location.pathname + location.search; 
+    
+        if (!location.hash) {
+          if (currentPath.startsWith(basePath)) {
+            location.replace(basePath + "#/" + currentPath.slice(basePath.length));
+          } else {
+            location.replace(basePath + "#/");
+          }
+        }
+      })();
+    </script>
     <script type="module" crossorigin src="/Cuisine-artisanale/assets/index-bQxPg5aA.js"></script>
     <link rel="stylesheet" crossorigin href="/Cuisine-artisanale/assets/index-DKu551W3.css">
   </head>
