@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import BurgerMenu from '@components/BurgerMenu/BurgerMenu';
 import { Button } from 'primereact/button';
 import { ThemeContext } from '@/contexts/ThemeContext/ThemeContext';
+import ButtonLinkNav from '@components/ButtonLinkNav/ButtonLinkNav';
 
 const Navbar: React.FC = () => {
 
@@ -33,33 +34,7 @@ const Navbar: React.FC = () => {
   return (
     <div className="Navbar">
         <section className='routing'>
-          <nav>
-            <ul className='menu'>
-              <li>
-                <NavLink to="/">Home</NavLink>
-              </li>
-              <li className="menu-item">
-                <NavLink to={recettePath} className="link">
-                  Recettes
-                </NavLink>
-                <ul className="dropdown">
-                  <li>
-                    <NavLink to="/recettes" className="dropdown-item">
-                      Voir les recettes
-                    </NavLink>
-                  </li>
-                  <li>
-                    <Link to="/map" className="dropdown-item">
-                      Voir la carte
-                    </Link>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <NavLink to="/about">About</NavLink> {/* Lien vers une page "À propos" */}
-              </li>
-            </ul>
-          </nav>
+          <ButtonLinkNav />
         </section>
         <section className='boutons_user'>
           {user && (

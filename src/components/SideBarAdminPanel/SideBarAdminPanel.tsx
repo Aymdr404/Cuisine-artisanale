@@ -5,7 +5,6 @@ import "./SideBarAdminPanel.css"; // Ajoute un peu de style
 const Sidebar: React.FC = () => {
   return (
     <nav className="sidebar">
-      <h2>Admin Panel</h2>
       <ul>
         <li>
           <NavLink to="/admin-panel/dashboard" className="active">🏠 Dashboard</NavLink>

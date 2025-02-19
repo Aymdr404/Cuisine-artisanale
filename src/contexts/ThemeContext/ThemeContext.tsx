@@ -13,13 +13,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    const currentTheme = localStorage.getItem("theme");
-
-    if (currentTheme === theme) {
-      return;
-    }
-
-    document.body.classList.add("theme-transition");
 
     if (theme === "dark") {
       document.body.classList.add("dark-theme");
@@ -32,8 +25,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       document.body.classList.remove("theme-transition");
     }, 1000);
 
-    setIsFading(true);
-    setTimeout(() => setIsFading(false), 500);
   }, [theme]);
 
   const toggleTheme = () => {

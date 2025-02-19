@@ -3,6 +3,7 @@ import './BurgerMenu.css';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import AuthButton from '../AuthButton/AuthButton';
 import { Link } from 'react-router-dom';
+import ButtonLinkNav from '../ButtonLinkNav/ButtonLinkNav';
 
 const BurgerMenu: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -28,6 +29,7 @@ const BurgerMenu: React.FC = () => {
       </div>
       {open && (
         <div className={`dropdown ${open ? "show" : ""}`}>
+          <div className='menu-title'><ButtonLinkNav  /></div>
           <ul>
             {user && (
               <li>
