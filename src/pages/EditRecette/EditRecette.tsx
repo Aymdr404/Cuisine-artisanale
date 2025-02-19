@@ -99,7 +99,11 @@ const EditRecette: React.FC = () => {
 
     try {
       await updateDoc(recetteRef, updatedRecette);
-      navigate(`/recettes/${id}`);
+      if (window.history.length > 1) {
+        navigate(-1);
+      } else {
+        navigate('/recettes');
+      }
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la recette :", error);
     }
@@ -127,7 +131,7 @@ const EditRecette: React.FC = () => {
   
     // Télécharger les nouvelles images
     for (let image of images) {
-      const storageRef = ref(storage, `recipes/${image.name}`);
+      const storageRef = ref(storage, `recipes/${title}/${image.name}`);
       const uploadTask = uploadBytesResumable(storageRef, image);
   
       await new Promise<void>((resolve, reject) => {

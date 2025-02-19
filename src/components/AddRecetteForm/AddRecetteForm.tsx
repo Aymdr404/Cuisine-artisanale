@@ -177,7 +177,7 @@ const AddRecetteForm: React.FC = () => {
     const urls: string[] | ((prevState: never[]) => never[]) = [];
 
     for (let image of images) {
-      const storageRef = ref(storage, `recipes/${image.name}`);
+      const storageRef = ref(storage, `recipes/${title}/${image.name}`);
       const uploadTask = uploadBytesResumable(storageRef, image);
 
       await new Promise<void>((resolve, reject) => {

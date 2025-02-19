@@ -5,6 +5,7 @@
   width: 100%;
   z-index: 10;
   background-color: var(--primary-color-navbar);
+  box-shadow: 0 10px 10px var(--secondary-color-navbar);
 
   display: flex;
   justify-content: space-around;

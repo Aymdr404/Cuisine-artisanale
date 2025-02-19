@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './RecetteDesc.css';
 
 import { useNavigate, useParams } from 'react-router-dom';
-import { doc, getDoc, deleteDoc, onSnapshot } from '@firebase/firestore';
+import { doc, getDoc, deleteDoc, onSnapshot, query, where, getDocs, collection } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import { Button } from 'primereact/button';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
@@ -31,7 +31,8 @@ interface Ingredient {
 }
 
 const RecetteDesc: React.FC = () => {
-  const { id } = useParams();
+  const [id, setId] = useState<string | null>(null);
+  const { recipeName } = useParams(); 
   const navigate = useNavigate();
   const {role, user} = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
@@ -42,18 +43,22 @@ const RecetteDesc: React.FC = () => {
 
 
 
-  const getRecette = async (id: string) => {
-    const recetteRef = doc(db, 'recipes', id);
-  
+  const getRecette = async (recipeName: string) => {
+    recipeName = recipeName.charAt(0).toUpperCase() + recipeName.slice(1);
+    recipeName = recipeName.replace(/_/g, " ");
+
+    const recettesCollection = collection(db, "recipes");
+    const q = query(recettesCollection, where("title", "==", recipeName));
     try {
-      const recetteSnap = await getDoc(recetteRef);
-      
-      if (!recetteSnap.exists()) {
-        console.log("Pas de recette trouvée avec cet ID");
-        return null;
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        console.log("Pas de recette trouvée avec ce nom");
+        return;
       }
-  
-      const recetteData = recetteSnap.data() as Recette;
+
+      const recetteDoc = querySnapshot.docs[0]
+      const recetteData = recetteDoc.data() as Recette;
+      setId(recetteDoc.id);
 
       const ingredientsDetails = await Promise.all(
         recetteData.ingredients.map(async (ingredient) => {
@@ -82,20 +87,26 @@ const RecetteDesc: React.FC = () => {
       console.error("Erreur lors de la récupération de la recette :", error);
     }
   };
-  
 
   useEffect(() => {
-    getRecette(id!);
+    if (recipeName){
+      getRecette(recipeName);
+    }
+  }, [recipeName]);
 
-    const unsubscribe = onSnapshot(doc(db, "recipes", id!), (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        setLikes(docSnapshot.data().likes || []);
-      }
-    });
 
-    return () => unsubscribe();    
+  useEffect(() => {
+    if (id) {
+      const unsubscribe = onSnapshot(doc(db, "recipes", id), (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          setLikes(docSnapshot.data().likes || []);
+        }
+      });
+
+      return () => unsubscribe();
+    }
   }, [id]);
-
+  
   const suppRecette = async(id:string) => {
     if (!id) {
       console.error("ID de la recette manquant !");

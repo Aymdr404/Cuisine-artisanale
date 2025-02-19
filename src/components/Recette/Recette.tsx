@@ -155,8 +155,8 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
         )}
 
         {!fromRequest && (
-          <Link to={`/recettes/${recetteId}`}>
-            <Button>Voir la recette</Button>
+          <Link to={`/recettes/${title.replace(/\s+/g, "_").toLowerCase()}`}>
+            <Button label="Voir la recette" icon="pi pi-eye" />
           </Link>
         )}
         
