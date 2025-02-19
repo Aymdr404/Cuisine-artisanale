@@ -9,7 +9,7 @@ import { InputNumber } from 'primereact/inputnumber';
 
 import { db, storage } from '@firebaseModule';
 import { collection, addDoc, updateDoc, doc, query, getDocs } from 'firebase/firestore';
-import { getDownloadURL, uploadBytes, ref, uploadBytesResumable } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 
@@ -248,6 +248,7 @@ const AddRecetteForm: React.FC = () => {
                   optionLabel="name" 
                   options={ingredientsList}  
                   optionValue="id" 
+                  filter
                 />
               </div>
             </section>
@@ -284,7 +285,7 @@ const AddRecetteForm: React.FC = () => {
 
               <div className='formRecette_image'>
                 <input type="file" multiple onChange={handleFileChange} />
-                <Button onClick={handleUpload} disabled={uploading}>
+                <Button onClick={handleUpload} disabled={uploading || images.length === 0}>
                   {uploading ? "Uploading..." : "Upload Images"}
                 </Button>
 

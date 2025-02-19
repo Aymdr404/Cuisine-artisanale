@@ -1,6 +1,6 @@
 .Recette {
-  min-height: 35vh;
-  width: 40vh;
+  height: 45vh;
+  width: 35vh;
   margin: 1vh;
   position: relative;
   background-color: var(--background-color-light);
@@ -16,6 +16,8 @@
 
 .Recette_request{
   background-color: var(--background-color-super-light);
+  width: auto !important;
+  height: auto !important;
 }
 
 .Recette:hover {

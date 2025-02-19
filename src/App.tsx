@@ -13,6 +13,7 @@ import RecetteMap from '@pages/RecetteMap/RecetteMap';
 import Account from '@pages/Account/Account';
 import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
 import AdminPanel from '@pages/AdminPanel/AdminPanel';
+import EditRecette from '@pages/EditRecette/EditRecette';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/about" element={<About />} /> 
           <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
           <Route path="/recettes/:id" element={<RecetteDesc />} />
+          <Route path="/recettes/:id/edit" element={<EditRecette />} />
           <Route path="/map" element={<RecetteMap/>} />
           <Route path="/account/*" element={<Account/>} />
 

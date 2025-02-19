@@ -135,17 +135,19 @@ const RecetteDesc: React.FC = () => {
       {recette ? (
         <>
         <section className='button-container'>
+          <section className='button-container-left'>
+            <Button label={hasLiked ? `❤️` : `🤍`} onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} ></Button>
+          </section>
           <section className='button-container-right'>
             <Button onClick={() => navigate('/recettes')}>Retour</Button>
             {role === 'admin' && (
               <div>
+                <Button onClick={() => navigate(`/recettes/${id}/edit`)}>Modifier</Button>
+
                 <ConfirmDialog />
                 <Button onClick={confirmDelete}>Supprimer</Button>
               </div>
             )}
-          </section>
-          <section className='button-container-left'>
-            <Button label={hasLiked ? `❤️` : `🤍`} onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} ></Button>
           </section>
         </section>
         <h1 className="recette-title">{recette.title}</h1>
@@ -161,7 +163,14 @@ const RecetteDesc: React.FC = () => {
                 <p><strong>Departement: </strong>{recette.position}</p>
               </div>
             )}
-
+            {recette.images && recette.images.length > 0 && (
+              <section className="recette-images">
+                {recette.images.length === 0 && <p>No images</p>}
+                {recette.images.map((image, index) => (
+                  <img key={index} src={image} alt="recette" />
+                ))}
+              </section>
+            )}
             <div className="recette-ingredients">
               <h3>Ingrédients</h3>
               <ul>
@@ -176,14 +185,6 @@ const RecetteDesc: React.FC = () => {
               ))}
               </ul>
             </div>
-            {recette.images && recette.images.length > 0 && (
-            <section className="recette-images">
-              {recette.images.length === 0 && <p>No images</p>}
-              {recette.images.map((image, index) => (
-                <img key={index} src={image} alt="recette" />
-              ))}
-            </section>
-          )}
           </section>
           <section className='recette-steps'>
             <div className='recette_timing'>

@@ -11,7 +11,6 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 interface RecetteInterface {
   recetteId: string;
   title: string;
-  description: string;
   type: string;
 }
 
@@ -55,7 +54,7 @@ const AccountRecetteFavoris: React.FC = () => {
       {recettes &&(
           <section className='recettes_section'>
             {recettes.map((recette, index) => (
-              <Recette key={index} recetteId={recette.recetteId} title={recette.title} description={recette.description} type={recette.type} />
+              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} />
             ))}
           </section>
       )}
