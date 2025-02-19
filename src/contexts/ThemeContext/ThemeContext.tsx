@@ -10,7 +10,6 @@ import { ReactNode } from "react";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
-  const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
 
@@ -33,7 +32,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <div className={`fade ${isFading ? "" : "show"}`}>{children}</div>
+      <div className={`fade `}>{children}</div>
     </ThemeContext.Provider>
   );
 }

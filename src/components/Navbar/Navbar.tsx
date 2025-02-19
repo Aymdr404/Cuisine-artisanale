@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import './Navbar.css';
 
-import { Link, NavLink } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import BurgerMenu from '@components/BurgerMenu/BurgerMenu';
@@ -13,23 +12,6 @@ const Navbar: React.FC = () => {
 
   const { user } = useAuth();
   const { theme, toggleTheme } = useContext(ThemeContext);
-  
-  const [recettePath, setRecettePath] = useState("/recettes");
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setRecettePath("/");
-      } else {
-        setRecettePath("/recettes");
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <div className="Navbar">
