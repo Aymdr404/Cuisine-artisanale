@@ -25,8 +25,22 @@ async function generateSitemap() {
     const writeStream = createWriteStream("./public/sitemap.xml");
     sitemapStream.pipe(writeStream);
 
-    const staticRoutes = ["/", "/recettes", "/about", "/recettes/add-recipe", "/map", "/account"];
-    staticRoutes.forEach(route => sitemapStream.write({ url: route, changefreq: "weekly", priority: 0.8 }));
+    const baseUrl = "https://www.aymeric-sabatier.fr/Cuisine-artisanale"; // URL sans le #/
+    const urls = [
+        "/",
+        "/recettes",
+        "/about",
+        "/recettes/add-recipe",
+        "/recettes/:recipeName",
+        "/recettes/:id/edit",
+        "/map",
+        "/account",
+        "/account/mes-recettes",
+        "/account/mes-favoris",
+        // Ajoute d'autres routes de ton application ici
+    ].map(route => `${baseUrl}${route}`);
+
+    urls.forEach(route => sitemapStream.write({ url: route, changefreq: "weekly", priority: 0.8 }));
     
     try {
         const recettesSnap = await getDocs(collection(db, "recipes"));
