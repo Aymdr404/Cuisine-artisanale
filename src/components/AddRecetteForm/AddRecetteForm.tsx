@@ -9,7 +9,7 @@ import { InputNumber } from 'primereact/inputnumber';
 
 import { db, storage } from '@firebaseModule';
 import { collection, addDoc, updateDoc, doc, query, getDocs } from 'firebase/firestore';
-import { getDownloadURL, uploadBytes, ref } from 'firebase/storage';
+import { getDownloadURL, uploadBytes, ref, uploadBytesResumable } from 'firebase/storage';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 
@@ -39,8 +39,9 @@ const AddRecetteForm: React.FC = () => {
 
   const [position, setPosition] = useState({});
 
-  const [file, setFile] = useState<File | null>(null);
-  const [, setImageUrl] = useState("");
+  const [images, setImages] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [imageURLs, setImageURLs] = useState<string[]>([]);
 
   const types = [
     { id: 1, name: 'Entrée' },
@@ -95,7 +96,7 @@ const AddRecetteForm: React.FC = () => {
           preparationTime: '',
           cookingTime: '',
           video: '',
-          image: '',
+          images: [],
           steps: [],
           position: '',
           createdBy: '',
@@ -121,6 +122,7 @@ const AddRecetteForm: React.FC = () => {
           steps,
           position,
           createdBy: user?.uid,
+          images: imageURLs,
         });
 
         setTitle('');
@@ -131,6 +133,7 @@ const AddRecetteForm: React.FC = () => {
         setVideo('');
         setSteps([]);
         setPosition({});
+        setImageURLs([]);
         setIsRecetteCreated(false);
         navigateBack();
       }catch (error) {
@@ -164,22 +167,38 @@ const AddRecetteForm: React.FC = () => {
     }
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(event.target.files![0]);
+  const handleFileChange = (e: { target: { files: any; }; }) => {
+    setImages([...e.target.files]);
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (images.length === 0) return;
+    setUploading(true);
+    const urls: string[] | ((prevState: never[]) => never[]) = [];
 
-    const storageRef = ref(storage, `images/${file.name}`);
-    try {
-      const snapshot = await uploadBytes(storageRef, file);
-      console.log("Image téléchargée avec succès");
-      const url = await getDownloadURL(snapshot.ref);
-      setImageUrl(url);
-    } catch (error) {
-      console.error("Erreur lors du téléchargement", error);
+    for (let image of images) {
+      const storageRef = ref(storage, `recipes/${image.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, image);
+
+      await new Promise<void>((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          null,
+          (error) => {
+            console.error("Upload failed:", error);
+            reject(error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            urls.push(downloadURL);
+            resolve();
+          }
+        );
+      });
     }
+
+    setImageURLs(urls);
+    setUploading(false);
   };
 
   const navigateBack = () => {
@@ -264,8 +283,21 @@ const AddRecetteForm: React.FC = () => {
               </div>
 
               <div className='formRecette_image'>
-                <input type="file" onChange={(e) => handleFileChange(e)} />
-                <Button type="button" onClick={handleUpload}>Uploader</Button>
+                <input type="file" multiple onChange={handleFileChange} />
+                <Button onClick={handleUpload} disabled={uploading}>
+                  {uploading ? "Uploading..." : "Upload Images"}
+                </Button>
+
+                {imageURLs.length > 0 && (
+                  <div className="uploaded-images">
+                    <h3>Images Uploadées</h3>
+                    <section className="recette-images">
+                      {imageURLs.map((url, index) => (
+                        <img key={index} src={url} alt="uploaded" width="100px" />
+                      ))}
+                    </section>
+                  </div>
+                )}
               </div>
             </div>
 

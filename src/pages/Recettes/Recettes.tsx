@@ -13,8 +13,8 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 interface RecetteData {
   recetteId: string;
   title: string;
-  description: string;
   type: string;
+  images?: string[];
 }
 
 const Recettes: React.FC = () => {
@@ -51,10 +51,10 @@ const Recettes: React.FC = () => {
         const data = doc.data();
         return {
           title: data.title,
-          description: data.description,
           type: data.type,
           position: data.position,
           recetteId: doc.id,
+          images: data.images ?? [],
         } as RecetteData;
       });
       setRecettes(recettesData);
@@ -74,7 +74,7 @@ const Recettes: React.FC = () => {
       {recettes &&(
           <section className='recettes_section'>
             {recettes.map((recette, index) => (
-              <Recette key={index} recetteId={recette.recetteId} title={recette.title} description={recette.description} type={recette.type} />
+              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} />
             ))}
           </section>
       )}

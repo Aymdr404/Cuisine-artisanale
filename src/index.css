@@ -103,6 +103,10 @@ button:focus-visible {
   background-color: var(--background-color-button-primary) !important;
 }
 
+.p-multiselect .p-multiselect-label {
+  color: var(--text-color-secondary);
+}
+
 /* Pour les très grands écrans (PC) */
 @media (min-width: 1200px) {
   :root{

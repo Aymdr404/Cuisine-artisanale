@@ -9,9 +9,9 @@ import Recette from '@components/Recette/Recette';
 interface RecetteInterface {
   recetteId: string;
   title: string;
-  description: string;
   type: string;
   createdBy: string;
+  images?: string[];
 }
 
 const RecettesAdmin: React.FC = () => {
@@ -41,6 +41,7 @@ const RecettesAdmin: React.FC = () => {
           type: recetteData.type,
           recetteId: doc.id,
           createdBy: recetteData.createdBy,
+          images: recetteData.images ?? [],
         } as RecetteInterface;
       });
       setRecettes(recettesData);
@@ -61,7 +62,7 @@ const RecettesAdmin: React.FC = () => {
       ) : (
         <div className='RecettesAdmin__list'>
           {recettes.map((recette, index) => (
-            <Recette key={index} recetteId={recette.recetteId} title={recette.title} description={recette.description} type={recette.type} fromRequest />
+            <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} fromRequest images={recette.images} />
           ))}
         </div>
       )}

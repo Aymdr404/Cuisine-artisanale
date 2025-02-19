@@ -13,7 +13,6 @@ import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 interface Recette{
   id: string;
   title: string;
-  description: string;
   type: string;
   cookingTime: number;
   preparationTime: number;
@@ -21,6 +20,7 @@ interface Recette{
   video: string;
   steps: string[];
   position: string;
+  images?: string[];
 }
 
 interface Ingredient {
@@ -54,7 +54,7 @@ const RecetteDesc: React.FC = () => {
       }
   
       const recetteData = recetteSnap.data() as Recette;
-  
+
       const ingredientsDetails = await Promise.all(
         recetteData.ingredients.map(async (ingredient) => {
           const ingredientRef = doc(db, 'ingredients', ingredient.id);
@@ -176,6 +176,14 @@ const RecetteDesc: React.FC = () => {
               ))}
               </ul>
             </div>
+            {recette.images && recette.images.length > 0 && (
+            <section className="recette-images">
+              {recette.images.length === 0 && <p>No images</p>}
+              {recette.images.map((image, index) => (
+                <img key={index} src={image} alt="recette" />
+              ))}
+            </section>
+          )}
           </section>
           <section className='recette-steps'>
             <div className='recette_timing'>
@@ -198,6 +206,7 @@ const RecetteDesc: React.FC = () => {
               <a href={recette.video} target="_blank" rel="noopener noreferrer">Voir la vidéo</a>
             </div>
           )}
+
         </section>
         </>
       ) : (

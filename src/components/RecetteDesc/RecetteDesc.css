@@ -11,6 +11,10 @@
 
 }
 
+.recette-info{
+  width: 30%;
+}
+
 .recette-title {
   font-size: 2.5rem;
   margin-bottom: 20px;
@@ -63,6 +67,20 @@
 .recette-ingredients li {
   font-size: 1rem;
   margin-bottom: 5px;
+}
+
+.recette-images {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  img{
+    width: 35vh;
+    height: 15vh;
+    object-fit: cover;
+    border-radius: 15px;
+  }
 }
 
 /* Section étapes */

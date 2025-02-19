@@ -12,9 +12,9 @@ import { db } from '@firebaseModule';
 interface RecetteProps {
   recetteId: string;
   title: string;
-  description: string;
   type: string;
   fromRequest?: boolean;
+  images?: string[];
 }
 
 interface Recette{
@@ -30,9 +30,10 @@ interface Recette{
   position: string;
   createdBy: string;
   createdAt: any;
+  images: string[];
 }
 
-const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type, fromRequest = false}) => {
+const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = false, images = []}) => {
 
   const { user, role } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
@@ -72,7 +73,7 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type, f
         preparationTime: '',
         cookingTime: '',
         video: '',
-        image: '',
+        images: [],
         steps: [],
         position: '',
         createdBy: '',
@@ -97,6 +98,7 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type, f
           position: recetteData.position,
           createdBy: recetteData.createdBy,
           createdAt: recetteData.createdAt,
+          images: recetteData.images
         });
       } catch (error) {
         console.error('Error updating post:', error);
@@ -126,11 +128,24 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, description, type, f
             </Button>
           )}
       </section>
-      
-      <p>{description}</p>
       <p>{type}</p>
 
-      {/* Ajout des images quand j'aurais */}
+
+      <section className="Recette_images">
+        {images.length === 0 && <p>No images</p>}
+
+        {!fromRequest && images.length !== 0 &&
+          <img src={images[0]} alt="recette" />
+        }
+
+        {fromRequest && images.length !== 0 && 
+          images.map((image, index) => (
+            <img key={index} src={image} alt="recette" />
+          ))
+        }
+      </section>
+
+        
       <div className='bouton_section'>
         {fromRequest && role === 'admin' && (
           <div className='Recette_acceptButton'>
