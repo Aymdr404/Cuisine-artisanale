@@ -36,6 +36,7 @@ const Filtre: React.FC = () => {
       query += `type=${encodeURIComponent(selectedType)}&`;
     }
     if (position && typeof position === 'string') {
+      console.log('position', position);
       query += `position=${encodeURIComponent(position)}&`;
     }
     if (query.length > 0) {
@@ -43,6 +44,9 @@ const Filtre: React.FC = () => {
     }
     if (query.length !== 0) {
       navigate(`/recettes?${query}`);
+    }
+    else {
+      navigate('/recettes');
     }
   }
 
@@ -74,7 +78,9 @@ const Filtre: React.FC = () => {
         </div>
         <div className='formRecette_region'>
           <h3>Département:</h3>
-          <Dropdown id='position' optionLabel='nom' value={position} options={departements} onChange={(e:DropdownChangeEvent) => setPosition(e.value)} optionValue='code' />
+          <Dropdown id='position' optionLabel='nom' value={position}   
+          options={[{ nom: "Aucune sélection", code: '' }, ...departements]} 
+          onChange={(e:DropdownChangeEvent) => setPosition(e.value)} optionValue='code' checkmark={true} />
         </div>
       </section>
       <Button label='Filtrer' className='p-button-raised p-button-rounded' onClick={useFilter}/>

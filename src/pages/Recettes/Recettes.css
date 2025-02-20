@@ -1,6 +1,7 @@
 .Recettes {
   border: 1px solid #ddd;
   margin: 15px;
+  min-width: 100vh;
   min-height: 85vh;
 
   display: flex;
