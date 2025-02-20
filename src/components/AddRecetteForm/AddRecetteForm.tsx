@@ -48,6 +48,7 @@ const AddRecetteForm: React.FC = () => {
     { id: 1, name: 'Entrée' },
     { id: 2, name: 'Plat' },
     { id: 3, name: 'Dessert' },
+    { id: 4, name: 'Boisson' },
   ];
 
 
@@ -77,7 +78,7 @@ const AddRecetteForm: React.FC = () => {
     setPreparationTime(preparationTime ?? 0);
     setCookingTime(cookingTime ?? 0);
 
-    if (!title || !type || !ingredients || preparationTime === null || cookingTime === null || !steps || !position) {
+    if (!title || !type || !ingredients || preparationTime === null || cookingTime === null || !steps) {
       alert('Please fill out all fields');
       return;
     }
@@ -266,8 +267,7 @@ const AddRecetteForm: React.FC = () => {
               {ingredients.map((id) => (
                 <div key={id}>
                   <label>{ingredientsList.find(i => i.id === id.toString())?.name} - Quantité:</label>
-                  <input 
-                    type="text" 
+                  <InputText 
                     value={ingredientQuantities[id] || ''} 
                     onChange={(e) => setIngredientQuantities(prev => ({ ...prev, [id]: e.target.value }))} 
                     placeholder="Ex: 200g, 2 pièces..."

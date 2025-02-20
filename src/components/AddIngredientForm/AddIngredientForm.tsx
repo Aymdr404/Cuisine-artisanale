@@ -119,7 +119,7 @@ const AddIngredientForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) =
           </div>
           <div>
             <label htmlFor="unit">*Unit:</label>
-            <Dropdown value={unit} options={units} optionLabel='name' optionValue="abbreviation" onChange={(e) => setUnit(e.value)} placeholder="Select a unit" />
+            <Dropdown value={unit} options={units} filter optionLabel='name' optionValue="abbreviation" onChange={(e) => setUnit(e.value)} placeholder="Select a unit" />
           </div>
         </section>
         <div>
