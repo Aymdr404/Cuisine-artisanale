@@ -1,5 +1,6 @@
 .Recette {
-  height: 45vh;
+  min-height: 45vh;
+  max-height: 55vh;
   width: 35vh;
   margin: 1vh;
   position: relative;
@@ -41,19 +42,10 @@
   height: 3rem;
 }
 
-.Recette_images {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  img{
-    width: 35vh;
+.Recette_images img{
     height: 15vh;
     object-fit: cover;
     border-radius: 15px;
-
-  }
 }
 
 .Recette h1 {
@@ -79,8 +71,7 @@
   }
 
   .Recette_images img{
-    width: 40vh;
-    height: 10vh;
+    min-width: 40vh;
   }
   
 }

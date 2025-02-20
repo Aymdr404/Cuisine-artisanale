@@ -4,12 +4,14 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import { InputText } from 'primereact/inputtext';
 
 const Filtre: React.FC = () => {
 
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [position, setPosition] = useState({});
   const [departements, setDepartements] = useState([]);
+  const [name, setName] = useState('');
 
   const navigate = useNavigate();
 
@@ -27,6 +29,9 @@ const Filtre: React.FC = () => {
 
   const useFilter = () => {
     let query = '';
+    if (name) {
+      query += `keywords=${encodeURIComponent(name)}&`;
+    }
     if (selectedType) {
       query += `type=${encodeURIComponent(selectedType)}&`;
     }
@@ -42,6 +47,7 @@ const Filtre: React.FC = () => {
   }
 
   const resetFilter = () => {
+    setName('');
     setSelectedType(null);
     setPosition({});
     navigate('/recettes');
@@ -51,6 +57,10 @@ const Filtre: React.FC = () => {
     <div className="Filtre">
       <h2>Filtre</h2>
       <section className='filtre_input'>
+        <div>
+          <h3>Nom de la recette</h3>
+          <InputText placeholder="Nom de la recette" value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
         <div>
           <h3>Type de recette:</h3>
           <div className="Filtre_type">

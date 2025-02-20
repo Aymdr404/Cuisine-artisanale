@@ -14,6 +14,7 @@ import Account from '@pages/Account/Account';
 import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
 import AdminPanel from '@pages/AdminPanel/AdminPanel';
 import EditRecette from '@pages/EditRecette/EditRecette';
+import LegalMention from '@components/LegalMention/LegalMention';
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
           <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>
       </Router>
+      <LegalMention />
     </AuthProvider>
   );
 };

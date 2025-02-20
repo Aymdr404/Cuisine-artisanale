@@ -15,6 +15,7 @@ interface RecetteData {
   title: string;
   type: string;
   images?: string[];
+  position: string;
 }
 
 const Recettes: React.FC = () => {
@@ -33,35 +34,64 @@ const Recettes: React.FC = () => {
     try {
       const recettesCollection = collection(db, "recipes");
       let recettesQuery = query(recettesCollection);
-
-      const type = queryParams.get('type');
-      const position = queryParams.get('position');
-
-
+  
+      const type = queryParams.get("type");
+      const position = queryParams.get("position");
+      const keywords = queryParams.get("keywords");
+  
+      let allRecettes = new Map<string, RecetteData>();
+  
+      if (keywords) {
+        const words = keywords.toLowerCase().split(" ");
+  
+        for (const word of words) {
+          const wordQuery = query(
+            recettesCollection,
+            where("titleKeywords", "array-contains", word)
+          );
+  
+          const querySnapshot = await getDocs(wordQuery);
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            allRecettes.set(doc.id, {
+              title: data.title,
+              type: data.type,
+              position: data.position,
+              recetteId: doc.id,
+              images: data.images ?? [],
+            });
+          });
+        }
+      } else {
+        const querySnapshot = await getDocs(recettesQuery);
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          allRecettes.set(doc.id, {
+            title: data.title,
+            type: data.type,
+            position: data.position,
+            recetteId: doc.id,
+            images: data.images ?? [],
+          });
+        });
+      }
+  
+      let recettesData = Array.from(allRecettes.values());
+  
+      // 🔍 Filtrer selon le type et la position après récupération
       if (type) {
-        recettesQuery = query(recettesQuery, where("type", "==", type));
+        recettesData = recettesData.filter((r) => r.type === type);
       }
-
       if (position) {
-        recettesQuery = query(recettesQuery, where("position", "==", position));
+        recettesData = recettesData.filter((r) => r.position === position);
       }
-
-      const querySnapshot = await getDocs(recettesQuery);
-      const recettesData: RecetteData[] = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          title: data.title,
-          type: data.type,
-          position: data.position,
-          recetteId: doc.id,
-          images: data.images ?? [],
-        } as RecetteData;
-      });
+  
       setRecettes(recettesData);
     } catch (error) {
       console.error("Error getting recettes: ", error);
     }
   };
+  
 
   return (
     <div className="Recettes">
@@ -74,7 +104,7 @@ const Recettes: React.FC = () => {
       {recettes &&(
           <section className='recettes_section'>
             {recettes.map((recette, index) => (
-              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} />
+              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} position={recette.position} />
             ))}
           </section>
       )}

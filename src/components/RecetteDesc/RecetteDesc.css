@@ -53,6 +53,12 @@
   margin-left:10px;
 }
 
+.admin-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 /* Info recette */
 .recette-info p{
   margin-bottom: 20px;

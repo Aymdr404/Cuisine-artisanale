@@ -152,7 +152,7 @@ const RecetteDesc: React.FC = () => {
           <section className='button-container-right'>
             <Button onClick={() => navigate('/recettes')}>Retour</Button>
             {role === 'admin' && (
-              <div>
+              <div className='admin-buttons'>
                 <Button onClick={() => navigate(`/recettes/${id}/edit`)}>Modifier</Button>
 
                 <ConfirmDialog />

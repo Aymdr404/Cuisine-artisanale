@@ -15,6 +15,7 @@ interface RecetteProps {
   type: string;
   fromRequest?: boolean;
   images?: string[];
+  position?: string;
 }
 
 interface Recette{
@@ -31,9 +32,10 @@ interface Recette{
   createdBy: string;
   createdAt: any;
   images: string[];
+  titleKeywords: string[];
 }
 
-const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = false, images = []}) => {
+const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = false, images = [], position = ''}) => {
 
   const { user, role } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
@@ -77,6 +79,7 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
         steps: [],
         position: '',
         createdBy: '',
+        titleKeywords: [],
       });
       
       recetteIdNew = docRef.id;
@@ -98,7 +101,8 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
           position: recetteData.position,
           createdBy: recetteData.createdBy,
           createdAt: recetteData.createdAt,
-          images: recetteData.images
+          images: recetteData.images,
+          titleKeywords: recetteData.titleKeywords,
         });
       } catch (error) {
         console.error('Error updating post:', error);
@@ -128,8 +132,12 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
             </Button>
           )}
       </section>
-      <p>{type}</p>
-
+      <section className="Recette_description">
+        <p>{type}</p>
+        {position && position !== '' &&
+          <p>Département de la recette: {position}</p>
+        }
+      </section>
 
       <section className="Recette_images">
         {images.length === 0 && <p>No images</p>}

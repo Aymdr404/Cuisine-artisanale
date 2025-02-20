@@ -64,6 +64,12 @@ const AddRecetteForm: React.FC = () => {
       setSteps(newSteps);
     };
   
+
+  function generateKeywords(title: string): string[] {
+    return title.toLowerCase().split(" "); // Découpe en mots simples
+  }
+    
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -100,6 +106,7 @@ const AddRecetteForm: React.FC = () => {
           steps: [],
           position: '',
           createdBy: '',
+          titleKeywords: [],
         });
 
         recetteId = docRef.id;
@@ -123,6 +130,7 @@ const AddRecetteForm: React.FC = () => {
           position,
           createdBy: user?.uid,
           images: imageURLs,
+          titleKeywords: generateKeywords(title),
         });
 
         setTitle('');
