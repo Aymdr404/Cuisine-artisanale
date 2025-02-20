@@ -57,6 +57,9 @@ const Posts: React.FC = () => {
       setPosts(postsData);
       setLastVisible(lastVisiblePost);
       setLoading(false);
+      if (posts.length < nbPostsToDisplay) {
+        setHasMorePosts(false);
+      }
     });
 
     return unsubscribe;

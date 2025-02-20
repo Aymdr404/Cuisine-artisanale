@@ -7,6 +7,7 @@ import { Button } from 'primereact/button';
 
 import { db } from '@firebaseModule';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
@@ -48,6 +49,7 @@ const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
         setTitle('');
         setContent('');
         setIsPostCreated(false);
+        toast.success('Post envoyé à l\'administrateur');
         closeForm();
       } catch (error) {
         console.error('Error updating post:', error);

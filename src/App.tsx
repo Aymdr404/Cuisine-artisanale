@@ -15,6 +15,7 @@ import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
 import AdminPanel from '@pages/AdminPanel/AdminPanel';
 import EditRecette from '@pages/EditRecette/EditRecette';
 import LegalMention from '@components/LegalMention/LegalMention';
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
         </Routes>
       </Router>
       <LegalMention />
+      <ToastContainer />
     </AuthProvider>
   );
 };

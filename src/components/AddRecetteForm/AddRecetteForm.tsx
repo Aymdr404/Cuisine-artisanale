@@ -11,6 +11,7 @@ import { db, storage } from '@firebaseModule';
 import { collection, addDoc, updateDoc, doc, query, getDocs } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
+import { toast } from 'react-toastify';
 
 
 
@@ -144,6 +145,7 @@ const AddRecetteForm: React.FC = () => {
         setImageURLs([]);
         setIsRecetteCreated(false);
         navigateBack();
+        toast.success('Recette envoyé à la vérification admin');
       }catch (error) {
         console.error('Error updating recette:', error);
       }
