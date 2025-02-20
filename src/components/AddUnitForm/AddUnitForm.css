@@ -1,4 +1,4 @@
-.AddIngredientForm {
+.AddUnitForm {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,38 +11,27 @@
   z-index: 1000;
 }
 
-.formIngredients {
+.formUnits{
   width: 100%;
-  max-width: 600px; 
-  margin: 0 auto; 
+  max-width: 600px;
+  margin: 0 auto;
   padding: 20px;
   border-radius: 8px;
   background-color: var(--primary-color-navbar);
 }
 
-.price-quantity {
-  display: flex;
-  justify-content: space-between;
-}
-
-.price-unit {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.formIngredients div {
+.formUnits div {
   margin-bottom: 20px;
 }
 
-.formIngredients label {
+.formUnits label {
   display: block;
   font-size: 1rem;
   color: var(--text-color-light);
   margin-bottom: 8px;
 }
 
-.formIngredients input[type="text"], .formIngredients textarea {
+.formUnits input[type="text"], .formUnits textarea {
   width: 100%;
   padding: 10px;
   font-size: 1rem;
@@ -51,13 +40,13 @@
   box-sizing: border-box;
 }
 
-.formIngredients input[type="text"]:focus, .formIngredients textarea:focus {
+.formUnits input[type="text"]:focus, .formUnits textarea:focus {
   border-color: #4CAF50; 
   outline: none;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); 
 }
 
-.formIngredients button {
+.formUnits button {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -66,13 +55,4 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.formIngredients .buttons-form {
-  display: flex;
-  justify-content: space-between;
-  
-  button {
-    width: 48%;
-  }
 }

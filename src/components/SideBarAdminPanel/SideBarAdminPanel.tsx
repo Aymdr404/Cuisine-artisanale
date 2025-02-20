@@ -21,6 +21,9 @@ const Sidebar: React.FC = () => {
         <li>
           <NavLink to="/admin-panel/ingredients" className="active">🥦 Ingrédients</NavLink>
         </li>
+        <li>
+          <NavLink to="/admin-panel/units" className="active">📏 Unités</NavLink>
+        </li>
       </ul>
     </nav>
   );

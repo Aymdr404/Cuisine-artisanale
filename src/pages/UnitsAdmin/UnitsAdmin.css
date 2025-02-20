@@ -1,0 +1,10 @@
+.UnitsAdmin {
+  padding: 16px;
+  border: 1px solid #ddd;
+  margin: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}

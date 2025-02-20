@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './AddIngredientForm.css';
 
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 
-import { addDoc, collection, doc, updateDoc } from '@firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, updateDoc } from '@firebase/firestore';
 import { db } from '@firebaseModule';
+import { Dropdown } from 'primereact/dropdown';
+
+
+
+interface Units {
+  id: string;
+  name: string;
+  abbreviation: string;
+}
 
 const AddIngredientForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
 
@@ -14,6 +23,8 @@ const AddIngredientForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) =
   const [price, setPrice] = useState(0);
   const [unit, setUnit] = useState('');
   const [category, setCategory] = useState('');
+
+  const [units, setUnits] = useState<Units[]>([]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -63,8 +74,32 @@ const AddIngredientForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) =
     }catch (error) {
       console.error('Error updating ingredient:', error);
     }
-
   };
+
+  const getUnits = async () => {
+    try{
+      const unitsCollection = collection(db, 'units');
+      const unitsQuery = query(unitsCollection);
+
+      const querySnapshot = await getDocs(unitsQuery);
+      const unitsData: Units[] = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          name: data.name,
+          abbreviation: data.abbreviation,
+          id: doc.id,
+        } as Units;
+      });
+
+      setUnits(unitsData);
+    }catch (error) {
+      console.error('Error getting units:', error);
+    }
+  };
+
+  useEffect(() => {
+    getUnits();
+  }, []);
 
   return (
     <div className="AddIngredientForm">
@@ -77,14 +112,16 @@ const AddIngredientForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) =
           <label htmlFor="name">*Name:</label>
           <InputText type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter an ingredient name"/>
         </div>
-        <div>
-          <label htmlFor="price">Price:</label>
-          <InputNumber id="price" value={price} onValueChange={(e) => setPrice(e.value!)} mode="currency" currency="USD" placeholder="Enter ingredient price"/>
-        </div>
-        <div>
-          <label htmlFor="unit">*Unit:</label>
-          <InputText type="text" id="unit" value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="Enter ingredient unit"/>
-        </div>
+        <section className='price-unit'>
+          <div>
+            <label htmlFor="price">Price:</label>
+            <InputNumber id="price" value={price} onValueChange={(e) => setPrice(e.value!)} mode="currency" currency="USD" placeholder="Enter ingredient price"/>
+          </div>
+          <div>
+            <label htmlFor="unit">*Unit:</label>
+            <Dropdown value={unit} options={units} optionLabel='name' optionValue="abbreviation" onChange={(e) => setUnit(e.value)} placeholder="Select a unit" />
+          </div>
+        </section>
         <div>
           <label htmlFor="category">*Category:</label>
           <InputText type="text" id="category" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Enter ingredient category"/>

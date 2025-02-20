@@ -12,6 +12,8 @@ interface RecetteInterface {
   recetteId: string;
   title: string;
   type: string;
+  images?: string[];
+  position?: number;
 }
 
 
@@ -36,10 +38,10 @@ const AccountRecetteFavoris: React.FC = () => {
         const data = doc.data();
         return {
           title: data.title,
-          description: data.description,
           type: data.type,
           position: data.position,
           recetteId: doc.id,
+          images: data.images,
         } as RecetteInterface;
       });
       setRecettes(recettesData);
@@ -54,7 +56,7 @@ const AccountRecetteFavoris: React.FC = () => {
       {recettes &&(
           <section className='recettes_section'>
             {recettes.map((recette, index) => (
-              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} />
+              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} position={recette.position} />
             ))}
           </section>
       )}

@@ -42,6 +42,12 @@
   height: 3rem;
 }
 
+.Recette_description {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .Recette_images img{
     height: 15vh;
     object-fit: cover;

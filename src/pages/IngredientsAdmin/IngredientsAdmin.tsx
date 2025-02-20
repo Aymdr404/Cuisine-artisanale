@@ -75,30 +75,27 @@ const IngredientsAdmin: React.FC = () => {
 
   return (
     <div className="IngredientsAdmin">
-      <h1>IngredientsAdmin Component</h1>
-      <section className="container">
-        <div className='button-container'>
-          <AddIngredient />
-        </div>
-        <div className='table-container'>
-          <DataTable value={ingredients}  paginator rows={10} loading={loading}>
-            <Column field="id" header="ID"></Column>
-            <Column field="name" header="Name"></Column>
-            <Column field="price" header="Price"></Column>
-            <Column field="unit" header="Unit"></Column>
-            <Column field="category" header="Category"></Column>
-            <Column body={(rowData) => (
-              <div>
-                <Button
-                  icon="pi pi-trash"
-                  className="p-button-rounded p-button-danger"
-                  onClick={() => deleteIngredients(rowData.id)}
-                />
-              </div>
-            )} header="Actions" />
-          </DataTable>
-        </div>
-      </section>
+      <div className='button-container'>
+        <AddIngredient />
+      </div>
+      <div className='table-container'>
+        <DataTable value={ingredients}  paginator rows={10} loading={loading}>
+          <Column field="id" header="ID"></Column>
+          <Column field="name" header="Name"></Column>
+          <Column field="price" header="Price"></Column>
+          <Column field="unit" header="Unit"></Column>
+          <Column field="category" header="Category"></Column>
+          <Column body={(rowData) => (
+            <div>
+              <Button
+                icon="pi pi-trash"
+                className="p-button-rounded p-button-danger"
+                onClick={() => deleteIngredients(rowData.id)}
+              />
+            </div>
+          )} header="Actions" />
+        </DataTable>
+      </div>
     </div>
   );
 };

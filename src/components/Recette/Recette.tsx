@@ -135,7 +135,7 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
       <section className="Recette_description">
         <p>{type}</p>
         {position && position !== '' &&
-          <p>Département de la recette: {position}</p>
+          <p>Département: {position}</p>
         }
       </section>
 

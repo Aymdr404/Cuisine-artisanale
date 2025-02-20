@@ -7,6 +7,7 @@ import RecettesAdmin from '@pages/RecettesAdmin/RecettesAdmin';
 import Dashboard from '@pages/Dashboard/Dashboard';
 import Users from '@pages/Users/Users';
 import IngredientsAdmin from '@pages/IngredientsAdmin/IngredientsAdmin';
+import UnitsAdmin from '@pages/UnitsAdmin/UnitsAdmin';
 
 import { Route, Routes } from 'react-router-dom';
 
@@ -22,6 +23,7 @@ const AdminPanel: React.FC = () => {
           <Route path="posts" element={<PostsAdmin />} />
           <Route path="recettes" element={<RecettesAdmin />} />
           <Route path="ingredients" element={<IngredientsAdmin/>} />
+          <Route path='units' element={<UnitsAdmin/>} />
         </Routes>
       </div>
     </div>

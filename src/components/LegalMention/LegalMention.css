@@ -2,19 +2,10 @@
   font-family: Arial, sans-serif;
   line-height: 1;
   color: #333;
-  padding: 20px;
+  padding: 15px 0px;
   border-radius: 8px;
-  max-width: 310px;
   margin: 20px auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-
-/* Optionnel : styles pour les liens (si tu en ajoutes) */
-.LegalMention a {
-  color: #007BFF;
-  text-decoration: none;
-  transition: color 0.3s ease;
 }
 
 .LegalMention a:hover {
