@@ -21,6 +21,7 @@ const AddRecette: React.FC = () => {
       <br />
       <br />
       <Button onClick={handleClick} disabled={!user}>Add recette</Button>
+      {!user && <p>You need to be logged in to add a recette</p>}
     </div>
   );
 };

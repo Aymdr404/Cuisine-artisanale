@@ -25,6 +25,7 @@ const AddPost: React.FC = () => {
       <br />
       <br />
       <Button onClick={openForm} disabled={!user} >Add Post</Button>
+      {!user && <p>You need to be logged in to add a post</p>}
 
       {showForm && <AddPostForm closeForm={closeForm} />}
     </div>
