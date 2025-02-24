@@ -7,6 +7,9 @@
   background-color: var(--background-color-light);
   border-radius: 15px;
   color: var(--text-color);
+  display: flex;
+  flex-direction: column; /* Cela permet de positionner les éléments verticalement */
+  justify-content: space-between; /* Espace entre le contenu principal et les boutons */
 }
 
 .Post_request {
@@ -22,6 +25,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
+  margin-top: auto; /* Cette propriété pousse les boutons vers le bas */
 }
 
 .Post_likeButton {
@@ -36,4 +40,8 @@
 
 .Post_likeButton:hover {
   transform: scale(1.05);
+}
+
+.Post_acceptButton, .Post_declineButton {
+  margin: 4px 0; /* Un petit espace entre les boutons */
 }
