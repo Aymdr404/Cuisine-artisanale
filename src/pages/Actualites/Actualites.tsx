@@ -1,6 +1,6 @@
 import React from 'react';
 import './Actualites.css';
-import Actualite from '@/components/Actualite/Actualite';
+// import Actualite from '@/components/Actualite/Actualite';
 
 const Actualites: React.FC = () => {
   return (
