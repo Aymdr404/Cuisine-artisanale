@@ -16,7 +16,6 @@ interface Post {
 }
 
 const Posts: React.FC = () => {
-  const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [lastVisible, setLastVisible] = useState<any>(null); // Dernier post visible pour la pagination
   const [loading, setLoading] = useState<boolean>(false);
@@ -126,9 +125,7 @@ const Posts: React.FC = () => {
       </section>
       </section>
       <section className="AddPost_section">
-        {user &&(
-          <AddPost />
-        )}
+        <AddPost />
       </section>
     </div>
   );

@@ -20,8 +20,6 @@ interface RecetteData {
 
 const Recettes: React.FC = () => {
 
-  const {user } = useAuth();
-
   const [recettes, setRecettes] = useState<RecetteData[]>([]);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -97,9 +95,7 @@ const Recettes: React.FC = () => {
     <div className="Recettes">
       <section className='filter_section'>
         <Filtre />
-        {user  && (
-          <AddRecette />
-        )}
+        <AddRecette />
       </section>
       {recettes &&(
           <section className='recettes_section'>

@@ -2,8 +2,10 @@ import React from 'react';
 import './AddRecette.css';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@contexts/AuthContext/AuthContext';
 
 const AddRecette: React.FC = () => {
+  const {user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -18,7 +20,7 @@ const AddRecette: React.FC = () => {
       <br />
       <br />
       <br />
-      <Button onClick={handleClick}>Add recette</Button>
+      <Button onClick={handleClick} disabled={!user}>Add recette</Button>
     </div>
   );
 };
