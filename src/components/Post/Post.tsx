@@ -97,7 +97,6 @@ const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromReque
     <div className={`Post ${fromRequest ? 'Post_request' : ''}`}>
       <h1>{title}</h1>
       <p>{content}</p>
-      <p>{createdAt}</p>
       <section className='Section_buttons'>
         {(!fromRequest && 
           <Button className='Post_likeButton' onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} >
@@ -107,7 +106,7 @@ const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromReque
         {role === 'admin' && !fromRequest &&(
           <div>
             <ConfirmDialog />
-            <Button className='Post_deleteButton' label="Delete" icon="pi pi-trash" onClick={handleDelete}/>   
+            <Button className='Post_deleteButton' label="Delete" icon="pi pi-trash" onClick={handleDelete}/>
           </div>         
         )}
         {fromRequest && role === 'admin' && (
