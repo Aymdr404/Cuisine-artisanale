@@ -135,6 +135,8 @@ const AddRecetteForm: React.FC = () => {
           titleKeywords: generateKeywords(title),
         });
 
+        
+
         setTitle('');
         setType(null);
         setIngredients([]);
@@ -313,7 +315,7 @@ const AddRecetteForm: React.FC = () => {
             </div>
 
             <div className='formRecette_region'>
-              <label htmlFor='position'>*Département:</label>
+              <label htmlFor='position'>Département:</label>
               <Dropdown id='position' optionLabel='nom' value={position} options={regions} onChange={(e:DropdownChangeEvent) => setPosition(e.value)} optionValue='code' />
             </div>
 
