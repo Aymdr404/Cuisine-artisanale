@@ -22,6 +22,7 @@ const Recettes: React.FC = () => {
   const [recettes, setRecettes] = useState<RecetteData[]>([]);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+  const [departements, setDepartements] = useState<Map<string, string>>(new Map());
 
   useEffect(() => {
     fetchRecettes();
@@ -88,8 +89,17 @@ const Recettes: React.FC = () => {
       console.error("Error getting recettes: ", error);
     }
   };
-  
 
+  useEffect(() => {
+    fetch("https://geo.api.gouv.fr/departements")
+      .then(res => res.json())
+      .then(data => {
+        const departementMap: Map<string, string> = new Map(data.map((dep: { code: string; nom: string }) => [dep.code, dep.nom]));
+        setDepartements(departementMap);
+      });
+  }, []);
+  
+  
   return (
     <div className="Recettes">
       <section className='filter_section'>
@@ -99,7 +109,7 @@ const Recettes: React.FC = () => {
       {recettes &&(
           <section className='recettes_section'>
             {recettes.map((recette, index) => (
-              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} position={recette.position} />
+              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} position={departements.get(recette.position) || "Inconnu"}  />
             ))}
           </section>
       )}

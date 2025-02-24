@@ -57,8 +57,8 @@ const RecetteMap = () => {
   };
 
   // Fonction pour rediriger vers la recette
-  const handleClick = (id: string) => {
-    navigate(`/recettes/${id}`);
+  const handleClick = (title: string) => {
+    navigate(`/recettes/${title}`);
   };
 
 
@@ -73,7 +73,7 @@ const RecetteMap = () => {
               style={{ padding: '5px', cursor: 'pointer' }}
               onMouseEnter={() => handleMarkerHover(recette.recetteId)}
               onMouseLeave={() => setHoveredRecette(null)}
-              onClick={() => handleClick(recette.recetteId)}
+              onClick={() => handleClick(recette.title)}
             >
               {recette.title}
             </li>
