@@ -40,7 +40,7 @@ const RecetteDesc: React.FC = () => {
 
   const hasLiked = userId ? likes.includes(userId) : false;
   const [recette, setRecette] = React.useState<Recette | null>(null);
-
+  const [departements, setDepartements] = useState<Map<string, string>>(new Map());
 
 
   const getRecette = async (recipeName: string) => {
@@ -94,6 +94,15 @@ const RecetteDesc: React.FC = () => {
     }
   }, [recipeName]);
 
+  useEffect(() => {
+    fetch("https://geo.api.gouv.fr/departements")
+      .then(res => res.json())
+      .then(data => {
+        const departementMap: Map<string, string> = new Map(data.map((dep: { code: string; nom: string }) => [dep.code, dep.nom]));
+        setDepartements(departementMap);
+      });
+  }, []);
+    
 
   useEffect(() => {
     if (id) {
@@ -171,7 +180,7 @@ const RecetteDesc: React.FC = () => {
 
             {recette.position &&(
               <div className='recette-position'>
-                <p><strong>Departement: </strong>{recette.position}</p>
+                <p><strong>Departement: </strong>{departements.get(recette.position) || "Inconnu"}</p>
               </div>
             )}
             {recette.images && recette.images.length > 0 && (
