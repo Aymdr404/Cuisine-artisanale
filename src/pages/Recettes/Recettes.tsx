@@ -7,7 +7,6 @@ import AddRecette from '@components/AddRecette/AddRecette';
 import { db } from '@firebaseModule';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 
 interface RecetteData {

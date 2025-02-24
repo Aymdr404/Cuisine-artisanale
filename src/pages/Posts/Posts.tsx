@@ -5,7 +5,6 @@ import AddPost from '@/components/AddPost/AddPost';
 import { db } from '@firebaseModule';
 import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
 import { Button } from 'primereact/button';
-import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 
 interface Post {
