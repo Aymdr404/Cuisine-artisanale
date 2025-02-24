@@ -13,10 +13,11 @@ interface PostProps {
   postId: string;
   title: string;
   content: string;
+  createdAt: any;
   fromRequest?: boolean;
 }
 
-const Post: React.FC<PostProps> = ({postId, title, content, fromRequest = false}) => {
+const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromRequest = false}) => {
 
   const { user, role } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
@@ -106,6 +107,7 @@ const Post: React.FC<PostProps> = ({postId, title, content, fromRequest = false
           <div>
             <ConfirmDialog />
             <Button className='Post_deleteButton' label="Delete" icon="pi pi-trash" onClick={handleDelete}/>
+            <p>{createdAt}</p>
           </div>         
         )}
         {fromRequest && role === 'admin' && (
