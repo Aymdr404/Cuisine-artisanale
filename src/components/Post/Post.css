@@ -1,6 +1,5 @@
 .Post {
   padding: 16px;
-  border: 1px solid #ddd;
   margin: 10px;
   min-height: 50vh;
   transition: transform 0.2s ease-in-out;
