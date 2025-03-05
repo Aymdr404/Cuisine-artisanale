@@ -1,6 +1,5 @@
 .AdminPanel {
   display: flex;
-  background: var(--background-color-light);
 }
 
 .admin-content {

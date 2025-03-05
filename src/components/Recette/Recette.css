@@ -6,7 +6,6 @@
   position: relative;
   background-color: var(--background-color-light);
   border-radius: 15px;
-  color: var(--text-color);
   transition: transform 0.2s ease-in-out;
   padding: 10px;
   display: flex;

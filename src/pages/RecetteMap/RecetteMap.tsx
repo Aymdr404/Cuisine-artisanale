@@ -14,6 +14,7 @@ interface Recette {
   title: string;
   type: string;
   position: string;
+  images?: string[];
 }
 
 const RecetteMap = () => {
@@ -38,6 +39,7 @@ const RecetteMap = () => {
           position: data.position,
           recetteId: doc.id,
           type: data.type,
+          images: data.images ?? [],
         } as Recette;
       });
       setRecettes(recettesData);
@@ -93,10 +95,6 @@ const RecetteMap = () => {
         if (!coordEntry) return null;
         const coord: [number, number] = coordEntry[1] as [number, number];
 
-        const handleNavigate = () => {
-          navigate(`/recettes/${recette.recetteId}`);
-        };
-
         const markerRadius = recette.recetteId === hoveredRecette ? 20 : 8;
         const markerIcon = L.divIcon({
           html: `<div style="background-color: #ff7800; width: ${markerRadius * 2}px; height: ${markerRadius * 2}px; border-radius: 50%; border: 1px solid #ff7800; opacity: 0.7;"></div>`,
@@ -120,7 +118,11 @@ const RecetteMap = () => {
               <strong>{recette.title}</strong>
               <p>{recette.type}</p>
               <br />
-              <Button onClick={handleNavigate}>Voir la recette</Button>
+              {recette.images!.length !== 0 &&
+                <img src={recette.images![0]} alt="recette" />
+              }
+
+              <Button onClick={() => handleClick(recette.title)}>Voir la recette</Button>
             </Popup>
           </Marker>
           );

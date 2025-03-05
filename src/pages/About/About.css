@@ -1,4 +1,9 @@
 .About {
   padding: 16px;
   border: 2px solid #ddd;
+  color: var(--text-color-secondary);
+}
+
+.About a {
+  color: var(--text-color-secondary);
 }

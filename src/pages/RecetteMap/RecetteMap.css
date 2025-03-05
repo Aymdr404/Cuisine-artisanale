@@ -24,6 +24,15 @@
   border-radius: 0px 0px 15px 15px;
 }
 
+.leaflet-container {
+  z-index: 1 !important; /* Baisser la priorité de Leaflet */
+}
+
+img{
+  width: 100%;
+  height: 100%;
+}
+
 @media screen and (max-width: 768px){
   .map{
     flex-direction: column;

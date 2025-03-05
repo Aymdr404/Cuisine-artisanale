@@ -1,11 +1,16 @@
 .LegalMention {
   font-family: Arial, sans-serif;
   line-height: 1;
-  color: #333;
+  color: var(--text-color-secondary);
   padding: 10px 0px;
   border-radius: 8px;
   margin: 10px auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.LegalMention a {
+  color: var(--text-color-secondary);
+  text-decoration: none;
 }
 
 .LegalMention a:hover {
