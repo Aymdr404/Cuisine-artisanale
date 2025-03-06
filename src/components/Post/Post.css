@@ -1,7 +1,7 @@
 .Post {
   padding: 16px;
   margin: 10px;
-  min-height: 50vh;
+  min-height: 30vh;
   transition: transform 0.2s ease-in-out;
   background-color: var(--background-color-light);
   border-radius: 15px;

@@ -5,7 +5,6 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  flex-wrap: wrap;
 }
 
 .Posts_section{
@@ -21,4 +20,19 @@
   display: flex;
   justify-content: space-around;
   margin-top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .Posts {
+    flex-direction: column;
+  }
+
+  .Posts_section{
+    min-width: 100%;
+  }
+
+  .AddPost_section{
+    min-width: 100%;
+  }
+  
 }
