@@ -8,6 +8,9 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: var(--text-color);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .recette-info{
@@ -59,6 +62,10 @@
 }
 
 /* Info recette */
+.recette-title{
+  max-width: 70%;
+}
+
 .recette-info p{
   margin-bottom: 20px;
   text-align: left;
@@ -150,6 +157,28 @@
 }
 
 @media screen and (max-width: 768px) {
+  .button-container-right {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 10px;
+    margin-right:10px;
+  }
+
+  .button-container-left {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 10px;
+    margin-left:10px;
+  }
+
+  .recette-title {
+    max-width: fit-content;
+  }
+
   .recette-description {
     flex-direction: column;
     gap: 20px;
@@ -171,7 +200,10 @@
   }
 
   .recette-ingredients{
-    width: 80vw;
+
+    ul{
+      margin-left: 0;
+    }
   }
 
   .recette-steps {
