@@ -29,7 +29,7 @@ const BurgerMenu: React.FC = () => {
       </div>
       {open && (
         <div className={`dropdown ${open ? "show" : ""}`}>
-          <div className='menu-title'><ButtonLinkNav  /></div>
+          <div className='menu-title'><ButtonLinkNav onClick={() => setOpen(false)} /></div>
           <ul>
             {user && (
               <li>

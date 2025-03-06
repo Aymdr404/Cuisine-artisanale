@@ -35,6 +35,11 @@
 }
 
 @media screen and (max-width: 768px) {
+  .Navbar {
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
   .routing {
     display: none;
   }

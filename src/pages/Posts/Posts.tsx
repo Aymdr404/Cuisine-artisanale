@@ -110,6 +110,9 @@ const Posts: React.FC = () => {
 
   return (
     <div className="Posts">
+      <section className="AddPost_section">
+        <AddPost />
+      </section>
       <section className="Posts_section">
         {posts.map((post, index) => (
           <Post key={index} postId={post.id} title={post.title} content={post.content} createdAt={formatDate(post.createdAt)} />
@@ -121,10 +124,7 @@ const Posts: React.FC = () => {
           )}
           {loading && <p>Chargement...</p>}
           {!hasMorePosts && <p>Il n'y a plus de posts à charger.</p>}
-      </section>
-      </section>
-      <section className="AddPost_section">
-        <AddPost />
+        </section>
       </section>
     </div>
   );

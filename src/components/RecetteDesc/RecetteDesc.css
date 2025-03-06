@@ -155,6 +155,10 @@
     gap: 20px;
   }
 
+  .recette-info {
+    width: 100%;
+  }
+
   .recette-images{
     width: 80vw;
     flex-direction: row;

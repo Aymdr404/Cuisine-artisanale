@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './ButtonLinkNav.css';
 import { NavLink } from 'react-router-dom';
 
-const ButtonLinkNav: React.FC = () => {
+interface ButtonLinkNavProps {
+  onClick?: () => void; // La fonction est optionnelle
+}
+
+const ButtonLinkNav: React.FC<ButtonLinkNavProps> = ({ onClick }) => {
 
   const [recettePath, setRecettePath] = useState("/recettes");
   
@@ -26,7 +30,7 @@ const ButtonLinkNav: React.FC = () => {
       <nav>
         <ul className='menu'>
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/" onClick={onClick}>Home</NavLink>
           </li>
           <li className="menu-item">
             <NavLink to={recettePath} className="link">
@@ -34,19 +38,19 @@ const ButtonLinkNav: React.FC = () => {
             </NavLink>
             <ul className="dropdown-container">
               <li>
-                <NavLink to="/recettes" className="dropdown-item">
+                <NavLink to="/recettes" onClick={onClick} className="dropdown-item">
                   Voir les recettes
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/map" className="dropdown-item">
+                <NavLink to="/map" onClick={onClick} className="dropdown-item">
                   Voir la carte
                 </NavLink>
               </li>
             </ul>
           </li>
           <li>
-            <NavLink to="/about">About</NavLink> {/* Lien vers une page "À propos" */}
+            <NavLink to="/about" onClick={onClick} >About</NavLink> {/* Lien vers une page "À propos" */}
           </li>
         </ul>
       </nav>
