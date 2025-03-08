@@ -17,7 +17,7 @@ interface PostProps {
   fromRequest?: boolean;
 }
 
-const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromRequest = false}) => {
+const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromRequest = false}) => {
 
   const { user, role } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
