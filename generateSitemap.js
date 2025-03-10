@@ -47,7 +47,7 @@ async function generateSitemap() {
         recettesSnap.forEach(doc => {
             const recette = doc.data();
             const recipeSlug = recette.title.replace(/\s+/g, "_").toLowerCase(); // Transforme le titre en slug
-            sitemapStream.write({ url: `/recettes/${recipeSlug}`, changefreq: "weekly", priority: 0.9 });
+            sitemapStream.write({ url: `${baseUrl}/recettes/${recipeSlug}`, changefreq: "weekly", priority: 0.9 });
         });
     
         sitemapStream.end();
