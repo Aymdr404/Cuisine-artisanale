@@ -31,8 +31,6 @@ async function generateSitemap() {
         "/recettes",
         "/about",
         "/recettes/add-recipe",
-        "/recettes/:recipeName",
-        "/recettes/:id/edit",
         "/map",
         "/account",
         "/account/mes-recettes",
