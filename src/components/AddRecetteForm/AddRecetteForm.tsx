@@ -292,7 +292,7 @@ const AddRecetteForm: React.FC = () => {
             <div className='formRecette_media'>
               <div>
                 <label htmlFor='video'>Vidéo:</label>
-                <InputText type='text' id='video'value={video} onChange={(e)=> setTitle(e.target.value)} />
+                <InputText type='text' id='video'value={video} onChange={(e)=> setVideo(e.target.value)} />
               </div>
 
               <div className='formRecette_image'>
