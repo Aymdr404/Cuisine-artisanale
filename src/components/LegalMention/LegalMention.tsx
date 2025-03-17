@@ -26,8 +26,6 @@ const LegalMention: React.FC = () => {
           (
             <LienUtiles />
           )}
-
-
         </header>
     </div>
   );

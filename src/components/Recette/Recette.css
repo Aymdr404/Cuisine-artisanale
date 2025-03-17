@@ -1,7 +1,7 @@
 .Recette {
   min-height: 45vh;
   max-height: 55vh;
-  width: 35vh;
+  width: 25vh;
   margin: 1vh;
   position: relative;
   background-color: var(--background-color-light);
