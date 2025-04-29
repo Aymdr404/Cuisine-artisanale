@@ -1,14 +1,10 @@
 .Recettes {
   min-width: 120vh;
   min-height: 85vh;
-  border: 1px solid var(--background-color-light);
-  box-shadow: 1px 5px 15px var(--background-color-light);
   
   display: flex;
   flex-direction: row;
   justify-content: center;
-  background-color: var(--background-color);
-  border-radius: 15px;
 }
 
 .filter_section{

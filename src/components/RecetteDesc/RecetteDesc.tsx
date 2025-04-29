@@ -156,9 +156,6 @@ const RecetteDesc: React.FC = () => {
         <>
         <section className='button-container'>
           <section className='button-container-left'>
-            <Button label={hasLiked ? `❤️` : `🤍`} onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} ></Button>
-          </section>
-          <section className='button-container-right'>
             <Button onClick={() => navigate('/recettes')}>Retour</Button>
             {role === 'admin' && (
               <div className='admin-buttons'>
@@ -168,6 +165,10 @@ const RecetteDesc: React.FC = () => {
                 <Button onClick={confirmDelete}>Supprimer</Button>
               </div>
             )}
+          </section>
+
+          <section className='button-container-right'>
+            <Button label={hasLiked ? `❤️` : `🤍`} onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} ></Button>
           </section>
         </section>
         <h1 className="recette-title">{recette.title}</h1>

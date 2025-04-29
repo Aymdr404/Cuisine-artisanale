@@ -1,5 +1,5 @@
 .Recette {
-  min-height: 45vh;
+  min-height: 15vh;
   max-height: 55vh;
   width: 25vh;
   margin: 1vh;
@@ -67,6 +67,16 @@
 .Recette_acceptButton{
   display: flex;
   justify-content: space-around;
+}
+
+.bouton_section_2{
+  display: flex;
+  justify-content: space-between;
+
+  button{
+    height: 3rem;
+    margin: 0.5rem;
+  }
 }
 
 @media screen and (max-width: 768px) {

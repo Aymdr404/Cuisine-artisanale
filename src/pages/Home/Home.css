@@ -1,6 +1,6 @@
 .Home {
   min-height: 85vh;
-  background-color: var(--background-color-super-light);
+  /* background-color: var(--background-color-super-light); */
   border-radius: 15px;
 }
 

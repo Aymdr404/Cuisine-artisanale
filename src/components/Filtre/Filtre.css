@@ -1,14 +1,13 @@
 .Filtre {
   padding: 16px;
-  border: 1px solid #ddd;
   margin: 10px;
   border-radius: 8px;
+  border: 1px solid black;
   
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
-  background-color: var(--background-color-super-light);
 }
 
 .filtre_input{

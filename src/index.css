@@ -16,18 +16,18 @@
   --primary-color-navbar: #ffae67 ;
   --secondary-color-navbar: #00000045;
 
-  --background-color: #fdd5b3 ;
+  --background-color: #ebebeb;
   --background-color-light: #ffae67;
   --background-color-super-light: #e9c4a3;
 
   --background-color-secondary: #3e3d3d;
   --background-color-danger: #9e000d;
 
-  --background-color-button-primary: #f59542 ;
+  --background-color-button-primary: #ffae67 ;
   --background-color-button-hover: #c07737 ;
 
-  --text-color: #f5f5f5 !important;
-  --text-color-secondary: #0c0b0b;
+  --text-color: #4e4e4e !important;
+  --text-color-secondary: #dadada;
   --text-color-light: #D72638;
   --a-hover-color: #ffffff;
 
@@ -43,7 +43,7 @@
   --primary-color-navbar: #2C2C2C;
   --secondary-color-navbar: #ffffff2f;
 
-  --background-color: #1E1E1E;
+  --background-color: #333030;
   --background-color-super-light: #837b7b;
   --background-color-light: #2C2C2C;
   --background-color-secondary: #a1a1a1;
@@ -63,7 +63,6 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-
   color: var(--text-color);
   background-color: var(--background-color);
   transition: all 1s;
@@ -108,6 +107,7 @@ button:focus-visible {
 
 .p-button {
   background-color: var(--background-color-button-primary) !important;
+  border: 1px solid black !important;
 }
 
 .p-multiselect .p-multiselect-label {

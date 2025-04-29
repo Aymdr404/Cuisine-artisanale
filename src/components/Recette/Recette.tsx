@@ -124,21 +124,6 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
   
   return (
     <div className={`Recette ${fromRequest ? 'Recette_request' : ''}`}>
-      <section className="Recette_header">
-        <h1>{title}</h1>
-          {(!fromRequest && 
-            <Button className='Recette_likeButton' onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} >
-                {hasLiked ? `❤️ ${likes.length}` : `🤍 ${likes.length}`}
-            </Button>
-          )}
-      </section>
-      <section className="Recette_description">
-        <p>{type}</p>
-        {position && position !== '' &&
-          <p>Département: {position}</p>
-        }
-      </section>
-
       <section className="Recette_images">
         {images.length === 0 && <p>No images</p>}
 
@@ -152,6 +137,18 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
           ))
         }
       </section>
+      <section className="Recette_header">
+        <h1>{title}</h1>
+         
+      </section>
+      <section className="Recette_description">
+        <p>{type}</p>
+        {position && position !== '' &&
+          <p>Département: {position}</p>
+        }
+      </section>
+
+
 
         
       <div className='bouton_section'>
@@ -162,12 +159,19 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
           </div>
         )}
 
-        {!fromRequest && (
-          <Link to={`/recettes/${title.replace(/\s+/g, "_").toLowerCase()}`}>
-            <Button label="Voir la recette" icon="pi pi-eye" />
-          </Link>
-        )}
-        
+        <section className='bouton_section_2'>
+          {!fromRequest && (
+            <Link to={`/recettes/${title.replace(/\s+/g, "_").toLowerCase()}`}>
+              <Button label="Voir la recette" icon="pi pi-eye" />
+            </Link>
+          )}
+          {(!fromRequest && 
+            <Button className='Recette_likeButton' onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} >
+                {hasLiked ? `❤️ ${likes.length}` : `🤍 ${likes.length}`}
+            </Button>
+          )}
+        </section>
+
       </div>
 
     </div>

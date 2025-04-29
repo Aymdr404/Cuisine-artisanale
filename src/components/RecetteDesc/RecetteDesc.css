@@ -3,9 +3,9 @@
 .RecetteDesc {
   margin: 1rem;
   padding: 20px;
-  background-color: var(--primary-color-navbar);
+  /* background-color: var(--primary-color-navbar); */
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   color: var(--text-color);
   position: relative;
   display: flex;
@@ -31,12 +31,14 @@
 /* Bouton container */
 .button-container {
   display: flex;
+  width: 100%;
+  justify-content: space-between;
   flex-direction: row;
   gap: 10px;
+  justify-content: space-between;
 }
 
 .button-container-right {
-  position: absolute;
   right: 0;
   display: flex;
   flex-direction: row;
@@ -46,7 +48,6 @@
 }
 
 .button-container-left {
-  position: absolute;
   left: 0;
   display: flex;
   flex-direction: row;
@@ -72,15 +73,14 @@
 }
 
 .recette-ingredients {
-  background-color: var(--background-color-super-light);
+  /* background-color: var(--background-color-super-light); */
   border-radius: 15px;
-  padding: 20px;
   margin-top: 20px;
 }
 
 .recette-ingredients ul {
   list-style-type: disc;
-  margin-left: 20px;
+  /* margin-left: 20px; */
 }
 
 .recette-ingredients li {
@@ -95,7 +95,7 @@
   justify-content: center;
 
   img{
-    width: 35vh;
+    max-width: 35vh;
     height: 15vh;
     object-fit: cover;
     border-radius: 15px;
@@ -105,7 +105,7 @@
 /* Section étapes */
 .recette-steps{
   max-width: 60%;
-  background-color: var(--background-color-super-light);
+  /* background-color: var(--background-color-super-light); */
   border-radius: 15px;
   padding: 20px;
   margin-top: 20px;
