@@ -121,6 +121,16 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
       console.error('Erreur de suppression de l\'utilisateur : ', error);
     }
   }
+
+  const slugify = (str: string) =>
+  str
+    .normalize("NFD") // supprime les accents
+    .replace(/[\u0300-\u036f]/g, "") // encore plus d'accents
+    .replace(/[^\w\s-]/g, "") // supprime les caractères spéciaux
+    .trim()
+    .replace(/\s+/g, "_") // espaces -> _
+    .toLowerCase();
+
   
   return (
     <div className={`Recette ${fromRequest ? 'Recette_request' : ''}`}>
@@ -161,7 +171,7 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
 
         <section className='bouton_section_2'>
           {!fromRequest && (
-            <Link to={`/recettes/${title.replace(/\s+/g, "_").toLowerCase()}`}>
+            <Link to={`/recettes/${slugify(title)}`}>
               <Button label="Voir la recette" icon="pi pi-eye" />
             </Link>
           )}

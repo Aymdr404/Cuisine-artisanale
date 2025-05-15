@@ -2,6 +2,7 @@
   padding: 16px;
   margin: 10px;
   min-height: 20vh;
+  min-width: 30vh;
   transition: transform 0.2s ease-in-out;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   border-radius: 15px;

@@ -10,3 +10,10 @@
     margin: 0 auto;
   }
 }
+
+.wrapper {
+  max-width: 1400px;  /* Ou ce que tu veux comme limite */
+  margin: 0 auto;
+  padding: 0 1rem;
+  width: 100%;
+}

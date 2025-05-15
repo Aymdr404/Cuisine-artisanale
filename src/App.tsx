@@ -22,27 +22,30 @@ const App = () => {
     <AuthProvider>
       <Router basename='/Cuisine-artisanale'>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} /> 
-          <Route path="/recettes" element={<Recipes />} />
-          <Route path="/about" element={<About />} /> 
-          <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
-          <Route path="/recettes/:recipeName" element={<RecetteDesc />} />
-          <Route path="/recettes/:id/edit" element={<EditRecette />} />
-          <Route path="/map" element={<RecetteMap/>} />
-          <Route path="/account/*" element={<Account/>} />
+        <div className="wrapper">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/recettes" element={<Recipes />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
+            <Route path="/recettes/:recipeName" element={<RecetteDesc />} />
+            <Route path="/recettes/:id/edit" element={<EditRecette />} />
+            <Route path="/map" element={<RecetteMap />} />
+            <Route path="/account/*" element={<Account />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="/admin-panel/*" element={<AdminPanel />} />
-          </Route>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/admin-panel/*" element={<AdminPanel />} />
+            </Route>
 
-          <Route path="*" element={<h1>404 - Not Found</h1>} />
-        </Routes>
+            <Route path="*" element={<h1>404 - Not Found</h1>} />
+          </Routes>
+        </div>
         <LegalMention />
       </Router>
       <ToastContainer />
     </AuthProvider>
   );
 };
+
 
 export default App;

@@ -6,8 +6,47 @@
   gap: 10px;
 }
 
-@media screen and (max-width: 768px) {
-  .Actualites {
-    display: none;
-  }
+.featured-recette {
+  background-color: #fff8f2;
+  padding: 1.5rem;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: 2rem auto;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.featured-recette-img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.featured-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.featured-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.featured-content h3 {
+  font-size: 1.1rem;
+  margin: 0.2rem 0;
+}
+
+.featured-content p {
+  font-size: 0.9rem;
+  color: #333;
+  margin: 0;
 }

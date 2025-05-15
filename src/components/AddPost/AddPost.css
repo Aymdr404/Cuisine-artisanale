@@ -1,6 +1,29 @@
-.AddPost {
-  padding: 16px;
-  margin: 10px;
-  /* background-color: var(--background-color-light); */  
-  border-radius: 5px;
+/* Desktop style */
+.desktop-post {
+  display: block;
+}
+
+.mobile-floating-button {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .desktop-post {
+    display: none;
+  }
+
+  .mobile-floating-button {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+  }
+
+  .mobile-floating-button .p-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
 }
