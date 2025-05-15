@@ -3,7 +3,7 @@ import './Actualites.css';
 // import Actualite from '@/components/Actualite/Actualite';
 
 import { db } from '@firebaseModule';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 
 interface RecetteData {
@@ -16,8 +16,6 @@ interface RecetteData {
 
 
 const Actualites: React.FC = () => {
-
-  const [recettes, setRecettes] = React.useState<RecetteData[]>([]);
   const [featuredRecette, setFeaturedRecette] = useState<RecetteData | null>(null);
 
 
@@ -42,7 +40,6 @@ const Actualites: React.FC = () => {
         });
       });
 
-      setRecettes(recettesData);
       selectWeeklyFeaturedRecette(recettesData);
     } catch (error) {
       console.error("Error fetching recettes: ", error);
