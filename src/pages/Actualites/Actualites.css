@@ -1,16 +1,7 @@
-.Actualites {
-  padding: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-
 .featured-recette {
   background-color: #fff8f2;
   padding: 1.5rem;
   border-radius: 10px;
-  max-width: 500px;
   margin: 2rem auto;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -40,13 +31,9 @@
   box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
 
-.featured-content h3 {
-  font-size: 1.1rem;
-  margin: 0.2rem 0;
-}
-
-.featured-content p {
-  font-size: 0.9rem;
-  color: #333;
-  margin: 0;
+@media screen and (min-width: 1200px) {
+  .featured-recette {
+    max-width: 750px; /* limite max à 750px */
+    width: 90%; /* reste fluide */
+  }
 }
