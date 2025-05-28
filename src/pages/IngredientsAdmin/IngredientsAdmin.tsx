@@ -27,7 +27,6 @@ const IngredientsAdmin: React.FC = () => {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [globalFilter, setGlobalFilter] = useState<string>('');
-  const [editingCell, setEditingCell] = useState<{ row: Ingredient | null, field: string | null }>({ row: null, field: null });
   const toast = useRef<Toast>(null);
 
   const handleFetchIngredients = () => {
@@ -242,7 +241,7 @@ const IngredientsAdmin: React.FC = () => {
             field="name"
             header="Nom"
             sortable
-            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />}
+            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback?.(e.target.value)} />}
             onCellEditComplete={handleCellEdit}
           />
           <Column
@@ -253,7 +252,7 @@ const IngredientsAdmin: React.FC = () => {
             editor={(options) => (
               <InputNumber
                 value={options.value}
-                onValueChange={(e) => options.editorCallback(e.value)}
+                onValueChange={(e) => options.editorCallback?.(e.value)}
                 mode="currency"
                 currency="EUR"
                 locale="fr-FR"
@@ -266,7 +265,7 @@ const IngredientsAdmin: React.FC = () => {
             field="unit"
             header="Unité"
             sortable
-            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />}
+            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback?.(e.target.value)} />}
             onCellEditComplete={handleCellEdit}
           />
           <Column
@@ -274,7 +273,7 @@ const IngredientsAdmin: React.FC = () => {
             header="Catégorie"
             sortable
             body={categoryTemplate}
-            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />}
+            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback?.(e.target.value)} />}
             onCellEditComplete={handleCellEdit}
           />
           <Column

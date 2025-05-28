@@ -1,6 +1,6 @@
 import React from 'react';
 import './ButtonLinkNav.css';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 interface ButtonLinkNavProps {
   onClick?: () => void;
@@ -8,7 +8,6 @@ interface ButtonLinkNavProps {
 }
 
 const ButtonLinkNav: React.FC<ButtonLinkNavProps> = ({ onClick, isMobile = false }) => {
-  const location = useLocation();
   
   const navItems = [
     { path: '/', label: 'Accueil' },

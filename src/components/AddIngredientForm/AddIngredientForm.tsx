@@ -213,7 +213,7 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide }
               <InputNumber
                 id="price"
                 value={price}
-                onValueChange={(e) => setPrice(e.value)}
+                onValueChange={(e) => setPrice(e.value || null)}
                 mode="currency"
                 currency="EUR"
                 locale="fr-FR"

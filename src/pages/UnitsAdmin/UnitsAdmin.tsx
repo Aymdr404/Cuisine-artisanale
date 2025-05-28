@@ -228,14 +228,14 @@ const UnitsAdmin: React.FC = () => {
             field="name"
             header="Nom"
             sortable
-            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />}
+            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback?.(e.target.value)} />}
             onCellEditComplete={handleCellEdit}
           />
           <Column
             field="abbreviation"
             header="Abréviation"
             sortable
-            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />}
+            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback?.(e.target.value)} />}
             onCellEditComplete={handleCellEdit}
           />
           <Column

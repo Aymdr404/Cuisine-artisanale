@@ -119,7 +119,7 @@ const Posts: React.FC = () => {
   return (
     <div className="Posts">
       <section className="Posts_section">
-        {posts.map((post, index) => (
+        {posts.map((post) => (
           <Post 
             key={post.id} 
             postId={post.id} 

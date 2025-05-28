@@ -14,7 +14,7 @@ import { confirmDialog } from 'primereact/confirmdialog';
 const Account: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [activeLink, setActiveLink] = useState(window.location.pathname);
+  const [, setActiveLink] = useState(window.location.pathname);
 
   const navigationItems = [
     {

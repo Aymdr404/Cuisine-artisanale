@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
-import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, updateDoc } from '@firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 
 interface RecetteProps {
