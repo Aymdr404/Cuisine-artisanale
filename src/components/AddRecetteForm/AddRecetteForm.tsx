@@ -405,33 +405,31 @@ const AddRecetteForm: React.FC = () => {
               />
             </div>
 
-            <div className="image-upload">
-              <label>Images de la recette</label>
+            <div className="form-section">
+              <h2>Images</h2>
               <div className="upload-container">
-                <input 
-                  type="file" 
-                  multiple 
+                <input
+                  type="file"
+                  multiple
                   onChange={handleFileChange}
-                  className="file-input" 
+                  className="file-input"
+                  accept="image/*"
                 />
-                <Button 
-                  onClick={handleUpload} 
-                  disabled={uploading || images.length === 0}
+                <Button
+                  label="Télécharger les images"
                   icon="pi pi-upload"
-                  label={uploading ? "Téléchargement..." : "Télécharger les images"}
+                  onClick={handleUpload}
+                  disabled={images.length === 0 || uploading}
+                  className="upload-button"
                 />
               </div>
-
               {imageURLs.length > 0 && (
-                <div className="uploaded-images">
-                  <h3>Images téléchargées</h3>
-                  <div className="image-grid">
-                    {imageURLs.map((url, index) => (
-                      <div key={index} className="image-preview">
-                        <img src={url} alt={`Image ${index + 1}`} />
-                      </div>
-                    ))}
-                  </div>
+                <div className="image-grid">
+                  {imageURLs.map((url, index) => (
+                    <div key={index} className="image-preview">
+                      <img src={url} alt={`Preview ${index + 1}`} />
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

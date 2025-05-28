@@ -1,74 +1,103 @@
+.Actualites {
+  padding: 1rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 .featured-recette {
   background-color: var(--surface-card);
-  padding: 1.5rem;
-  border-radius: var(--border-radius);
-  margin: 2rem auto;
-  text-align: center;
-  box-shadow: var(--card-shadow);
-  transition: all 0.3s ease;
+  padding: 1rem;
+  border-radius: 12px;
+  margin: 1rem auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--surface-border);
 }
 
-.featured-recette:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.featured-recette-img {
-  width: 100%;
-  max-height: 250px;
-  object-fit: cover;
-  border-radius: var(--border-radius);
+.featured-recette h2 {
+  font-size: 1.25rem;
+  color: var(--primary-color);
   margin-bottom: 1rem;
-  border: 1px solid var(--surface-border);
+  text-align: left;
 }
 
 .featured-card {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  padding: 1rem;
   background: var(--surface-section);
-  border-radius: var(--border-radius);
+  border-radius: 8px;
+  padding: 1rem;
   border: 1px solid var(--surface-border);
 }
 
 .featured-img {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 200px;
   object-fit: cover;
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
-  border: 1px solid var(--surface-border);
-  transition: transform 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.featured-img:hover {
-  transform: scale(1.05);
+.featured-content {
+  text-align: left;
 }
 
-@media screen and (min-width: 1200px) {
-  .featured-recette {
-    max-width: 750px;
-    width: 90%;
+.featured-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.featured-content p {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 1rem;
+}
+
+.featured-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.featured-button:hover {
+  background-color: var(--primary-dark);
+}
+
+@media screen and (min-width: 768px) {
+  .Actualites {
+    padding: 2rem;
   }
-}
 
-@media screen and (max-width: 768px) {
   .featured-recette {
-    width: 95%;
-    padding: 1rem;
+    max-width: 600px;
+    padding: 1.5rem;
   }
 
   .featured-card {
-    padding: 0.75rem;
-    gap: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    padding: 1.5rem;
   }
 
   .featured-img {
-    width: 80px;
-    height: 80px;
+    width: 150px;
+    height: 150px;
+  }
+
+  .featured-content {
+    flex: 1;
+  }
+
+  .featured-button {
+    width: auto;
+    padding: 0.75rem 1.5rem;
   }
 }

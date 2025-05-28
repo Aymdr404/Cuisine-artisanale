@@ -18,6 +18,7 @@ interface Recette {
   position: string;
   images?: string[];
   description?: string;
+  url?: string;
 }
 
 interface DepartementFeature {
@@ -70,6 +71,7 @@ const RecetteMap: React.FC = () => {
         recetteId: doc.id,
         type: doc.data().type,
         images: doc.data().images ?? [],
+        url: doc.data().url,
       }));
       setRecettes(recettesData);
     } catch (error) {
@@ -155,7 +157,7 @@ const RecetteMap: React.FC = () => {
                   className={`recipe-item ${hoveredRecette === recette.recetteId ? 'hovered' : ''}`}
                   onMouseEnter={() => setHoveredRecette(recette.recetteId)}
                   onMouseLeave={() => setHoveredRecette(null)}
-                  onClick={() => navigate(`/recettes/${recette.title}`)}
+                  onClick={() => navigate(`/recettes/${recette.url}`)}
                 >
                   <div className="recipe-item-content">
                     {recette.images?.[0] && (
@@ -230,7 +232,7 @@ const RecetteMap: React.FC = () => {
                     <Button
                       icon="pi pi-eye"
                       label="Voir la recette"
-                      onClick={() => navigate(`/recettes/${recette.title}`)}
+                      onClick={() => navigate(`/recettes/${recette.url}`)}
                     />
                   </div>
                 </Popup>

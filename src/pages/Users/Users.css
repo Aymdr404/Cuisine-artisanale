@@ -195,24 +195,117 @@
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .users-container {
-    padding: 0.5rem;
+    padding: 0;
+    margin: 0;
+    width: 100%;
   }
 
   .table-header {
     flex-direction: column;
     align-items: stretch;
+    padding: 1rem;
+    background: var(--surface-card);
+    border-bottom: 1px solid var(--surface-border);
+    margin-bottom: 0;
+  }
+
+  .table-header h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
   }
 
   .table-header .p-input-icon-left {
     max-width: none;
+    width: 100%;
   }
 
-  .user-table .p-datatable-tbody td {
-    padding: 0.5rem;
+  .table-header .p-input-icon-left input {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
   }
 
-  .user-table .p-datatable-thead th {
+  .user-table {
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .user-table .p-datatable-thead > tr > th {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .user-table .p-datatable-tbody > tr > td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .user-avatar img,
+  .user-avatar .pi-user {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .user-table .p-paginator {
+    padding: 0.75rem;
+  }
+
+  .user-table .p-paginator .p-paginator-page {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .user-table .p-paginator .p-paginator-current,
+  .user-table .p-paginator .p-dropdown {
+    font-size: 0.9rem;
+  }
+
+  /* Improve cell editing on mobile */
+  .user-table .p-cell-editing input,
+  .user-table .p-cell-editing .p-dropdown {
     padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .user-table .p-cell-editing .p-dropdown-panel {
+    width: 200px;
+  }
+
+  /* Loading state adjustments */
+  .loading-container {
+    min-height: 300px;
+    padding: 1rem;
+  }
+
+  .loading-container .p-progress-spinner {
+    width: 40px;
+    height: 40px;
+  }
+
+  .loading-container p {
+    font-size: 0.9rem;
+  }
+
+  /* Improve table responsiveness */
+  .user-table .p-datatable-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .user-table .p-datatable-table {
+    min-width: 600px;
+  }
+
+  /* Add visual feedback for touch */
+  .user-table .p-datatable-tbody > tr {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .user-table .p-datatable-tbody > tr:active {
+    background: var(--surface-hover);
   }
 }
 
@@ -241,4 +334,109 @@
 
 [data-theme="dark"] .table-header .p-input-icon-left input {
   background: var(--surface-ground);
+}
+
+/* Global Pagination Styles */
+.p-paginator-bottom.p-paginator.p-component {
+  background: transparent;
+  border: none;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.p-paginator .p-paginator-current,
+.p-paginator .p-dropdown {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
+.p-paginator .p-paginator-page {
+  border-radius: var(--border-radius);
+  min-width: 2.5rem;
+  height: 2.5rem;
+  margin: 0 0.2rem;
+  transition: all 0.2s;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: var(--text-color);
+}
+
+.p-paginator .p-paginator-page.p-highlight {
+  background: var(--primary-color);
+  color: var(--primary-color-text);
+  border-color: var(--primary-color);
+}
+
+.p-paginator .p-paginator-page:not(.p-highlight):hover {
+  background: var(--surface-hover);
+  border-color: var(--surface-border);
+}
+
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+  border-radius: var(--border-radius);
+  min-width: 2.5rem;
+  height: 2.5rem;
+  margin: 0 0.2rem;
+  transition: all 0.2s;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: var(--text-color);
+}
+
+.p-paginator .p-paginator-first:hover,
+.p-paginator .p-paginator-prev:hover,
+.p-paginator .p-paginator-next:hover,
+.p-paginator .p-paginator-last:hover {
+  background: var(--surface-hover);
+  border-color: var(--surface-border);
+}
+
+.p-paginator .p-paginator-first:disabled,
+.p-paginator .p-paginator-prev:disabled,
+.p-paginator .p-paginator-next:disabled,
+.p-paginator .p-paginator-last:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile Pagination Styles */
+@media screen and (max-width: 768px) {
+  .p-paginator-bottom.p-paginator.p-component {
+    padding: 0.75rem;
+    gap: 0.25rem;
+  }
+
+  .p-paginator .p-paginator-current,
+  .p-paginator .p-dropdown {
+    font-size: 0.8rem;
+    padding: 0.35rem;
+    min-width: 80px;
+  }
+
+  .p-paginator .p-paginator-page,
+  .p-paginator .p-paginator-first,
+  .p-paginator .p-paginator-prev,
+  .p-paginator .p-paginator-next,
+  .p-paginator .p-paginator-last {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 0.8rem;
+    margin: 0 0.1rem;
+  }
+
+  .p-paginator .p-paginator-page.p-highlight {
+    font-weight: 600;
+  }
 }

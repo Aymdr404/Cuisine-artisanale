@@ -6,86 +6,82 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
 
 import { db } from '@firebaseModule';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { toast } from 'react-toastify';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useAuth } from '@contexts/AuthContext/AuthContext';
 
-const AddPostForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
+interface AddPostFormProps {
+  closeForm: () => void;
+}
 
-  let postId: string = '';
+const AddPostForm: React.FC<AddPostFormProps> = ({ closeForm }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [isPostCreated, setIsPostCreated] = useState<boolean>(false); 
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !content.trim() || !user) return;
 
-    if (!title || !content) {
-      alert('Please fill out both fields');
-      return;
-    }
-
-    if (!isPostCreated) {
-      try {
-        const docRef = await addDoc(collection(db, 'postsRequest'), {
-          title: '',
-          content: '',
-        });
-
-        postId = docRef.id;
-        setIsPostCreated(true);
-      } catch (error) {
-        console.error('Error creating post:', error);
-      }
-
-      try {
-        const postRef = doc(db, 'postsRequest', postId);
-        await updateDoc(postRef, {
-          title,
-          content,
-          id: postId,
-          createdAt: new Date(),
-        });
-
-        setTitle('');
-        setContent('');
-        setIsPostCreated(false);
-        toast.success('Post envoyé à l\'administrateur');
-        closeForm();
-      } catch (error) {
-        console.error('Error updating post:', error);
-      }
+    setLoading(true);
+    try {
+      await addDoc(collection(db, 'posts'), {
+        title: title.trim(),
+        content: content.trim(),
+        createdAt: serverTimestamp(),
+        userId: user.uid,
+        userName: user.displayName || 'Anonymous'
+      });
+      closeForm();
+    } catch (error) {
+      console.error('Error adding post:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="AddPostForm">
-      <form onSubmit={handleSubmit} className='formPost'>
-        <h3>Add a post</h3>
+    <div className="AddPostForm" >
+      <form className="formPost" onSubmit={handleSubmit}>
+        <h3>Nouveau Post</h3>
         <div>
-          <label htmlFor="title">*Title:</label>
+          <label htmlFor="title">Titre</label>
           <InputText
-            type="text"
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter post title"
+            placeholder="Entrez le titre"
+            required
+            autoFocus
           />
         </div>
         <div>
-          <label htmlFor="content">*Content:</label>
+          <label htmlFor="content">Contenu</label>
           <InputTextarea
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Enter post content"
+            placeholder="Écrivez votre post ici..."
+            required
+            rows={5}
+            autoResize
           />
         </div>
-        <section className='buttons-form'>
-          <Button type="submit" label='Submit'/>
-          <br />
-          <br />
-          <Button label='close' onClick={closeForm} />
-        </section>
+        <div className="buttons-form">
+          <Button
+            type="button"
+            label="Annuler"
+            className="p-button-outlined"
+            onClick={closeForm}
+            disabled={loading}
+          />
+          <Button
+            type="submit"
+            label="Publier"
+            loading={loading}
+            disabled={!title.trim() || !content.trim()}
+          />
+        </div>
       </form>
     </div>
   );

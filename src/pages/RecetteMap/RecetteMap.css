@@ -249,32 +249,130 @@
 
 @media screen and (max-width: 768px) {
   .recipe-map-container {
-    padding: 0.5rem;
-    gap: 0.5rem;
+    height: calc(100vh - 4rem);
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .recipe-sidebar {
+    width: 100%;
+    height: 40vh;
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--surface-card);
+    border-bottom: 2px solid var(--primary-color);
   }
 
   .sidebar-header {
-    padding: 1rem;
+    padding: 0.75rem;
+    background: var(--surface-card);
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .sidebar-header h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Hide filters on mobile */
+  .search-filters {
+    display: none;
   }
 
   .recipe-list {
     padding: 0.5rem;
+    height: calc(100% - 3rem); /* Account for header height */
   }
 
-  .search-filters {
-    flex-direction: column;
+  .recipe-list ul {
+    gap: 0.5rem;
   }
 
-  .search-filters > * {
-    width: 100%;
+  .recipe-item {
+    border-radius: var(--border-radius);
+    margin-bottom: 0.5rem;
   }
 
   .recipe-item-content {
     padding: 0.5rem;
+    gap: 0.75rem;
   }
 
   .recipe-thumbnail {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
+  }
+
+  .recipe-info h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .recipe-type {
+    font-size: 0.8rem;
+    padding: 0.15rem 0.35rem;
+  }
+
+  .map-section {
+    height: 60vh;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0.75rem;
+    background: var(--surface-ground);
+  }
+
+  .map-container {
+    height: 100%;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+
+  .recipe-popup {
+    min-width: 180px;
+    padding: 0.5rem;
+  }
+
+  .recipe-popup img {
+    height: 120px;
+    margin-bottom: 0.75rem;
+  }
+
+  .recipe-popup h3 {
+    font-size: 1rem;
+  }
+
+  .recipe-popup .recipe-description {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .recipe-popup .p-button {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .custom-marker {
+    border-width: 1px;
+  }
+
+  .custom-marker.hovered {
+    box-shadow: 0 0 0 2px var(--primary-color);
+  }
+
+  .no-results {
+    padding: 1rem;
+  }
+
+  .no-results i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .no-results p {
+    font-size: 0.9rem;
   }
 }

@@ -17,16 +17,31 @@ const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
   const overlayPanelRef = useRef<OverlayPanel>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile) {
+        // Hide navbar when scrolling down, show when scrolling up
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          setIsNavbarVisible(false);
+        } else {
+          setIsNavbarVisible(true);
+        }
+      }
+
+      setIsScrolled(currentScrollY > 20);
+      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -103,7 +118,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
+      <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''} ${!isNavbarVisible ? 'navbar-hidden' : ''}`}>
         <div className="navbar-container">
           <div className="navbar-brand">
             <h1 className="site-title">Cuisine Artisanale</h1>
@@ -194,7 +209,29 @@ const Navbar: React.FC = () => {
       <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'show' : ''}`}>
         <div className="mobile-menu-content">
           <ButtonLinkNav isMobile onClick={handleMobileMenuClose} />
-          {!user && (
+          {user ? (
+            <div className="mobile-user-menu">
+              {menuItems.map((item, index) => (
+                item.type === 'separator' ? (
+                  <div key={index} className="menu-separator" />
+                ) : (
+                  <Button
+                    key={index}
+                    className="menu-item"
+                    onClick={() => {
+                      if (item.onClick) {
+                        item.onClick();
+                        handleMobileMenuClose();
+                      }
+                    }}
+                  >
+                    <i className={item.icon} />
+                    <span>{item.label}</span>
+                  </Button>
+                )
+              ))}
+            </div>
+          ) : (
             <div className="mobile-auth-buttons">
               <Button 
                 label="Se connecter avec Google" 

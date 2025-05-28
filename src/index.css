@@ -114,6 +114,7 @@ button:focus-visible {
     --container-width: 100%;
   }
   .wrapper {
-    padding: 1rem;
+    padding: 0;
+    margin-top: 4rem;
   }
 }

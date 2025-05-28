@@ -1,116 +1,69 @@
 .AddPostForm {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--z-index-modal);
-  backdrop-filter: blur(4px);
-  animation: fadeIn 0.3s ease;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
 }
 
 .formPost {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2rem;
-  border-radius: var(--border-radius);
+  max-width: 500px;
   background: var(--surface-card);
-  box-shadow: var(--card-shadow);
-  transform: translateY(0);
-  animation: slideIn 0.3s ease;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  position: relative;
+  animation: fadeIn 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateZ(0);
 }
 
-.formPost_header {
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 1rem;
-}
-
-.formPost_header h2 {
+.formPost h3 {
   color: var(--text-color);
-  font-size: 1.5rem;
-  margin: 0;
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--primary-color);
 }
 
-.formPost_content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.formPost_field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.formPost > div {
+  margin-bottom: 1rem;
 }
 
 .formPost label {
+  display: block;
   color: var(--text-color-secondary);
   font-size: 0.875rem;
   font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
-.formPost input[type="text"],
-.formPost textarea {
+.formPost .p-inputtext,
+.formPost .p-inputtextarea {
   width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid var(--surface-border);
-  border-radius: var(--border-radius);
-  background: var(--surface-ground);
-  color: var(--text-color);
-  transition: all 0.3s ease;
+  margin-bottom: 0.5rem;
 }
 
-.formPost input[type="text"]:focus,
-.formPost textarea:focus {
-  border-color: var(--primary-color);
-  outline: none;
-  box-shadow: 0 0 0 2px var(--primary-color-navbar);
+.formPost .p-inputtextarea {
+  min-height: 100px;
 }
 
-.formPost textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-.formPost_buttons {
+.buttons-form {
   display: flex;
-  gap: 1rem;
+  flex-direction: row;
+  gap: 0.75rem;
   margin-top: 1.5rem;
-  padding-top: 1.5rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--surface-border);
 }
 
-.formPost_buttons button {
+.buttons-form .p-button {
   flex: 1;
-  padding: 0.75rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.formPost_buttons button:disabled {
-  background: var(--surface-ground) !important;
-  color: var(--text-color-secondary) !important;
-  cursor: not-allowed;
-}
-
-.formPost_buttons .cancel-button {
-  background: var(--surface-ground);
-  color: var(--text-color);
-  border: 1px solid var(--surface-border);
-}
-
-.formPost_buttons .cancel-button:hover {
-  background: var(--surface-hover);
+  min-width: 0;
 }
 
 @keyframes fadeIn {
@@ -122,20 +75,46 @@
   }
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @media screen and (max-width: 768px) {
+  .AddPostForm {
+    padding: 0;
+    align-items: flex-end;
+  }
+
   .formPost {
-    max-width: 90%;
-    padding: 1.5rem;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 1.5rem 1.5rem 0 0;
+    padding: 1.25rem;
+    animation: slideUp 0.2s ease;
+  }
+
+  .formPost h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .formPost > div {
+    margin-bottom: 0.75rem;
+  }
+
+  .formPost .p-inputtextarea {
+    min-height: 80px;
+  }
+
+  .buttons-form {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    padding-top: 0.75rem;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 }
