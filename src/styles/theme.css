@@ -191,6 +191,12 @@
     .p-multiselect::placeholder {
         color: var(--input-placeholder) !important;
         opacity: 0.7;
+        font-size: 1rem !important;
+        text-align: center;
+    }
+
+    .p-input-icon-left .pi{
+        margin-left: 0.5rem; 
     }
 
     .p-inputtext:hover:not(:disabled):not(:focus),

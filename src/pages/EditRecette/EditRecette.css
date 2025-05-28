@@ -3,3 +3,21 @@
   border: 1px solid #ddd;
   margin: 10px;
 }
+
+.EditRecette .steps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.EditRecette .step-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.EditRecette .step-container input {
+  width: 100%;
+}
+
