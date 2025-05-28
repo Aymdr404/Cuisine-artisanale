@@ -1,200 +1,332 @@
-.AddRecetteForm {
-  min-height: 85vh;
-  padding: 2rem;
-  background-color: var(--primary-color-navbar);
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+.add-recipe-container {
+    max-width: var(--container-width);
+    margin: 2rem auto;
+    padding: 0 var(--container-padding);
 }
 
-.AddRecetteForm h1 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+.add-recipe-header {
+    text-align: center;
+    margin-bottom: 3rem;
 }
 
-.ingredients_part{
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-  gap: 1rem;
-
+.add-recipe-header h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
 }
 
-/* Formulaire global */
-.formRecette {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.add-recipe-header .subtitle {
+    color: var(--text-color-secondary);
+    font-size: 1.1rem;
 }
 
-.formRecette input[type="text"], .formRecette textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
+.recipe-form {
+    background: var(--surface-card);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
 }
 
-.formRecette input[type="text"]:focus, .formRecette textarea:focus {
-  border-color: #4CAF50; 
-  outline: none;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); 
-}
-
-.formRecette input[type="text"]::placeholder, .formRecette textarea::placeholder {
-  color: #888;
-}
-
-
-/* Conteneur principal des sections */
-.formRecette > div {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* --- Section Texte --- */
-.formRecette_sectionText {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.formRecette_sectionText > div {
-  display: flex;
-  flex-direction: column;
-}
-
-.formRecette_sectionText label {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: var(--color-text);
-}
-
-.formRecette_sectionDetails {
-  gap: 1rem;
-  > div {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.cooking_recette {
-  display: flex;
-  gap: 1rem;
-}
-
-/* --- Section steps --- */
-.step-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.step-container > input {
-  width: 100%;
-  flex: 1;
-}
-
-.steps-section > button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.add-step-btn {
-  display: block;
-  margin-top: 10px;
-}
-
-.add-step-btn:hover {
-  background-color: var(--background-color-button-hover);
-  color: white;
-}
-
-.delete-step-btn {
-  background-color: var(--background-color-danger);
-}
-
-.delete-step-btn:hover {
-  background-color: #c0392b;
-}
-
-
-/* --- Section Image --- */
-.formRecette_sectionMedia {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-}
-
-.formRecette_sectionMedia label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.formRecette_image {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.formRecette_media {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.uploaded-images .recette-images {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.formRecette_region > div {
-  width: 100%;
-  display: flex;
-}
-
-
-/* --- Bouton --- */
-.formRecette_sectionButtons > button {
-  padding: 0.75rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.formRecette_sectionButtons {
-  display: flex;
-  justify-content: space-between;
-}
-
-/* --- Responsive Design --- */
-@media (min-width: 768px) {
-  .formRecette > div {
-    flex-direction: row;
-    justify-content: space-between;
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-  }
+}
 
-  .formRecette_sectionText {
-    flex: 1;
-  }
+.form-section {
+    background: var(--surface-section);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
 
-  .formRecette_sectionMedia {
-    flex: 0.5;
+.form-section:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
+}
+
+.form-section h2 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--surface-border);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+/* Ingredients Section */
+.ingredients-quantities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.ingredient-quantity {
+    background: var(--surface-card);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--surface-border);
+}
+
+/* Steps Section */
+.steps-container {
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
+}
+
+.step-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    background: var(--surface-card);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--surface-border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.step-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
+}
+
+.step-item .p-inputtext {
+    font-size: 1.1rem;
+    padding: 1rem;
+}
+
+.step-number {
+    background: var(--primary-color);
+    color: var(--text-color-inverted);
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
     justify-content: center;
-  }
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.delete-step {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    padding: 0 !important;
+}
+
+.add-step {
+    margin-top: 1rem;
+    align-self: flex-start;
+}
+
+/* Time Inputs */
+.time-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+/* Media Section */
+.image-upload {
+    margin-top: 2rem;
+}
+
+.upload-container {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+    align-items: center;
+    padding: 2rem;
+    background: var(--surface-ground);
+    border-radius: var(--border-radius);
+    border: 2px dashed var(--surface-border);
+}
+
+.file-input {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1.1rem;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.image-preview {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--card-shadow);
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.image-preview:hover img {
+    transform: scale(1.1);
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--surface-border);
+}
+
+.submit-button {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.submit-button:hover {
+    background: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+}
+
+.cancel-button {
+    background: transparent !important;
+    border-color: var(--surface-border) !important;
+    color: var(--text-color-secondary) !important;
+}
+
+.cancel-button:hover {
+    background: var(--surface-hover) !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .add-recipe-container {
+        margin: 1rem auto;
+    }
+
+    .add-recipe-header h1 {
+        font-size: 2rem;
+    }
+
+    .recipe-form {
+        padding: 1rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-section {
+        padding: 1rem;
+    }
+
+    .ingredients-quantities {
+        grid-template-columns: 1fr;
+    }
+
+    .time-inputs {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-container {
+        padding: 1rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+
+    .step-item {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .step-item .p-inputtext {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+
+    .image-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+}
+
+/* Dark Theme Adjustments */
+[data-theme="dark"] .recipe-form {
+    background: var(--surface-card);
+}
+
+[data-theme="dark"] .form-section {
+    background: var(--surface-section);
+}
+
+[data-theme="dark"] .step-item,
+[data-theme="dark"] .ingredient-quantity {
+    background: var(--surface-card);
+    border-color: var(--surface-border);
+}
+
+[data-theme="dark"] .file-input {
+    background: var(--surface-ground);
+    border-color: var(--surface-border);
+}
+
+[data-theme="dark"] .upload-container {
+    background: var(--surface-card);
+    border-color: var(--surface-border);
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-section {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Grid Layout Adjustments */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* Make steps and media sections full width */
+.form-section.steps,
+.form-section.media {
+    grid-column: 1 / -1;
+    max-width: 100%;
 }

@@ -3,3 +3,242 @@
   border: 1px solid #ddd;
   margin: 10px;
 }
+
+.users-container {
+  width: 100%;
+  padding: 1rem;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.table-header h2 {
+  margin: 0;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* DataTable Custom Styling */
+.user-table {
+  background: var(--surface-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.user-table .p-datatable-header {
+  background: transparent;
+  border: none;
+  padding: 1rem;
+}
+
+.user-table .p-datatable-thead > tr > th {
+  background: var(--surface-section);
+  color: var(--text-color);
+  padding: 1rem;
+  font-weight: 600;
+  border: none;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.user-table .p-datatable-tbody > tr {
+  background: transparent;
+  transition: background-color 0.2s;
+}
+
+.user-table .p-datatable-tbody > tr:hover {
+  background: var(--surface-hover);
+}
+
+.user-table .p-datatable-tbody > tr > td {
+  padding: 1rem;
+  border: none;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.user-table .p-paginator {
+  background: transparent;
+  border: none;
+  padding: 1rem;
+}
+
+.user-table .p-paginator .p-paginator-current,
+.user-table .p-paginator .p-dropdown {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+}
+
+.user-table .p-paginator .p-paginator-page {
+  border-radius: var(--border-radius);
+  min-width: 2.5rem;
+  height: 2.5rem;
+}
+
+.user-table .p-paginator .p-paginator-page.p-highlight {
+  background: var(--primary-color);
+  color: var(--primary-color-text);
+}
+
+/* Custom Input Styling */
+.table-header .p-input-icon-left {
+  width: 100%;
+  max-width: 300px;
+}
+
+.table-header .p-input-icon-left i {
+  color: var(--text-color-secondary);
+}
+
+.table-header .p-input-icon-left input {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+  padding: 0.5rem 0.5rem 0.5rem 2rem;
+  width: 100%;
+}
+
+.table-header .p-input-icon-left input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+/* Avatar and User Elements */
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avatar img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--surface-border);
+}
+
+.user-avatar .pi-user {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface-200);
+  color: var(--surface-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border: 2px solid var(--surface-border);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.action-buttons .p-button.p-button-text:hover {
+  background: var(--danger-100);
+  color: var(--danger-700);
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+}
+
+.loading-container p {
+  color: var(--text-color-secondary);
+}
+
+.loading-container .p-progress-spinner {
+  width: 50px;
+  height: 50px;
+}
+
+.loading-container .p-progress-spinner-circle {
+  stroke: var(--primary-color);
+}
+
+/* Cell Editors */
+.user-table .p-cell-editing {
+  padding: 0;
+}
+
+.user-table .p-cell-editing input,
+.user-table .p-cell-editing .p-dropdown {
+  width: 100%;
+  border-radius: 0;
+  border: none;
+  padding: 1rem;
+}
+
+.user-table .p-cell-editing .p-dropdown-panel {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  background: var(--surface-overlay);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .users-container {
+    padding: 0.5rem;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .table-header .p-input-icon-left {
+    max-width: none;
+  }
+
+  .user-table .p-datatable-tbody td {
+    padding: 0.5rem;
+  }
+
+  .user-table .p-datatable-thead th {
+    padding: 0.5rem;
+  }
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] .user-avatar .pi-user {
+  background: var(--surface-700);
+  color: var(--surface-200);
+}
+
+[data-theme="dark"] .user-table {
+  background: var(--surface-card);
+}
+
+[data-theme="dark"] .user-table .p-datatable-thead > tr > th {
+  background: var(--surface-section);
+}
+
+[data-theme="dark"] .user-table .p-datatable-tbody > tr:hover {
+  background: var(--surface-hover);
+}
+
+[data-theme="dark"] .action-buttons .p-button.p-button-text:hover {
+  background: var(--danger-900);
+  color: var(--danger-100);
+}
+
+[data-theme="dark"] .table-header .p-input-icon-left input {
+  background: var(--surface-ground);
+}

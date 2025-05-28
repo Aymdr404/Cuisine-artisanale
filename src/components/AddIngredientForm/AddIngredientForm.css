@@ -11,68 +11,211 @@
   z-index: 1000;
 }
 
-.formIngredients {
-  width: 100%;
-  max-width: 600px; 
-  margin: 0 auto; 
-  padding: 20px;
-  border-radius: 8px;
-  background-color: var(--primary-color-navbar);
+.add-ingredient-dialog {
+  max-width: 600px;
 }
 
-.price-quantity {
+/* Dialog overlay background */
+.p-dialog-mask.p-component-overlay {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  transition: background-color 0.2s;
+}
+
+/* Dialog background and shadow */
+.add-ingredient-dialog .p-dialog-content,
+.add-ingredient-dialog .p-dialog-header,
+.add-ingredient-dialog .p-dialog-footer {
+  background: var(--surface-card);
+}
+
+.add-ingredient-dialog .p-dialog-header {
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+  padding: 1.5rem;
+}
+
+.add-ingredient-dialog .p-dialog-footer {
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  padding: 1.5rem;
+}
+
+.add-ingredient-dialog .p-dialog-content {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.form-container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.price-unit {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-
-.formIngredients div {
-  margin-bottom: 20px;
-}
-
-.formIngredients label {
-  display: block;
-  font-size: 1rem;
-  color: var(--text-color-light);
-  margin-bottom: 8px;
-}
-
-.formIngredients input[type="text"], .formIngredients textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.formIngredients input[type="text"]:focus, .formIngredients textarea:focus {
-  border-color: #4CAF50; 
-  outline: none;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); 
-}
-
-.formIngredients button {
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
+.form-container h3 {
+  margin: 0;
+  color: var(--text-color);
   font-weight: 600;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  font-size: 1.5rem;
 }
 
-.formIngredients .buttons-form {
+.required-field-note {
+  margin: 0;
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.form-field {
   display: flex;
-  justify-content: space-between;
-  
-  button {
-    width: 48%;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-field label {
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.form-field .required {
+  color: var(--red-500);
+  margin-left: 0.25rem;
+}
+
+.form-field .p-input-icon-right {
+  width: 100%;
+}
+
+.form-field .p-input-icon-right i {
+  right: 0.75rem;
+  margin-top: -0.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-field .p-inputtext,
+.form-field .p-dropdown,
+.form-field .p-inputnumber,
+.form-field .p-autocomplete {
+  width: 100%;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  transition: all 0.2s;
+}
+
+.form-field .p-inputtext:hover,
+.form-field .p-dropdown:hover,
+.form-field .p-inputnumber:hover,
+.form-field .p-autocomplete:hover {
+  border-color: var(--primary-color);
+}
+
+.form-field .p-inputtext:focus,
+.form-field .p-dropdown:focus,
+.form-field .p-inputnumber:focus,
+.form-field .p-autocomplete:focus {
+  box-shadow: 0 0 0 2px var(--primary-50);
+}
+
+.form-field .p-inputtext.p-invalid,
+.form-field .p-dropdown.p-invalid,
+.form-field .p-autocomplete.p-invalid {
+  border-color: var(--red-500);
+}
+
+.form-field .p-error {
+  color: var(--red-500);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.form-field .p-inputnumber-input {
+  width: 100%;
+}
+
+.form-field .p-dropdown-panel,
+.form-field .p-autocomplete-panel {
+  background: var(--surface-overlay);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--overlay-shadow);
+}
+
+.form-field .p-dropdown-item,
+.form-field .p-autocomplete-item {
+  padding: 0.75rem 1rem;
+  color: var(--text-color);
+  transition: background-color 0.2s;
+}
+
+.form-field .p-dropdown-item:hover,
+.form-field .p-autocomplete-item:hover {
+  background: var(--surface-hover);
+}
+
+.form-field .p-dropdown-filter-container {
+  padding: 0.5rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.form-actions .p-button {
+  min-width: 120px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .add-ingredient-dialog {
+    width: 90vw;
   }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .p-button {
+    width: 100%;
+  }
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] .form-field .p-inputtext,
+[data-theme="dark"] .form-field .p-dropdown,
+[data-theme="dark"] .form-field .p-inputnumber,
+[data-theme="dark"] .form-field .p-autocomplete {
+  background: var(--surface-card);
+}
+
+[data-theme="dark"] .form-field .p-dropdown-panel,
+[data-theme="dark"] .form-field .p-autocomplete-panel {
+  background: var(--surface-overlay);
+}
+
+[data-theme="dark"] .form-field .p-dropdown-item:hover,
+[data-theme="dark"] .form-field .p-autocomplete-item:hover {
+  background: var(--surface-hover);
+}
+
+[data-theme="dark"] .form-field .p-inputtext:hover,
+[data-theme="dark"] .form-field .p-dropdown:hover,
+[data-theme="dark"] .form-field .p-inputnumber:hover,
+[data-theme="dark"] .form-field .p-autocomplete:hover {
+  border-color: var(--primary-400);
+}
+
+[data-theme="dark"] .form-field .p-inputtext:focus,
+[data-theme="dark"] .form-field .p-dropdown:focus,
+[data-theme="dark"] .form-field .p-inputnumber:focus,
+[data-theme="dark"] .form-field .p-autocomplete:focus {
+  box-shadow: 0 0 0 2px var(--primary-900);
 }

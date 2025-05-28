@@ -1,0 +1,9 @@
+.add-unit {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.add-unit .p-button {
+  min-width: 150px;
+}

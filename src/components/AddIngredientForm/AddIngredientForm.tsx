@@ -1,139 +1,272 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './AddIngredientForm.css';
 
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
-
-import { addDoc, collection, doc, getDocs, query, updateDoc } from '@firebase/firestore';
-import { db } from '@firebaseModule';
 import { Dropdown } from 'primereact/dropdown';
+import { Toast } from 'primereact/toast';
+import { AutoComplete } from 'primereact/autocomplete';
+import { Dialog } from 'primereact/dialog';
+import { addDoc, collection, getDocs, query, where } from '@firebase/firestore';
+import { db } from '@firebaseModule';
 
-
-
-interface Units {
+interface Unit {
   id: string;
   name: string;
   abbreviation: string;
+  isActive?: boolean;
 }
 
-const AddIngredientForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
+interface AddIngredientFormProps {
+  visible: boolean;
+  onHide: () => void;
+}
 
+const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide }) => {
   const [name, setName] = useState('');
-  const [price, setPrice] = useState(0);
-  const [unit, setUnit] = useState('');
+  const [price, setPrice] = useState<number | null>(null);
+  const [unit, setUnit] = useState<Unit | null>(null);
   const [category, setCategory] = useState('');
+  const [units, setUnits] = useState<Unit[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState<{
+    name?: string;
+    unit?: string;
+    category?: string;
+  }>({});
+  const [categories, setCategories] = useState<string[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<string[]>([]);
+  const toast = useRef<Toast>(null);
 
-  const [units, setUnits] = useState<Units[]>([]);
+  const validateForm = () => {
+    const errors: { name?: string; unit?: string; category?: string } = {};
+    
+    if (!name.trim()) {
+      errors.name = 'Le nom est requis';
+    }
+    if (!unit) {
+      errors.unit = 'L\'unité est requise';
+    }
+    if (!category.trim()) {
+      errors.category = 'La catégorie est requise';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!name || !unit || !category) {
-      alert('Please fill out the title field');
+    if (!validateForm()) {
       return;
     }
 
-    const newIngredient = {
-      name,
-      price,
-      unit,
-      category,
-    };
-
-    let ingredientId: string = '';
-
-    try{
-      const docRef = await addDoc(collection(db, 'ingredients'), {
-        name: '',
-        price: 0,
-        unit: '',
-        category: '',
-      });
-      ingredientId = docRef.id;
-    }catch (error) {
-      console.error('Error creating ingredient:', error);
-    }
+    setLoading(true);
 
     try {
-      const ingredientRef = doc(db, 'ingredients', ingredientId);
-      await updateDoc(ingredientRef, {
-        ingredientId,
-        name: newIngredient.name,
-        price: newIngredient.price,
-        unit: newIngredient.unit,
-        category: newIngredient.category,
+      await addDoc(collection(db, 'ingredients'), {
+        name: name.trim(),
+        price: price || 0,
+        unit: unit?.abbreviation,
+        category: category.trim(),
         createdAt: new Date(),
+        updatedAt: new Date(),
+        inStock: true
       });
-      setName('');
-      setPrice(0);
-      setUnit('');
-      setCategory('');
-      closeForm();
 
-    }catch (error) {
-      console.error('Error updating ingredient:', error);
+      toast.current?.show({
+        severity: 'success',
+        summary: 'Succès',
+        detail: 'Ingrédient ajouté avec succès',
+        life: 3000
+      });
+
+      setName('');
+      setPrice(null);
+      setUnit(null);
+      setCategory('');
+      onHide();
+    } catch (error) {
+      console.error('Error creating ingredient:', error);
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Impossible de créer l\'ingrédient',
+        life: 3000
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getUnits = async () => {
-    try{
-      const unitsCollection = collection(db, 'units');
-      const unitsQuery = query(unitsCollection);
-
+  const fetchUnits = async () => {
+    try {
+      const unitsQuery = query(collection(db, 'units'), where('isActive', '==', true));
       const querySnapshot = await getDocs(unitsQuery);
-      const unitsData: Units[] = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          name: data.name,
-          abbreviation: data.abbreviation,
-          id: doc.id,
-        } as Units;
-      });
+      const unitsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Unit[];
 
       setUnits(unitsData);
-    }catch (error) {
-      console.error('Error getting units:', error);
+    } catch (error) {
+      console.error('Error fetching units:', error);
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Impossible de charger les unités',
+        life: 3000
+      });
     }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const ingredientsQuery = query(collection(db, 'ingredients'));
+      const querySnapshot = await getDocs(ingredientsQuery);
+      const uniqueCategories = [...new Set(
+        querySnapshot.docs.map(doc => doc.data().category)
+      )].filter(Boolean);
+      setCategories(uniqueCategories);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const searchCategories = (event: { query: string }) => {
+    const filtered = categories.filter(cat => 
+      cat.toLowerCase().includes(event.query.toLowerCase())
+    );
+    setFilteredCategories(filtered);
   };
 
   useEffect(() => {
-    getUnits();
-  }, []);
+    if (visible) {
+      fetchUnits();
+      fetchCategories();
+    }
+  }, [visible]);
+
+  const dialogFooter = (
+    <div className="form-actions">
+      <Button
+        type="submit"
+        label="Ajouter"
+        icon="pi pi-check"
+        loading={loading}
+        className="p-button-success"
+        onClick={handleSubmit}
+      />
+      <Button
+        type="button"
+        label="Annuler"
+        icon="pi pi-times"
+        onClick={onHide}
+        className="p-button-text"
+      />
+    </div>
+  );
 
   return (
-    <div className="AddIngredientForm">
-      <form onSubmit={handleSubmit} className='formIngredients'>
-        <h3>Add an ingredient</h3>
-        <p>* Required fields</p>
-        <br />
+    <>
+      <Toast ref={toast} />
+      
+      <Dialog
+        header="Ajouter un ingrédient"
+        visible={visible}
+        onHide={onHide}
+        footer={dialogFooter}
+        modal
+        className="add-ingredient-dialog"
+        closeOnEscape
+        dismissableMask
+      >
+        <div className="form-container">
+          <p className="required-field-note">* Champs requis</p>
 
-        <div>
-          <label htmlFor="name">*Name:</label>
-          <InputText type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter an ingredient name"/>
-        </div>
-        <section className='price-unit'>
-          <div>
-            <label htmlFor="price">Price:</label>
-            <InputNumber id="price" value={price} onValueChange={(e) => setPrice(e.value!)} mode="currency" currency="USD" placeholder="Enter ingredient price"/>
+          <div className="form-field">
+            <label htmlFor="name">
+              Nom <span className="required">*</span>
+            </label>
+            <span className="p-input-icon-right">
+              <i className={name ? "pi pi-check" : "pi pi-times"}
+                 style={{ color: name ? 'var(--green-500)' : 'var(--red-500)' }} />
+              <InputText
+                id="name"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setFormErrors({ ...formErrors, name: undefined });
+                }}
+                placeholder="Entrez le nom de l'ingrédient"
+                className={formErrors.name ? 'p-invalid' : ''}
+              />
+            </span>
+            {formErrors.name && <small className="p-error">{formErrors.name}</small>}
           </div>
-          <div>
-            <label htmlFor="unit">*Unit:</label>
-            <Dropdown value={unit} options={units} filter optionLabel='name' optionValue="abbreviation" onChange={(e) => setUnit(e.value)} placeholder="Select a unit" />
+
+          <div className="form-row">
+            <div className="form-field">
+              <label htmlFor="price">Prix</label>
+              <InputNumber
+                id="price"
+                value={price}
+                onValueChange={(e) => setPrice(e.value)}
+                mode="currency"
+                currency="EUR"
+                locale="fr-FR"
+                placeholder="0,00 €"
+                minFractionDigits={2}
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="unit">
+                Unité <span className="required">*</span>
+              </label>
+              <Dropdown
+                id="unit"
+                value={unit}
+                options={units}
+                onChange={(e) => {
+                  setUnit(e.value);
+                  setFormErrors({ ...formErrors, unit: undefined });
+                }}
+                optionLabel="name"
+                placeholder="Sélectionnez une unité"
+                className={formErrors.unit ? 'p-invalid' : ''}
+                filter
+                emptyMessage="Aucune unité trouvée"
+                emptyFilterMessage="Aucune unité ne correspond"
+              />
+              {formErrors.unit && <small className="p-error">{formErrors.unit}</small>}
+            </div>
           </div>
-        </section>
-        <div>
-          <label htmlFor="category">*Category:</label>
-          <InputText type="text" id="category" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Enter ingredient category"/>
+
+          <div className="form-field">
+            <label htmlFor="category">
+              Catégorie <span className="required">*</span>
+            </label>
+            <AutoComplete
+              id="category"
+              value={category}
+              suggestions={filteredCategories}
+              completeMethod={searchCategories}
+              onChange={(e) => {
+                setCategory(e.value);
+                setFormErrors({ ...formErrors, category: undefined });
+              }}
+              placeholder="Entrez ou sélectionnez une catégorie"
+              className={formErrors.category ? 'p-invalid' : ''}
+              dropdown
+            />
+            {formErrors.category && <small className="p-error">{formErrors.category}</small>}
+          </div>
         </div>
-        <section className='buttons-form'>
-          <Button type="submit" label='Submit'/>
-          <br />
-          <br />
-          <Button label='close' onClick={closeForm} />
-        </section>
-      </form>
-    </div>
+      </Dialog>
+    </>
   );
 };
 

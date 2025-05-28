@@ -1,87 +1,163 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './AddUnitForm.css';
-
-import { addDoc, collection, doc, updateDoc } from '@firebase/firestore';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
+import { Dialog } from 'primereact/dialog';
+import { addDoc, collection } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 
-const AddUnitForm: React.FC<{ closeForm: () => void }> = ({ closeForm }) => {
+interface AddUnitFormProps {
+  visible: boolean;
+  onHide: () => void;
+}
 
+const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
   const [name, setName] = useState('');
   const [abbreviation, setAbbreviation] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState<{ name?: string; abbreviation?: string }>({});
+  const toast = useRef<Toast>(null);
 
+  const validateForm = () => {
+    const errors: { name?: string; abbreviation?: string } = {};
+    
+    if (!name.trim()) {
+      errors.name = 'Le nom est requis';
+    }
+    if (!abbreviation.trim()) {
+      errors.abbreviation = 'L\'abréviation est requise';
+    }
+    if (abbreviation.length > 5) {
+      errors.abbreviation = 'L\'abréviation ne doit pas dépasser 5 caractères';
+    }
 
-  const handleSudmit = async (event: React.FormEvent) => {
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!name || !abbreviation) {
-      alert('Please fill out the title field');
+    if (!validateForm()) {
       return;
     }
 
-    const newUnit = {
-      name,
-      abbreviation,
-    };
-
-    let unitId: string = '';
-    
-    try{
-      const docRef = await addDoc(collection(db, 'units'), {
-        name: '',
-        abbreviation: '',
-      });
-      unitId = docRef.id;
-    }catch (error) {
-      console.error('Error creating unit:', error);
-    }
+    setLoading(true);
 
     try {
-      const unitRef = doc(db, 'units', unitId);
-      await updateDoc(unitRef, {
-        unitId,
-        name: newUnit.name,
-        abbreviation: newUnit.abbreviation,
+      await addDoc(collection(db, 'units'), {
+        name: name.trim(),
+        abbreviation: abbreviation.trim(),
         createdAt: new Date(),
+        isActive: true
       });
+
+      toast.current?.show({
+        severity: 'success',
+        summary: 'Succès',
+        detail: 'Unité ajoutée avec succès',
+        life: 3000
+      });
+
       setName('');
       setAbbreviation('');
-      closeForm();
-    }catch (error) {
-      console.error('Error updating unit:', error);
+      onHide();
+    } catch (error) {
+      console.error('Error creating unit:', error);
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Impossible de créer l\'unité',
+        life: 3000
+      });
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
+  const dialogFooter = (
+    <div className="form-actions">
+      <Button
+        type="submit"
+        label="Ajouter"
+        icon="pi pi-check"
+        loading={loading}
+        className="p-button-success"
+        onClick={handleSubmit}
+      />
+      <Button
+        type="button"
+        label="Annuler"
+        icon="pi pi-times"
+        onClick={onHide}
+        className="p-button-text"
+      />
+    </div>
+  );
 
   return (
-    <div className="AddUnitForm">
-      <form onSubmit={handleSudmit} className='formUnits'>
-        <h3>Add units</h3>
+    <>
+      <Toast ref={toast} />
+      
+      <Dialog
+        header="Ajouter une unité"
+        visible={visible}
+        onHide={onHide}
+        footer={dialogFooter}
+        modal
+        className="add-unit-dialog"
+        closeOnEscape
+        dismissableMask
+      >
+        <div className="form-container">
+          <p className="required-field-note">* Champs requis</p>
 
-        <div>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder="Enter a unit name"
-          />
+          <div className="form-field">
+            <label htmlFor="name">
+              Nom <span className="required">*</span>
+            </label>
+            <span className="p-input-icon-right">
+              <i className={name ? "pi pi-check" : "pi pi-times"} 
+                 style={{ color: name ? 'var(--green-500)' : 'var(--red-500)' }} />
+              <InputText
+                id="name"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setFormErrors({ ...formErrors, name: undefined });
+                }}
+                placeholder="Entrez le nom de l'unité"
+                className={formErrors.name ? 'p-invalid' : ''}
+              />
+            </span>
+            {formErrors.name && <small className="p-error">{formErrors.name}</small>}
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="abbreviation">
+              Abréviation <span className="required">*</span>
+            </label>
+            <span className="p-input-icon-right">
+              <i className={abbreviation ? "pi pi-check" : "pi pi-times"}
+                 style={{ color: abbreviation ? 'var(--green-500)' : 'var(--red-500)' }} />
+              <InputText
+                id="abbreviation"
+                value={abbreviation}
+                onChange={(e) => {
+                  setAbbreviation(e.target.value);
+                  setFormErrors({ ...formErrors, abbreviation: undefined });
+                }}
+                placeholder="Entrez l'abréviation"
+                className={formErrors.abbreviation ? 'p-invalid' : ''}
+                maxLength={5}
+              />
+            </span>
+            {formErrors.abbreviation && <small className="p-error">{formErrors.abbreviation}</small>}
+          </div>
         </div>
-        <div>
-          <label htmlFor="abbreviation">Abbreviation</label>
-          <input
-            type="text"
-            id="abbreviation"
-            value={abbreviation}
-            onChange={(event) => setAbbreviation(event.target.value)}
-            placeholder="Enter an abbreviation"
-          />
-        </div>
-        <div className='button-container'>
-          <button type='submit'>Add</button>
-          <button onClick={closeForm}>Close</button>
-        </div>
-      </form>
-    </div>
+      </Dialog>
+    </>
   );
 };
 

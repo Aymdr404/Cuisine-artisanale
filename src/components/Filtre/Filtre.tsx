@@ -6,12 +6,17 @@ import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 
-const Filtre: React.FC = () => {
+interface Departement {
+  nom: string;
+  code: string;
+}
 
+const Filtre: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [position, setPosition] = useState({});
-  const [departements, setDepartements] = useState([]);
+  const [position, setPosition] = useState<Departement | null>(null);
+  const [departements, setDepartements] = useState<Departement[]>([]);
   const [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -23,68 +28,118 @@ const Filtre: React.FC = () => {
   ];
 
   useEffect(() => {
-    fetch("https://geo.api.gouv.fr/departements").then(res => res.json()).then(data => setDepartements(data));
+    const fetchDepartements = async () => {
+      try {
+        const response = await fetch("https://geo.api.gouv.fr/departements");
+        const data = await response.json();
+        setDepartements(data);
+      } catch (error) {
+        console.error('Error fetching departements:', error);
+      }
+    };
+    fetchDepartements();
   }, []);
-  
 
   const useFilter = () => {
-    let query = '';
+    setIsLoading(true);
+    const queryParams = new URLSearchParams();
+
     if (name) {
-      query += `keywords=${encodeURIComponent(name)}&`;
+      queryParams.append('keywords', name);
     }
     if (selectedType) {
-      query += `type=${encodeURIComponent(selectedType)}&`;
+      queryParams.append('type', selectedType);
     }
-    if (position && typeof position === 'string') {
-      console.log('position', position);
-      query += `position=${encodeURIComponent(position)}&`;
+    if (position?.code) {
+      queryParams.append('position', position.code);
     }
-    if (query.length > 0) {
-      query = query.slice(0, -1);
-    }
-    if (query.length !== 0) {
-      navigate(`/recettes?${query}`);
-    }
-    else {
-      navigate('/recettes');
-    }
-  }
+
+    const query = queryParams.toString();
+    navigate(query ? `/recettes?${query}` : '/recettes');
+    setIsLoading(false);
+  };
 
   const resetFilter = () => {
     setName('');
     setSelectedType(null);
-    setPosition({});
+    setPosition(null);
     navigate('/recettes');
-  }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      useFilter();
+    }
+  };
 
   return (
     <div className="Filtre">
-      <h2>Filtre</h2>
+      <h2>Filtrer les recettes</h2>
+      
       <section className='filtre_input'>
         <div>
           <h3>Nom de la recette</h3>
-          <InputText placeholder="Nom de la recette" value={name} onChange={(e) => setName(e.target.value)} />
+          <span className="p-input-icon-left">
+            <i className="pi pi-search" />
+            <InputText 
+              placeholder="Rechercher une recette..." 
+              value={name} 
+              onChange={(e) => setName(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+          </span>
         </div>
+
         <div>
-          <h3>Type de recette:</h3>
+          <h3>Type de recette</h3>
           <div className="Filtre_type">
             {typeRecette.map((type) => (
               <div key={type.id}>
-                <RadioButton inputId={type.id.toString()} name="type" value={type.name} onChange={(e) => setSelectedType(e.value)} checked={selectedType === type.name}/>
+                <RadioButton 
+                  inputId={type.id.toString()} 
+                  name="type" 
+                  value={type.name} 
+                  onChange={(e) => setSelectedType(e.value)} 
+                  checked={selectedType === type.name}
+                />
                 <label htmlFor={type.id.toString()}>{type.name}</label>
               </div>
             ))}
           </div>
         </div>
+
         <div className='formRecette_region'>
-          <h3>Département:</h3>
-          <Dropdown id='position' optionLabel='nom' value={position}   
-          options={[{ nom: "Aucune sélection", code: '' }, ...departements]} 
-          onChange={(e:DropdownChangeEvent) => setPosition(e.value)} optionValue='code' checkmark={true} />
+          <h3>Département</h3>
+          <Dropdown 
+            id='position' 
+            value={position} 
+            options={[
+              { nom: "Tous les départements", code: '' },
+              ...departements
+            ]} 
+            onChange={(e: DropdownChangeEvent) => setPosition(e.value)}
+            optionLabel="nom"
+            placeholder="Sélectionner un département"
+            className="w-full"
+          />
         </div>
       </section>
-      <Button label='Filtrer' className='p-button-raised p-button-rounded' onClick={useFilter}/>
-      <Button label='Réinitialiser' className='p-button-raised p-button-rounded' onClick={resetFilter}/>
+
+      <div className="filtre_buttons">
+        <Button 
+          label='Filtrer' 
+          icon="pi pi-filter"
+          loading={isLoading}
+          onClick={useFilter}
+        />
+        <Button 
+          label='Réinitialiser' 
+          icon="pi pi-refresh"
+          className="p-button-secondary"
+          onClick={resetFilter}
+          disabled={isLoading}
+        />
+      </div>
     </div>
   );
 };

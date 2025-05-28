@@ -13,12 +13,15 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toast } from 'react-toastify';
 
-
-
 interface Ingredient {
   id: string;
   name: string;
   quantity?: string;
+}
+
+interface Department {
+  nom: string;
+  code: string;
 }
 
 const AddRecetteForm: React.FC = () => {
@@ -34,11 +37,12 @@ const AddRecetteForm: React.FC = () => {
   const [isRecetteCreated, setIsRecetteCreated] = useState<boolean>(false);
   const [steps, setSteps] = useState<string[]>([]);
 
-  const [regions, setRegions] = useState([]);
+  const [regions, setRegions] = useState<Department[]>([]);
   const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
   const [ingredientQuantities, setIngredientQuantities] = useState<{ [key: string]: string }>({});
 
-  const [position, setPosition] = useState({});
+  const defaultDepartment: Department = { nom: "Aucun département", code: "none" };
+  const [position, setPosition] = useState<Department>(defaultDepartment);
 
   const [images, setImages] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -51,26 +55,37 @@ const AddRecetteForm: React.FC = () => {
     { id: 4, name: 'Boisson' },
   ];
 
-
   const addStep = () => {
     setSteps([...steps, '']);
   };
 
-    const removeStep = (index: number) => {
-      setSteps(steps.filter((_, i) => i !== index));
-    };
-  
-    const handleStepChange = (index: number, value: string) => {
-      const newSteps = [...steps];
-      newSteps[index] = value;
-      setSteps(newSteps);
-    };
-  
+  const removeStep = (index: number) => {
+    setSteps(steps.filter((_, i) => i !== index));
+  };
+
+  const handleStepChange = (index: number, value: string) => {
+    const newSteps = [...steps];
+    newSteps[index] = value;
+    setSteps(newSteps);
+  };
 
   function generateKeywords(title: string): string[] {
     return title.toLowerCase().split(" "); // Découpe en mots simples
   }
-    
+
+  const slugify = (str: string) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "_")
+      .toLowerCase();
+  };
+
+  function generateUrl(title: string): string {
+    return slugify(title);
+  } 
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -82,6 +97,8 @@ const AddRecetteForm: React.FC = () => {
       alert('Please fill out all fields');
       return;
     }
+
+    const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
 
     const selectedType = types.find(t => t.id === type)?.name;
 
@@ -109,6 +126,7 @@ const AddRecetteForm: React.FC = () => {
           position: '',
           createdBy: '',
           titleKeywords: [],
+          url: '',
         });
 
         recetteId = docRef.id;
@@ -120,7 +138,7 @@ const AddRecetteForm: React.FC = () => {
       try{
         const recetteRef = doc(db, 'recipesRequest', recetteId);
         await updateDoc(recetteRef, {
-          title,
+          title: capitalizedTitle,
           type: selectedType,
           ingredients: selectedIngredients,  
           preparationTime,
@@ -129,10 +147,11 @@ const AddRecetteForm: React.FC = () => {
           id: recetteId,
           createdAt: new Date(),
           steps,
-          position,
+          position: position?.code || 'none',
           createdBy: user?.uid,
           images: imageURLs,
-          titleKeywords: generateKeywords(title),
+          titleKeywords: generateKeywords(capitalizedTitle),
+          url: generateUrl(capitalizedTitle),
         });
 
         
@@ -144,11 +163,11 @@ const AddRecetteForm: React.FC = () => {
         setCookingTime(0);
         setVideo('');
         setSteps([]);
-        setPosition({});
+        setPosition(defaultDepartment);
         setImageURLs([]);
         setIsRecetteCreated(false);
         navigateBack();
-        toast.success('Recette envoyé à la vérification admin');
+        toast.success('Recette envoyée à la vérification admin');
       }catch (error) {
         console.error('Error updating recette:', error);
       }
@@ -156,7 +175,18 @@ const AddRecetteForm: React.FC = () => {
   };
   
   useEffect(() => {
-    fetch("https://geo.api.gouv.fr/departements").then(res => res.json()).then(data => setRegions(data));
+    fetch("https://geo.api.gouv.fr/departements")
+      .then(res => res.json())
+      .then(data => {
+        const departmentsWithDefault = [
+          defaultDepartment,
+          ...data.map((dept: any) => ({
+            nom: dept.nom,
+            code: dept.code
+          }))
+        ];
+        setRegions(departmentsWithDefault);
+      });
     fetchIngredients();
   }, []);
 
@@ -219,56 +249,81 @@ const AddRecetteForm: React.FC = () => {
   };
 
   return (
-    <div className="AddRecetteForm">
-      <h1>Composer votre propre recettes</h1>
-      <p>Remplissez les champs avec un * pour créer une recette</p>
-      <form onSubmit={handleSubmit} className='formRecette'>
-        <div>
-          <section className="formRecette_sectionText">
-            <div>
-              <label  htmlFor="title">*Titre:</label>
-              <InputText type="text" id="title" value={title} onChange={(e)=> setTitle(e.target.value)} />
+    <div className="add-recipe-container">
+      <header className="add-recipe-header">
+        <h1>Composer votre propre recette</h1>
+        <p className="subtitle">Les champs marqués d'un * sont obligatoires</p>
+      </header>
+
+      <form onSubmit={handleSubmit} className="recipe-form">
+        <div className="form-grid">
+          {/* Basic Information Section */}
+          <section className="form-section basic-info">
+            <h2>Informations de base</h2>
+            <div className="form-group">
+              <label htmlFor="title">Titre *</label>
+              <InputText 
+                id="title" 
+                value={title} 
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Entrez le titre de votre recette"
+                required 
+              />
             </div>
-            <div className="steps-section">
-              <h3>*Étapes de préparation:</h3>
-              {steps.map((step, index) => (
-                <div key={index} className="step-container">
-                  <InputText
-                    type="text"
-                    value={step}
-                    onChange={(e) => handleStepChange(index, e.target.value)}
-                    placeholder={`Étape ${index + 1}`}
-                    required
-                  />
-                  <Button type="button" onClick={() => removeStep(index)} className="delete-step-btn">
-                    ❌
-                  </Button>
-                </div>
-              ))}
-              <Button type="button" onClick={addStep} className="add-step-btn">+ Ajouter une étape</Button>
+
+            <div className="form-group">
+              <label htmlFor="type">Type de plat *</label>
+              <Dropdown 
+                id="type" 
+                value={type} 
+                options={types} 
+                onChange={(e: DropdownChangeEvent) => setType(e.value)} 
+                optionLabel="name" 
+                optionValue="id"
+                placeholder="Sélectionnez un type"
+                required
+              />
             </div>
-            <section className="formRecette_sectionDetails">
-              <div>
-                <label htmlFor="type">*Type:</label>
-                <Dropdown id="type" optionLabel="name" value={type} options={types} onChange={(e:DropdownChangeEvent) => setType(e.value)} optionValue="id" />
-              </div>
-              <div>
-                <label htmlFor="ingredients">*Ingrédients:</label>
-                <MultiSelect 
-                  id="ingredients" 
-                  value={ingredients} 
-                  onChange={(e: MultiSelectChangeEvent) => setIngredients(e.value)} 
-                  optionLabel="name" 
-                  options={ingredientsList}  
-                  optionValue="id" 
-                  filter
-                />
-              </div>
-            </section>
-            <section className='ingredients_part'>
+
+            <div className="form-group">
+              <label htmlFor="position">Département d'origine</label>
+              <Dropdown 
+                id="position" 
+                value={position} 
+                options={regions} 
+                onChange={(e: DropdownChangeEvent) => {
+                  const selectedDept = regions.find(dept => dept.code === e.value) || defaultDepartment;
+                  setPosition(selectedDept);
+                }}
+                optionLabel="nom" 
+                optionValue="code"
+                placeholder="Sélectionnez un département"
+              />
+            </div>
+          </section>
+
+          {/* Ingredients Section */}
+          <section className="form-section ingredients">
+            <h2>Ingrédients</h2>
+            <div className="form-group">
+              <label htmlFor="ingredients">Sélection des ingrédients *</label>
+              <MultiSelect 
+                id="ingredients" 
+                value={ingredients} 
+                onChange={(e: MultiSelectChangeEvent) => setIngredients(e.value)} 
+                options={ingredientsList} 
+                optionLabel="name" 
+                optionValue="id"
+                filter
+                placeholder="Sélectionnez les ingrédients"
+                required
+              />
+            </div>
+
+            <div className="ingredients-quantities">
               {ingredients.map((id) => (
-                <div key={id}>
-                  <label>{ingredientsList.find(i => i.id === id.toString())?.name} - Quantité:</label>
+                <div key={id} className="ingredient-quantity">
+                  <label>{ingredientsList.find(i => i.id === id.toString())?.name}</label>
                   <InputText 
                     value={ingredientQuantities[id] || ''} 
                     onChange={(e) => setIngredientQuantities(prev => ({ ...prev, [id]: e.target.value }))} 
@@ -276,55 +331,117 @@ const AddRecetteForm: React.FC = () => {
                   />
                 </div>
               ))}
-            </section>
-            <section className='cooking_recette'>
-              <div>
-                <label htmlFor="preparationTime">*Temps de préparation:</label>
-                <InputNumber id="preparationTime" value={preparationTime} onChange={(e)=> setPreparationTime(e.value??0)}/>
+            </div>
+          </section>
+
+          {/* Timing Section */}
+          <section className="form-section timing">
+            <h2>Temps de préparation</h2>
+            <div className="time-inputs">
+              <div className="form-group">
+                <label htmlFor="preparationTime">Préparation (min) *</label>
+                <InputNumber 
+                  id="preparationTime" 
+                  value={preparationTime} 
+                  onChange={(e) => setPreparationTime(e.value ?? 0)}
+                  min={0}
+                  required
+                />
               </div>
-              <div>
-                <label htmlFor="cookingTime">*Temps de cuisson:</label>
-                <InputNumber id="cookingTime" value={cookingTime} onChange={(e)=> setCookingTime(e.value ?? 0)}/>
+              <div className="form-group">
+                <label htmlFor="cookingTime">Cuisson (min) *</label>
+                <InputNumber 
+                  id="cookingTime" 
+                  value={cookingTime} 
+                  onChange={(e) => setCookingTime(e.value ?? 0)}
+                  min={0}
+                  required
+                />
               </div>
-            </section>
-          </section> 
-          <section className="formRecette_sectionMedia">
-            <div className='formRecette_media'>
-              <div>
-                <label htmlFor='video'>Vidéo:</label>
-                <InputText type='text' id='video'value={video} onChange={(e)=> setVideo(e.target.value)} />
+            </div>
+          </section>
+
+          {/* Steps Section */}
+          <section className="form-section steps">
+            <h2>Étapes de préparation</h2>
+            <div className="steps-container">
+              {steps.map((step, index) => (
+                <div key={index} className="step-item">
+                  <div className="step-number">{index + 1}</div>
+                  <InputText
+                    value={step}
+                    onChange={(e) => handleStepChange(index, e.target.value)}
+                    placeholder="Décrivez cette étape..."
+                    required
+                  />
+                  <Button 
+                    type="button" 
+                    icon="pi pi-times" 
+                    onClick={() => removeStep(index)}
+                    className="delete-step"
+                  />
+                </div>
+              ))}
+              <Button 
+                type="button" 
+                onClick={addStep} 
+                className="add-step"
+                icon="pi pi-plus"
+                label="Ajouter une étape"
+              />
+            </div>
+          </section>
+
+          {/* Media Section */}
+          <section className="form-section media">
+            <h2>Médias</h2>
+            <div className="form-group">
+              <label htmlFor="video">Lien vidéo</label>
+              <InputText 
+                id="video" 
+                value={video} 
+                onChange={(e) => setVideo(e.target.value)}
+                placeholder="URL de votre vidéo YouTube"
+              />
+            </div>
+
+            <div className="image-upload">
+              <label>Images de la recette</label>
+              <div className="upload-container">
+                <input 
+                  type="file" 
+                  multiple 
+                  onChange={handleFileChange}
+                  className="file-input" 
+                />
+                <Button 
+                  onClick={handleUpload} 
+                  disabled={uploading || images.length === 0}
+                  icon="pi pi-upload"
+                  label={uploading ? "Téléchargement..." : "Télécharger les images"}
+                />
               </div>
 
-              <div className='formRecette_image'>
-                <input type="file" multiple onChange={handleFileChange} />
-                <Button onClick={handleUpload} disabled={uploading || images.length === 0}>
-                  {uploading ? "Uploading..." : "Upload Images"}
-                </Button>
-
-                {imageURLs.length > 0 && (
-                  <div className="uploaded-images">
-                    <h3>Images Uploadées</h3>
-                    <section className="recette-images">
-                      {imageURLs.map((url, index) => (
-                        <img key={index} src={url} alt="uploaded" width="100px" />
-                      ))}
-                    </section>
+              {imageURLs.length > 0 && (
+                <div className="uploaded-images">
+                  <h3>Images téléchargées</h3>
+                  <div className="image-grid">
+                    {imageURLs.map((url, index) => (
+                      <div key={index} className="image-preview">
+                        <img src={url} alt={`Image ${index + 1}`} />
+                      </div>
+                    ))}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
-
-            <div className='formRecette_region'>
-              <label htmlFor='position'>Département:</label>
-              <Dropdown id='position' optionLabel='nom' value={position} options={regions} onChange={(e:DropdownChangeEvent) => setPosition(e.value)} optionValue='code' />
-            </div>
-
           </section>
         </div>
-        <section className='formRecette_sectionButtons'>
-          <Button type="submit">Ajouter</Button>
-          <Button type="reset" onClick={navigateBack}>Annuler</Button>
-        </section>
+
+        <footer className="form-actions">
+          <Button type="submit" label="Créer la recette" icon="pi pi-check" className="submit-button" />
+          <Button type="button" label="Annuler" icon="pi pi-times" className="cancel-button" onClick={navigateBack} />
+        </footer>
       </form>
     </div>
   );

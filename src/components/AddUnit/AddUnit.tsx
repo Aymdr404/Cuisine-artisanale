@@ -4,22 +4,21 @@ import { Button } from 'primereact/button';
 import AddUnitForm from '../AddUnitForm/AddUnitForm';
 
 const AddUnit: React.FC = () => {
-  const [showForm, setShowForm] = useState(false);
-
-  const openForm = () => {
-    setShowForm(true);
-  };
-
-  const closeForm = () => {
-    setShowForm(false);
-  };
-  
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   return (
-    <div className="AddUnit">
-      <Button label="Add units" icon="pi pi-plus" onClick={openForm} className="p-button-raised p-button-rounded" />
+    <div className="add-unit">
+      <Button
+        label="Ajouter une unité"
+        icon="pi pi-plus"
+        className="p-button-success"
+        onClick={() => setDialogVisible(true)}
+      />
 
-      {showForm && <AddUnitForm closeForm={closeForm} />}
+      <AddUnitForm
+        visible={dialogVisible}
+        onHide={() => setDialogVisible(false)}
+      />
     </div>
   );
 };

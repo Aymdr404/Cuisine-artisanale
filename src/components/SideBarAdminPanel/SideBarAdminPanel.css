@@ -34,6 +34,11 @@
   background: #444;
 }
 
+.sidebar-admin-panel .active {
+  background: var(--primary-dark);
+  color: var(--text-color);
+}
+
 @media screen and (max-width: 768px) {
   .sidebar {
     width: 100%;

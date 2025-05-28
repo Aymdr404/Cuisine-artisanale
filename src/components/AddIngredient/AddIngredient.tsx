@@ -4,23 +4,21 @@ import { Button } from 'primereact/button';
 import AddIngredientForm from '../AddIngredientForm/AddIngredientForm';
 
 const AddIngredient: React.FC = () => {
-
-  const [showForm, setShowForm] = useState(false);
-
-  const openForm = () => {
-    setShowForm(true);
-  };
-
-  const closeForm = () => {
-    setShowForm(false);
-  };
-
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   return (
-    <div className="AddIngredient">
-      <Button label="Add Ingredient" icon="pi pi-plus" onClick={openForm} className="p-button-raised p-button-rounded" />
+    <div className="add-ingredient">
+      <Button
+        label="Ajouter un ingrédient"
+        icon="pi pi-plus"
+        className="p-button-success"
+        onClick={() => setDialogVisible(true)}
+      />
 
-      {showForm && <AddIngredientForm closeForm={closeForm} />}
+      <AddIngredientForm
+        visible={dialogVisible}
+        onHide={() => setDialogVisible(false)}
+      />
     </div>
   );
 };

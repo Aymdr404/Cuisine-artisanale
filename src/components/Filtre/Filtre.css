@@ -1,21 +1,111 @@
 .Filtre {
-  padding: 16px;
-  margin: 10px;
-  border-radius: 8px;
-  border: 1px solid black;
-  
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border-radius: var(--border-radius);
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.Filtre h2 {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+  width: fit-content;
+}
+
+.filtre_input {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.filtre_input > div {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 0.75rem;
 }
 
-.filtre_input{
-  text-align: left;
+.filtre_input h3 {
+  color: var(--text-color-secondary);
+  font-size: 1rem;
+  margin: 0;
 }
 
-.Filtre_type{
+.Filtre_type {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.Filtre_type > div {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  background: var(--surface-section);
+  transition: all 0.2s ease;
+}
+
+.Filtre_type > div:hover {
+  background: var(--surface-ground);
+}
+
+.Filtre_type label {
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.filtre_buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.filtre_buttons .p-button {
+  min-width: 120px;
+}
+
+.filtre_buttons .p-button.p-button-secondary {
+  background: var(--surface-section) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--surface-border) !important;
+}
+
+.filtre_buttons .p-button.p-button-secondary:hover {
+  background: var(--surface-ground) !important;
+}
+
+@media screen and (max-width: 1200px) {
+  .filtre_input {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .Filtre {
+    padding: 1rem;
+  }
+
+  .filtre_input {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .Filtre_type {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .filtre_buttons {
+    flex-direction: column;
+  }
+
+  .filtre_buttons .p-button {
+    width: 100%;
+  }
 }

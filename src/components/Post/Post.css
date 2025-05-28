@@ -1,51 +1,106 @@
 .Post {
-  padding: 16px;
-  margin: 10px;
-  min-height: 20vh;
-  min-width: 30vh;
-  transition: transform 0.2s ease-in-out;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  border-radius: 15px;
+  padding: 1.5rem;
+  background: var(--surface-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
   color: var(--text-color);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-
-  p{
-    text-align: justify;
-  }
-}
-
-.Post_request {
-  background-color: var(--background-color-super-light);
+  gap: 1rem;
+  transition: all 0.3s ease;
 }
 
 .Post:hover {
-  transform: scale(1.02);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+
+.Post h1 {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.Post p {
+  color: var(--text-color-secondary);
+  line-height: 1.6;
+  text-align: justify;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.Post_request {
+  background: var(--background-elevated);
+  border: 2px solid var(--primary-light);
 }
 
 .Section_buttons {
   display: flex;
-  flex-wrap: wrap;
-  /* justify-content: center; */
-  gap: 8px;
-  margin-top: auto; /* Cette propriété pousse les boutons vers le bas */
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--surface-border);
 }
 
 .Post_likeButton {
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: background-color 0.3s, transform 0.2s;
+  min-width: 100px;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
 }
 
 .Post_likeButton:hover {
   transform: scale(1.05);
 }
 
-.Post_acceptButton, .Post_declineButton {
-  margin: 4px 0; /* Un petit espace entre les boutons */
+.Post_admin_actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.Post_admin_actions .post-date {
+  color: var(--text-color-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.Post_request_actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.Post_acceptButton.p-button {
+  background: var(--primary-color);
+}
+
+.Post_declineButton.p-button {
+  background: var(--background-color-secondary);
+}
+
+@media screen and (max-width: 768px) {
+  .Post {
+    padding: 1rem;
+  }
+
+  .Section_buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .Post_admin_actions {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .Post_request_actions {
+    flex-direction: column;
+  }
 }

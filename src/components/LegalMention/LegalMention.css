@@ -9,11 +9,11 @@
 }
 
 .LegalMention a {
-  color: var(--text-color-secondary);
-  text-decoration: none;
+  color: var(--link-color);
+  text-decoration: underline;
+  transition: color 0.3s ease;
 }
 
 .LegalMention a:hover {
-  color: #0056b3;
-  text-decoration: underline;
+  color: var(--link-color-hover);
 }

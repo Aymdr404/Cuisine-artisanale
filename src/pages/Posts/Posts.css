@@ -1,38 +1,133 @@
 .Posts {
-  padding: 16px;
-  margin: 10px;
-
+  padding: 2rem;
+  margin: 1rem auto;
+  max-width: 1400px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  gap: 2rem;
 }
 
-.Posts_section{
-  min-width: 65%;
+.Posts_section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.AddPost_section{
-  min-width: 35%;
-  width: 100%;
+.AddPost_section {
+  flex: 1;
+  position: sticky;
+  top: 5rem;
+  height: fit-content;
+  padding: 1.5rem;
+  background: var(--surface-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.AddPost_section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .LoadMore_section {
   display: flex;
-  justify-content: space-around;
-  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--surface-card);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.LoadMore_section .p-button {
+  min-width: 150px;
+}
+
+.scroll-top-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: var(--text-color-inverted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 100;
+}
+
+.scroll-top-button.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-top-button:hover {
+  transform: translateY(-4px);
+  background: var(--primary-dark);
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--text-color-secondary);
+}
+
+.loading-spinner i {
+  animation: spin 1s linear infinite;
+}
+
+.no-more-posts {
+  text-align: center;
+  color: var(--text-color-secondary);
+  font-style: italic;
+  padding: 1rem;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .Posts {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
 }
 
 @media screen and (max-width: 768px) {
   .Posts {
     flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
   }
 
-  .Posts_section{
-    min-width: 100%;
+  .AddPost_section {
+    position: static;
+    width: 100%;
+    padding: 1rem;
   }
 
-  .AddPost_section{
-    min-width: 100%;
+  .LoadMore_section {
+    padding: 1rem;
   }
-  
+
+  .scroll-top-button {
+    bottom: 1rem;
+    right: 1rem;
+  }
 }

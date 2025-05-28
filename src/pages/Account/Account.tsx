@@ -1,52 +1,114 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Account.css';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
-import { NavLink, Route, Routes } from 'react-router-dom';
+import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import AccountRecettes from '@pages/AccountRecettes/AccountRecettes';
 import AccountDetail from '@pages/AccountDetail/AccountDetail';
 import AccountRecetteFavoris from '@pages/AccountRecetteFavoris/AccountRecetteFavoris';
+import { Avatar } from 'primereact/avatar';
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { confirmDialog } from 'primereact/confirmdialog';
 
 const Account: React.FC = () => {
-
   const { user, logout } = useAuth();
-  
+  const navigate = useNavigate();
+  const [activeLink, setActiveLink] = useState(window.location.pathname);
+
+  const navigationItems = [
+    {
+      to: '/account',
+      label: 'Mon Profil',
+      icon: 'pi pi-user'
+    },
+    {
+      to: '/account/mes-recettes',
+      label: 'Mes Recettes',
+      icon: 'pi pi-book'
+    },
+    {
+      to: '/account/mes-favoris',
+      label: 'Mes Favoris',
+      icon: 'pi pi-heart'
+    }
+  ];
+
+  const handleLogout = () => {
+    confirmDialog({
+      message: 'Êtes-vous sûr de vouloir vous déconnecter ?',
+      header: 'Confirmation de déconnexion',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Oui',
+      rejectLabel: 'Non',
+      accept: async () => {
+        await logout();
+        navigate('/');
+      }
+    });
+  };
+
+  if (!user) {
+    return (
+      <div className="account-loading">
+        <ProgressSpinner />
+        <p>Chargement de votre profil...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="Account">
-      {user ? (
-        <div className='account-container'>
-          <section className="panel-left">
-            <div className='info-user'>
-              <h3>Welcome, {user.displayName ?? "User"}!</h3>
-              <button onClick={logout}>Logout</button>
-            </div>
-            <section className="navigation-bar">
-              <nav>
-                <ul>
-                  <li>
-                    <NavLink to="/account">Mon compte</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/account/mes-recettes">Mes recettes</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/account/mes-favoris">Mes favoris</NavLink>
-                  </li>
-                </ul>
-              </nav>
-            </section>
-          </section>
-          <section className="panel-right">
-            <Routes>
-              <Route path="*" element={<AccountDetail/> } />
-              <Route path="mes-recettes" element={<AccountRecettes/>} />
-              <Route path="mes-favoris" element={<AccountRecetteFavoris/>} />
-            </Routes>
-          </section>
-        </div>
-      ) : (
-        <h1>Chargement ...</h1>
-      )}
+    <div className="account-page">
+      <div className="account-container">
+        <Card className="panel-left">
+          <div className="user-profile">
+            {user.photoURL ? (
+              <Avatar image={user.photoURL} size="xlarge" shape="circle" />
+            ) : (
+              <Avatar 
+                label={user.displayName?.charAt(0) || "U"} 
+                size="xlarge" 
+                shape="circle"
+                style={{ backgroundColor: 'var(--primary-color)' }}
+              />
+            )}
+            <h2>{user.displayName || "Utilisateur"}</h2>
+            <p className="user-email">{user.email}</p>
+            <Button 
+              label="Déconnexion" 
+              icon="pi pi-sign-out" 
+              severity="danger" 
+              text
+              onClick={handleLogout}
+            />
+          </div>
+
+          <nav className="account-navigation">
+            {navigationItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/account'}
+                className={({ isActive }) => 
+                  `nav-item ${isActive ? 'active' : ''}`
+                }
+                onClick={() => setActiveLink(item.to)}
+              >
+                <i className={item.icon}></i>
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+        </Card>
+
+        <Card className="panel-right">
+          <Routes>
+            <Route path="*" element={<AccountDetail />} />
+            <Route path="mes-recettes" element={<AccountRecettes />} />
+            <Route path="mes-favoris" element={<AccountRecetteFavoris />} />
+          </Routes>
+        </Card>
+      </div>
     </div>
   );
 };

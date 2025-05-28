@@ -1,18 +1,26 @@
 .featured-recette {
-  background-color: #fff8f2;
+  background-color: var(--surface-card);
   padding: 1.5rem;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
   margin: 2rem auto;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+  border: 1px solid var(--surface-border);
+}
+
+.featured-recette:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .featured-recette-img {
   width: 100%;
   max-height: 250px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   margin-bottom: 1rem;
+  border: 1px solid var(--surface-border);
 }
 
 .featured-card {
@@ -21,19 +29,46 @@
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+  padding: 1rem;
+  background: var(--surface-section);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--surface-border);
 }
 
 .featured-img {
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--surface-border);
+  transition: transform 0.3s ease;
+}
+
+.featured-img:hover {
+  transform: scale(1.05);
 }
 
 @media screen and (min-width: 1200px) {
   .featured-recette {
-    max-width: 750px; /* limite max à 750px */
-    width: 90%; /* reste fluide */
+    max-width: 750px;
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .featured-recette {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .featured-card {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .featured-img {
+    width: 80px;
+    height: 80px;
   }
 }

@@ -1,19 +1,16 @@
 #root {
-  max-width: 1200px;
   text-align: center;
   padding-top: 5em;
-  margin: 0 20%;
+}
+
+.wrapper {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 @media (max-width: 768px) {
   #root {
-    margin: 0 auto;
+    padding-top: 4em;
   }
-}
-
-.wrapper {
-  max-width: 1400px;  /* Ou ce que tu veux comme limite */
-  margin: 0 auto;
-  padding: 0 1rem;
-  width: 100%;
 }

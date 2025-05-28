@@ -1,6 +1,12 @@
 // src/App.tsx
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
+import { ThemeProvider } from './contexts/ThemeContext/ThemeContext';
+import './contexts/ThemeContext/ThemeContext.css';
+import './styles/theme.css';
+import './styles/admin.css';
+import './styles/dialog.css';
+import { useEffect } from 'react';
 
 import Navbar from '@components/Navbar/Navbar';
 import Home from '@pages/Home/Home';
@@ -18,31 +24,39 @@ import LegalMention from '@components/LegalMention/LegalMention';
 import { ToastContainer } from 'react-toastify';
 
 const App = () => {
+  useEffect(() => {
+    window.onbeforeunload = function () {
+      window.scrollTo(0, 0);
+    };
+  }, []);
+
   return (
     <AuthProvider>
-      <Router basename='/Cuisine-artisanale'>
-        <Navbar />
-        <div className="wrapper">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/recettes" element={<Recipes />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
-            <Route path="/recettes/:recipeName" element={<RecetteDesc />} />
-            <Route path="/recettes/:id/edit" element={<EditRecette />} />
-            <Route path="/map" element={<RecetteMap />} />
-            <Route path="/account/*" element={<Account />} />
+      <ThemeProvider>
+        <Router basename='/Cuisine-artisanale'>
+          <Navbar />
+          <div className="wrapper">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/recettes" element={<Recipes />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
+              <Route path="/recettes/:recipeName" element={<RecetteDesc />} />
+              <Route path="/recettes/:id/edit" element={<EditRecette />} />
+              <Route path="/map" element={<RecetteMap />} />
+              <Route path="/account/*" element={<Account />} />
 
-            <Route element={<ProtectedRoute />}>
-              <Route path="/admin-panel/*" element={<AdminPanel />} />
-            </Route>
+              <Route element={<ProtectedRoute />}>
+                <Route path="/admin-panel/*" element={<AdminPanel />} />
+              </Route>
 
-            <Route path="*" element={<h1>404 - Not Found</h1>} />
-          </Routes>
-        </div>
-        <LegalMention />
-      </Router>
-      <ToastContainer />
+              <Route path="*" element={<h1>404 - Not Found</h1>} />
+            </Routes>
+          </div>
+          <LegalMention />
+        </Router>
+        <ToastContainer />
+      </ThemeProvider>
     </AuthProvider>
   );
 };

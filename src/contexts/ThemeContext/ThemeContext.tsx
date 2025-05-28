@@ -12,18 +12,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   useEffect(() => {
-
-    if (theme === "dark") {
-      document.body.classList.add("dark-theme");
-    } else {
-      document.body.classList.remove("dark-theme");
-    }
+    // Apply theme using data-theme attribute
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Store theme preference
     localStorage.setItem("theme", theme);
 
-    setTimeout(() => {
-      document.body.classList.remove("theme-transition");
-    }, 1000);
+    // Add transition class
+    document.documentElement.classList.add('theme-transition');
 
+    // Remove transition class after animation
+    const timer = setTimeout(() => {
+      document.documentElement.classList.remove('theme-transition');
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [theme]);
 
   const toggleTheme = () => {

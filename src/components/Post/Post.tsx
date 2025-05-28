@@ -3,25 +3,26 @@ import './Post.css';
 import { Button } from 'primereact/button';
 import { toggleLikePost, unlikePost } from '@/services/PostService/PostService';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from '@firebase/firestore';
-
+import { deleteDoc, doc, onSnapshot } from '@firebase/firestore';
 import { db } from '@firebaseModule';
-import { ConfirmDialog } from 'primereact/confirmdialog';
-
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Toast } from 'primereact/toast';
+import { useRef } from 'react';
 
 interface PostProps {
   postId: string;
   title: string;
   content: string;
-  createdAt: any;
+  createdAt: string;
   fromRequest?: boolean;
 }
 
-const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromRequest = false}) => {
-
+const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequest = false }) => {
   const { user, role } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const userId = user?.uid;
+  const toast = useRef<Toast>(null);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "posts", postId), (docSnapshot) => {
@@ -36,86 +37,101 @@ const Post: React.FC<PostProps> = ({postId, title, content, createdAt, fromReque
   const hasLiked = userId ? likes.includes(userId) : false;
 
   const handleLike = async () => {
-    if (!userId) return alert("You must be logged in to like a post!");
-    if (hasLiked) {
-      await unlikePost(postId, userId);
-    } else {
-      await toggleLikePost(postId, userId);
+    if (!userId) {
+      toast.current?.show({
+        severity: 'warn',
+        summary: 'Connexion requise',
+        detail: 'Vous devez être connecté pour aimer un post.',
+        life: 3000
+      });
+      return;
     }
+
+    setIsLoading(true);
+    try {
+      if (hasLiked) {
+        await unlikePost(postId, userId);
+      } else {
+        await toggleLikePost(postId, userId);
+      }
+    } catch (error) {
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Une erreur est survenue lors de l\'action.',
+        life: 3000
+      });
+    }
+    setIsLoading(false);
+  };
+
+  const confirmDelete = () => {
+    confirmDialog({
+      message: 'Êtes-vous sûr de vouloir supprimer ce post ?',
+      header: 'Confirmation de suppression',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Oui',
+      rejectLabel: 'Non',
+      accept: handleDelete
+    });
   };
 
   const handleDelete = async () => {
+    setIsLoading(true);
     try {
       const postRef = doc(db, 'posts', postId);
       await deleteDoc(postRef);
-    } catch (error) {
-      console.error('Erreur de suppression du post : ', error);
-    }
-  };
-
-  const handleAcceptRequest = async () => {
-  let postIdNew: string | undefined;
-
-    try {
-      const docRef = await addDoc(collection(db, 'posts'), {
-        title: '',
-        content: '',
+      toast.current?.show({
+        severity: 'success',
+        summary: 'Succès',
+        detail: 'Le post a été supprimé.',
+        life: 3000
       });
-      postIdNew = docRef.id;
     } catch (error) {
-      console.error('Error creating post:', error);
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Erreur lors de la suppression du post.',
+        life: 3000
+      });
     }
-
-    if (postIdNew) {
-      try {
-        const postRef = doc(db, 'posts', postIdNew);
-        await updateDoc(postRef, {
-          title,
-          content,
-          id: postId,
-          createdAt: new Date(),
-        });
-      } catch (error) {
-        console.error('Error updating post:', error);
-      }
-    } else {
-      console.error('postIdNew is undefined');
-    }
-    await declineRequest();
-  }
-
-  const declineRequest = async () => {
-    try {
-      const postRef = doc(db, 'postsRequest', postId);
-      await deleteDoc(postRef);
-    } catch (error) {
-      console.error('Erreur de suppression de l\'utilisateur : ', error);
-    }
-  }
+    setIsLoading(false);
+  };
 
   return (
     <div className={`Post ${fromRequest ? 'Post_request' : ''}`}>
+      <Toast ref={toast} />
+      <ConfirmDialog />
+      
       <h1>{title}</h1>
       <p>{content}</p>
+      
       <section className='Section_buttons'>
-        {(!fromRequest && 
-          <Button className='Post_likeButton' onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} >
-              {hasLiked ? `❤️ ${likes.length}` : `🤍 ${likes.length}`}
-          </Button>
+        {!fromRequest && (
+          <Button 
+            className='Post_likeButton'
+            onClick={handleLike}
+            disabled={isLoading}
+            severity={hasLiked ? "danger" : "secondary"}
+            icon={hasLiked ? "pi pi-heart-fill" : "pi pi-heart"}
+            label={likes.length.toString()}
+          />
         )}
-        {role === 'admin' && !fromRequest &&(
-          <div>
-            <ConfirmDialog />
-            <Button className='Post_deleteButton' label="Delete" icon="pi pi-trash" onClick={handleDelete}/>
-            <p>{createdAt}</p>
-          </div>         
-        )}
-        {fromRequest && role === 'admin' && (
-          <div className='Post_acceptButton'>
-            <Button className='Post_acceptButton' label="Accept" icon="pi pi-check" onClick={handleAcceptRequest}/>
-            <Button className='Post_declineButton' label="Decline" icon="pi pi-times" onClick={declineRequest}/>
+
+        {role === 'admin' && !fromRequest && (
+          <div className='Post_admin_actions'>
+            <Button 
+              className='Post_deleteButton'
+              label="Supprimer"
+              icon="pi pi-trash"
+              onClick={confirmDelete}
+              disabled={isLoading}
+              severity="danger"
+            />
+            <span className="post-date">{createdAt}</span>
           </div>
         )}
+
       </section>
     </div>
   );

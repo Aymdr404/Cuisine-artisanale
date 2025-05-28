@@ -44,11 +44,9 @@ const RecetteDesc: React.FC = () => {
 
 
   const getRecette = async (recipeName: string) => {
-    recipeName = recipeName.charAt(0).toUpperCase() + recipeName.slice(1);
-    recipeName = recipeName.replace(/_/g, " ");
-
+  
     const recettesCollection = collection(db, "recipes");
-    const q = query(recettesCollection, where("title", "==", recipeName));
+    const q = query(recettesCollection, where("url", "==", recipeName));
     try {
       const querySnapshot = await getDocs(q);
       if (querySnapshot.empty) {

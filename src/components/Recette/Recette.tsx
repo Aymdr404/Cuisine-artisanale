@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Recette.css';
-
 import { Button } from 'primereact/button';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
-
 import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
 import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, updateDoc } from '@firebase/firestore';
 import { db } from '@firebaseModule';
@@ -18,25 +16,14 @@ interface RecetteProps {
   position?: string;
 }
 
-interface Recette{
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  cookingTime: number;
-  preparationTime: number;
-  ingredients: string[];
-  video: string;
-  steps: string[];
-  position: string;
-  createdBy: string;
-  createdAt: any;
-  images: string[];
-  titleKeywords: string[];
-}
-
-const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = false, images = [], position = ''}) => {
-
+export const Recette: React.FC<RecetteProps> = ({
+  recetteId,
+  title,
+  type,
+  fromRequest = false,
+  images = [],
+  position = ''
+}) => {
   const { user, role } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
   const userId = user?.uid;
@@ -48,12 +35,13 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
         setLikes(docSnapshot.data().likes || []);
       }
     });
-
     return () => unsubscribe();
   }, [recetteId]);
 
   const handleLike = async () => {
-    if (!userId) return alert("You must be logged in to like a post!");
+    if (!userId) {
+      return alert("Vous devez être connecté pour aimer une recette!");
+    }
     if (hasLiked) {
       await unlikeRecipes(recetteId, userId);
     } else {
@@ -62,129 +50,120 @@ const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = 
   };
 
   const handleAcceptRequest = async () => {
-    let recetteIdNew: string | undefined;
-    let recetteRef = doc(db, 'recipesRequest', recetteId);
-    let recetteSnap = await getDoc(recetteRef);
-    let recetteData = recetteSnap.data() as Recette;
-
     try {
-      const docRef = await addDoc(collection(db, 'recipes'), {
-        title: '',
-        type: '',
-        ingredients: '',
-        preparationTime: '',
-        cookingTime: '',
-        video: '',
-        images: [],
-        steps: [],
-        position: '',
-        createdBy: '',
-        titleKeywords: [],
-      });
-      
-      recetteIdNew = docRef.id;
-    } catch (error) {
-      console.error('Error creating post:', error);
-    }
+      const recetteRef = doc(db, 'recipesRequest', recetteId);
+      const recetteSnap = await getDoc(recetteRef);
+      if (!recetteSnap.exists()) return;
 
-    if (recetteIdNew) {
-      try {
-        const recetteRefNew = doc(db, 'recipes', recetteIdNew);
-        await updateDoc(recetteRefNew, {
-          title: recetteData.title,
-          type: recetteData.type,
-          ingredients: recetteData.ingredients,
-          preparationTime: recetteData.preparationTime,
-          cookingTime: recetteData.cookingTime,
-          video: recetteData.video,
-          steps: recetteData.steps,
-          position: recetteData.position,
-          createdBy: recetteData.createdBy,
-          createdAt: recetteData.createdAt,
-          images: recetteData.images,
-          titleKeywords: recetteData.titleKeywords,
-        });
-      } catch (error) {
-        console.error('Error updating post:', error);
+      const recetteData = recetteSnap.data();
+      const docRef = await addDoc(collection(db, 'recipes'), {
+        ...recetteData,
+        createdAt: new Date()
+      });
+
+      if (docRef.id) {
+        await declineRequest(); // Remove from requests after successful addition
       }
-    } else {
-      console.error('postIdNew is undefined');
+    } catch (error) {
+      console.error('Error handling recipe request:', error);
     }
-    await declineRequest();
-  }
+  };
 
   const declineRequest = async () => {
     try {
-      const recetteRef = doc(db, 'recipesRequest', recetteId);
-      await deleteDoc(recetteRef);
+      await deleteDoc(doc(db, 'recipesRequest', recetteId));
     } catch (error) {
-      console.error('Erreur de suppression de l\'utilisateur : ', error);
+      console.error('Error declining recipe:', error);
     }
-  }
+  };
 
-  const slugify = (str: string) =>
-  str
-    .normalize("NFD") // supprime les accents
-    .replace(/[\u0300-\u036f]/g, "") // encore plus d'accents
-    .replace(/[^\w\s-]/g, "") // supprime les caractères spéciaux
-    .trim()
-    .replace(/\s+/g, "_") // espaces -> _
-    .toLowerCase();
+  const slugify = (str: string) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "_")
+      .toLowerCase();
+  };
 
-  
+  const renderImage = () => {
+    if (images.length === 0) {
+      return <div className="recipe-placeholder">Pas d'image</div>;
+    }
+
+    return (
+      <img 
+        src={images[0]} 
+        alt={title} 
+        className="recipe-image"
+      />
+    );
+  };
+
+  const renderAdminButtons = () => {
+    if (!fromRequest || role !== 'admin') return null;
+
+    return (
+      <div className="admin-actions">
+        <Button 
+          label="Accepter" 
+          icon="pi pi-check" 
+          onClick={handleAcceptRequest}
+          className="accept-button"
+        />
+        <Button 
+          label="Refuser" 
+          icon="pi pi-times" 
+          onClick={declineRequest}
+          className="decline-button"
+        />
+      </div>
+    );
+  };
+
   return (
-    <div className={`Recette ${fromRequest ? 'Recette_request' : ''}`}>
-      <section className="Recette_images">
-        {images.length === 0 && <p>No images</p>}
-
-        {!fromRequest && images.length !== 0 &&
-          <img src={images[0]} alt="recette" />
-        }
-
-        {fromRequest && images.length !== 0 && 
-          images.map((image, index) => (
-            <img key={index} src={image} alt="recette" />
-          ))
-        }
-      </section>
-      <section className="Recette_header">
-        <h1>{title}</h1>
-         
-      </section>
-      <section className="Recette_description">
-        <p>{type}</p>
-        {position && position !== '' &&
-          <p>Département: {position}</p>
-        }
-      </section>
-
-
-
-        
-      <div className='bouton_section'>
-        {fromRequest && role === 'admin' && (
-          <div className='Recette_acceptButton'>
-            <Button label="Accept" icon="pi pi-check" onClick={handleAcceptRequest}/>
-            <Button label="Decline" icon="pi pi-times" onClick={declineRequest}/>
-          </div>
-        )}
-
-        <section className='bouton_section_2'>
-          {!fromRequest && (
-            <Link to={`/recettes/${slugify(title)}`}>
-              <Button label="Voir la recette" icon="pi pi-eye" />
-            </Link>
-          )}
-          {(!fromRequest && 
-            <Button className='Recette_likeButton' onClick={handleLike} severity={hasLiked ? "danger" : "secondary"} >
-                {hasLiked ? `❤️ ${likes.length}` : `🤍 ${likes.length}`}
-            </Button>
-          )}
-        </section>
-
+    <article className={`recipe-card ${fromRequest ? 'recipe-request' : ''}`}>
+      <div className="recipe-image-container">
+        {renderImage()}
       </div>
 
-    </div>
+      <div className="recipe-content">
+        <h2 className="recipe-title">{title}</h2>
+        
+        <div className="recipe-tags">
+          <span className="recipe-type">{type}</span>
+          {position && <span className="recipe-location">📍 {position}</span>}
+        </div>
+
+        <div className="recipe-actions">
+          {renderAdminButtons()}
+          
+          <div className="main-actions">
+            {!fromRequest && (
+              <div className='Post_admin_actions'>
+                <Link to={`/recettes/${slugify(title)}`} className="view-recipe">
+                  <Button 
+                    label="Voir la recette" 
+                    icon="pi pi-eye"
+                    className="p-button-primary view-button"
+                  />
+                </Link>
+                
+                <Button 
+                  className='Post_likeButton'
+                  onClick={handleLike}
+                  severity={hasLiked ? "danger" : "secondary"}
+                  icon={hasLiked ? "pi pi-heart-fill" : "pi pi-heart"}
+                  label={likes.length.toString()}
+                />
+              </div>
+            )}
+
+          </div>
+        </div>
+      </div>
+    </article>
   );
 };
 

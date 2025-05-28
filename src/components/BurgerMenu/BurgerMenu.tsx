@@ -5,7 +5,11 @@ import AuthButton from '../AuthButton/AuthButton';
 import { Link } from 'react-router-dom';
 import ButtonLinkNav from '../ButtonLinkNav/ButtonLinkNav';
 
-const BurgerMenu: React.FC = () => {
+interface BurgerMenuProps {
+  className?: string;
+}
+
+const BurgerMenu: React.FC<BurgerMenuProps> = ({ className }) => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { user, role } = useAuth();
@@ -21,7 +25,7 @@ const BurgerMenu: React.FC = () => {
   }, []);
 
   return (
-    <div className="menu-container" ref={menuRef}>
+    <div className={`menu-container ${className || ''}`} ref={menuRef}>
       <div className={`burger ${open ? "open" : ""}`}  onClick={() => setOpen(!open)}>
         <span></span>
         <span></span>

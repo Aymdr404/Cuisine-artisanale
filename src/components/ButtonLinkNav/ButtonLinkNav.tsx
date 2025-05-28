@@ -1,57 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './ButtonLinkNav.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 interface ButtonLinkNavProps {
-  onClick?: () => void; // La fonction est optionnelle
+  onClick?: () => void;
+  isMobile?: boolean;
 }
 
-const ButtonLinkNav: React.FC<ButtonLinkNavProps> = ({ onClick }) => {
-
-  const [recettePath, setRecettePath] = useState("/recettes");
+const ButtonLinkNav: React.FC<ButtonLinkNavProps> = ({ onClick, isMobile = false }) => {
+  const location = useLocation();
   
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setRecettePath("");
-      } else {
-        setRecettePath("/recettes");
-      }
-    };
+  const navItems = [
+    { path: '/', label: 'Accueil' },
+    { path: '/recettes', label: 'Recettes' },
+    { path: '/map', label: 'Map' },
+    { path: '/about', label: 'À propos' }
+  ];
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  
   return (
-    <div className="ButtonLinkNav">
+    <div className={`ButtonLinkNav ${isMobile ? 'mobile' : ''}`}>
       <nav>
-        <ul className='menu'>
-          <li>
-            <NavLink to="/" onClick={onClick}>Home</NavLink>
-          </li>
-          <li className="menu-item">
-            <NavLink to={recettePath} className="link">
-              Recettes
-            </NavLink>
-            <ul className="dropdown-container">
-              <li>
-                <NavLink to="/recettes" onClick={onClick} className="dropdown-item">
-                  Voir les recettes
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/map" onClick={onClick} className="dropdown-item">
-                  Voir la carte
-                </NavLink>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <NavLink to="/about" onClick={onClick} >About</NavLink> {/* Lien vers une page "À propos" */}
-          </li>
+        <ul className="menu">
+          {navItems.map((item) => (
+            <li key={item.path} className="menu-item">
+              <NavLink
+                to={item.path}
+                onClick={onClick}
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              >
+                {item.label}
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>

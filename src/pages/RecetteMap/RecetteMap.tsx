@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import "./RecetteMap.css";
 
-import { MapContainer, Marker, Polygon, Popup, TileLayer,  } from 'react-leaflet';
+import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
 import L from "leaflet";
 import { useNavigate } from 'react-router-dom';
 import geojsonData from '@assets/departementsGeoJson.json';
 import departementsCoordinates from '@assets/departementsCoord.json';
 import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
 
 interface Recette {
   recetteId: string;
@@ -15,122 +17,229 @@ interface Recette {
   type: string;
   position: string;
   images?: string[];
+  description?: string;
 }
 
-const RecetteMap = () => {
-  
+interface DepartementFeature {
+  properties: {
+    nom: string;
+    code: string;
+  };
+  geometry: {
+    coordinates: number[][][];
+  };
+}
+
+const RecetteMap: React.FC = () => {
   const [recettes, setRecettes] = useState<Recette[]>([]);
+  const [hoveredRecette, setHoveredRecette] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedDepartement, setSelectedDepartement] = useState<string | null>(null);
+
   const db = getFirestore();
   const navigate = useNavigate();
-  const [hoveredRecette, setHoveredRecette] = useState<string | null>(null); // Etat pour gérer le survol de la recette
 
-  React.useEffect(() => {
+  const recetteTypes = useMemo(() => [
+    { label: 'Tous les types', value: null },
+    { label: 'Entrée', value: 'Entrée' },
+    { label: 'Plat', value: 'Plat' },
+    { label: 'Dessert', value: 'Dessert' },
+    { label: 'Boisson', value: 'Boisson' },
+  ], []);
+
+  const departements = useMemo(() => {
+    const depts = geojsonData.features.map(feature => ({
+      label: feature.properties.nom,
+      value: feature.properties.code
+    }));
+    return [{ label: 'Tous les départements', value: null }, ...depts];
+  }, []);
+
+  useEffect(() => {
     fetchRecettes();
   }, []);
 
   const fetchRecettes = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, "recipes"));
-      const recettesData: Recette[] = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          title: data.title,
-          description: data.description,
-          position: data.position,
-          recetteId: doc.id,
-          type: data.type,
-          images: data.images ?? [],
-        } as Recette;
-      });
+      const recettesData: Recette[] = querySnapshot.docs.map((doc) => ({
+        title: doc.data().title,
+        description: doc.data().description,
+        position: doc.data().position,
+        recetteId: doc.id,
+        type: doc.data().type,
+        images: doc.data().images ?? [],
+      }));
       setRecettes(recettesData);
+    } catch (error) {
+      console.error("Error getting recettes:", error);
     }
-    catch (error) {
-      console.error("Error getting recettes: ", error);
-    }
   };
 
-  const getDepartementPolygon = (DepartementName: string) => {
-    const departement = geojsonData.features.find((feature) => feature.properties.nom === DepartementName);
-    return departement ? departement.geometry.coordinates[0].map((coord) => [coord[1], coord[0]] as [number, number]) : [];
+  const filteredRecettes = useMemo(() => {
+    return recettes.filter(recette => {
+      const matchesSearch = recette.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesType = !selectedType || recette.type === selectedType;
+      const matchesDepartement = !selectedDepartement || recette.position === selectedDepartement;
+      return matchesSearch && matchesType && matchesDepartement;
+    });
+  }, [recettes, searchTerm, selectedType, selectedDepartement]);
+
+  const getDepartementPolygon = (departementName: string): [number, number][] => {
+    const departement = geojsonData.features.find(
+      (feature) => feature.properties.nom === departementName
+    ) as DepartementFeature | undefined;
+
+    return departement 
+      ? departement.geometry.coordinates[0].map((coord) => [coord[1], coord[0]])
+      : [];
   };
 
-  const handleMarkerHover = (id: string) => {
-    setHoveredRecette(id);
+  const createMarkerIcon = (isHovered: boolean) => {
+    const radius = isHovered ? 20 : 8;
+    return L.divIcon({
+      html: `
+        <div class="custom-marker ${isHovered ? 'hovered' : ''}"
+             style="width: ${radius * 2}px; height: ${radius * 2}px;">
+        </div>
+      `,
+      className: '',
+      iconSize: [radius * 2, radius * 2],
+      iconAnchor: [radius, radius],
+    });
   };
-
-  // Fonction pour rediriger vers la recette
-  const handleClick = (title: string) => {
-    navigate(`/recettes/${title}`);
-  };
-
 
   return (
-    <section className="map">
-      <div className="recette-container" style={{ textAlign: 'center', overflowY: 'scroll' }}>
-        <h3>Liste des Recettes</h3>
-        <ul>
-          {recettes.map((recette) => (
-            <li
-              key={recette.recetteId}
-              style={{ padding: '5px', cursor: 'pointer' }}
-              onMouseEnter={() => handleMarkerHover(recette.recetteId)}
-              onMouseLeave={() => setHoveredRecette(null)}
-              onClick={() => handleClick(recette.title)}
-            >
-              {recette.title}
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="recipe-map-container">
+      <aside className="recipe-sidebar">
+        <header className="sidebar-header">
+          <h2>Découvrez nos recettes</h2>
+          <div className="search-filters">
+            <span className="p-input-icon-left">
+              <i className="pi pi-search" />
+              <InputText
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Rechercher une recette..."
+              />
+            </span>
+            <Dropdown
+              value={selectedType}
+              options={recetteTypes}
+              onChange={(e) => setSelectedType(e.value)}
+              placeholder="Type de plat"
+              className="filter-dropdown"
+            />
+            <Dropdown
+              value={selectedDepartement}
+              options={departements}
+              onChange={(e) => setSelectedDepartement(e.value)}
+              placeholder="Département"
+              className="filter-dropdown"
+            />
+          </div>
+        </header>
 
-      <MapContainer center={[46.603354, 1.888334]} zoom={6} scrollWheelZoom={false} className="map-container"  >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        {geojsonData.features.map((departement, index) => (
-          <Polygon key={index} positions={getDepartementPolygon(departement.properties.nom)} color="blue" weight={1}>
-            <Popup>{departement.properties.nom}</Popup>
-          </Polygon>
-      ))}
-      {recettes.map((recette) => {
-        const coordEntry = Object.entries(departementsCoordinates).find(([code]) => code === recette.position);
-        if (!coordEntry) return null;
-        const coord: [number, number] = coordEntry[1] as [number, number];
+        <div className="recipe-list">
+          {filteredRecettes.length === 0 ? (
+            <div className="no-results">
+              <i className="pi pi-info-circle" />
+              <p>Aucune recette ne correspond à votre recherche</p>
+            </div>
+          ) : (
+            <ul>
+              {filteredRecettes.map((recette) => (
+                <li
+                  key={recette.recetteId}
+                  className={`recipe-item ${hoveredRecette === recette.recetteId ? 'hovered' : ''}`}
+                  onMouseEnter={() => setHoveredRecette(recette.recetteId)}
+                  onMouseLeave={() => setHoveredRecette(null)}
+                  onClick={() => navigate(`/recettes/${recette.title}`)}
+                >
+                  <div className="recipe-item-content">
+                    {recette.images?.[0] && (
+                      <div className="recipe-thumbnail">
+                        <img src={recette.images[0]} alt={recette.title} />
+                      </div>
+                    )}
+                    <div className="recipe-info">
+                      <h3>{recette.title}</h3>
+                      <span className="recipe-type">{recette.type}</span>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </aside>
 
-        const markerRadius = recette.recetteId === hoveredRecette ? 20 : 8;
-        const markerIcon = L.divIcon({
-          html: `<div style="background-color: #ff7800; width: ${markerRadius * 2}px; height: ${markerRadius * 2}px; border-radius: 50%; border: 1px solid #ff7800; opacity: 0.7;"></div>`,
-          className: '',
-          iconSize: [markerRadius * 2, markerRadius * 2], // Taille de l'icône en fonction du rayon
-          iconAnchor: [markerRadius, markerRadius], // L'ancrage de l'icône est au centre pour éviter le décalage
-        });
-
-        if (Array.isArray(coord) && coord.length === 2) {
-          return (
-            <Marker
-              key={recette.recetteId}
-              position={coord}
-              eventHandlers={{
-                mouseover: () => handleMarkerHover(recette.recetteId),
-                mouseout: () => setHoveredRecette(null),
+      <main className="map-section">
+        <MapContainer
+          center={[46.603354, 1.888334]}
+          zoom={6}
+          scrollWheelZoom={false}
+          className="map-container"
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          
+          {geojsonData.features.map((departement, index) => (
+            <Polygon
+              key={index}
+              positions={getDepartementPolygon(departement.properties.nom)}
+              pathOptions={{
+                color: selectedDepartement === departement.properties.code ? '#ff7800' : '#3388ff',
+                weight: selectedDepartement === departement.properties.code ? 2 : 1,
+                fillOpacity: 0.2
               }}
-              icon={markerIcon}
             >
-            <Popup>
-              <strong>{recette.title}</strong>
-              <p>{recette.type}</p>
-              <br />
-              {recette.images!.length !== 0 &&
-                <img src={recette.images![0]} alt="recette" />
-              }
+              <Popup>{departement.properties.nom}</Popup>
+            </Polygon>
+          ))}
 
-              <Button onClick={() => handleClick(recette.title)}>Voir la recette</Button>
-            </Popup>
-          </Marker>
-          );
-        }
-        return null;
-      })}
-      </MapContainer>
-    </section>
+          {filteredRecettes.map((recette) => {
+            const coordEntry = Object.entries(departementsCoordinates).find(
+              ([code]) => code === recette.position
+            );
+            if (!coordEntry) return null;
+
+            const coord = coordEntry[1] as [number, number];
+            if (!Array.isArray(coord) || coord.length !== 2) return null;
+
+            return (
+              <Marker
+                key={recette.recetteId}
+                position={coord}
+                icon={createMarkerIcon(hoveredRecette === recette.recetteId)}
+                eventHandlers={{
+                  mouseover: () => setHoveredRecette(recette.recetteId),
+                  mouseout: () => setHoveredRecette(null),
+                }}
+              >
+                <Popup>
+                  <div className="recipe-popup">
+                    {recette.images?.[0] && (
+                      <img src={recette.images[0]} alt={recette.title} />
+                    )}
+                    <h3>{recette.title}</h3>
+                    <p className="recipe-type">{recette.type}</p>
+                    {recette.description && (
+                      <p className="recipe-description">{recette.description}</p>
+                    )}
+                    <Button
+                      icon="pi pi-eye"
+                      label="Voir la recette"
+                      onClick={() => navigate(`/recettes/${recette.title}`)}
+                    />
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
+        </MapContainer>
+      </main>
+    </div>
   );
 };
 

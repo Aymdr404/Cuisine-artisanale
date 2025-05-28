@@ -2,3 +2,13 @@
   padding: 16px;
   margin: 10px;
 }
+
+.add-ingredient {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.add-ingredient .p-button {
+  min-width: 180px;
+}
