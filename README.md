@@ -102,7 +102,7 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## 👥 Auteurs
 
-- Votre Nom - Développeur Principal
+- Sabatier aymeric - Développeur Principal
 
 ## 🙏 Remerciements
 
