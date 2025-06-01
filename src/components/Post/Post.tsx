@@ -5,7 +5,7 @@ import { toggleLikePost, unlikePost } from '@/services/PostService/PostService';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { deleteDoc, doc, onSnapshot } from '@firebase/firestore';
 import { db } from '@firebaseModule';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
 
@@ -101,7 +101,6 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
   return (
     <div className={`Post ${fromRequest ? 'Post_request' : ''}`}>
       <Toast ref={toast} />
-      <ConfirmDialog />
       
       <h1>{title}</h1>
       <p>{content}</p>

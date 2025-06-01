@@ -5,6 +5,7 @@ import AddPost from '@/components/AddPost/AddPost';
 import { db } from '@firebaseModule';
 import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
 import { Button } from 'primereact/button';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 
 interface Post {
   id: string;
@@ -118,6 +119,7 @@ const Posts: React.FC = () => {
 
   return (
     <div className="Posts">
+      <ConfirmDialog />
       <section className="Posts_section">
         {posts.map((post) => (
           <Post 

@@ -4,6 +4,7 @@ import './AddPostForm.css';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
+import { Message } from 'primereact/message';
 
 import { db } from '@firebaseModule';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -13,19 +14,42 @@ interface AddPostFormProps {
   closeForm: () => void;
 }
 
+// List of inappropriate words and phrases (you can expand this list)
+const inappropriateContent = [
+  // French inappropriate words
+  'merde', 'putain', 'con', 'connard', 'salope', 'bite', 'cul', 'enculé', 'fdp', 'ta gueule', 'nique', 'bordel', 'chiant', 'emmerde', 'enculeur', 'pédé', 'gouine', 'batard', 'enculée',
+
+  // English inappropriate words
+  'fuck', 'shit', 'bitch', 'ass', 'dick', 'bastard', 'crap', 'slut', 'motherfucker', 'cunt', 'damn', 'pussy', 'prick', 'whore', 'cock', 'retard', 'jerk', 'douche',
+];
+
+const checkInappropriateContent = (text: string): boolean => {
+  const lowerText = text.toLowerCase();
+  return inappropriateContent.some(word => lowerText.includes(word));
+};
+
 const AddPostForm: React.FC<AddPostFormProps> = ({ closeForm }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     if (!title.trim() || !content.trim() || !user) return;
+
+    // Check for inappropriate content
+    if (checkInappropriateContent(title) || checkInappropriateContent(content)) {
+      setError('Le contenu contient des mots inappropriés. Veuillez modifier votre message.');
+      return;
+    }
 
     setLoading(true);
     try {
-      await addDoc(collection(db, 'posts'), {
+      await addDoc(collection(db, 'postsRequest'), {
         title: title.trim(),
         content: content.trim(),
         createdAt: serverTimestamp(),
@@ -35,15 +59,23 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ closeForm }) => {
       closeForm();
     } catch (error) {
       console.error('Error adding post:', error);
+      setError('Une erreur est survenue lors de la publication du post.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="AddPostForm" >
+    <div className="AddPostForm">
       <form className="formPost" onSubmit={handleSubmit}>
         <h3>Nouveau Post</h3>
+        {error && (
+          <Message 
+            severity="error" 
+            text={error} 
+            style={{ marginBottom: '1rem' }}
+          />
+        )}
         <div>
           <label htmlFor="title">Titre</label>
           <InputText
