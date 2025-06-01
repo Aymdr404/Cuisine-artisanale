@@ -1,10 +1,13 @@
+.LienUtiles{
+  width: 100%;
+}
+
 .LienUtiles ul{
   list-style-type: none;
   padding: 0;
   display: flex;
   justify-content: space-around;
 }
-
 .lien-utiles a {
     color: var(--link-color);
     text-decoration: none;
