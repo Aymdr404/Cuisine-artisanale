@@ -65,18 +65,91 @@
 }
 
 /* Ingredients Section */
-.ingredients-quantities {
+.ingredients-select {
+    width: 100%;
+}
+
+.ingredients-panel {
+    max-height: 300px;
+}
+
+.ingredients-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-card);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--surface-border);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.ingredient-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow);
+    border-color: var(--primary-color);
+}
+
+.ingredient-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0; /* Prevents flex item from overflowing */
+}
+
+.ingredient-name {
+    font-weight: 500;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .ingredient-quantity {
-    background: var(--surface-card);
-    padding: 1rem;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--surface-border);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+}
+
+.ingredient-quantity-input {
+    width: 100px !important;
+}
+
+.ingredient-quantity-input .p-inputnumber-input {
+    text-align: right;
+    padding-right: 0.5rem;
+}
+
+.ingredient-unit {
+    color: var(--text-color-secondary);
+    font-size: 0.9rem;
+    min-width: 40px;
+}
+
+.ingredient-unit-input {
+    width: 80px !important;
+}
+
+.remove-ingredient {
+    opacity: 0.6;
+    transition: all 0.2s ease;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+}
+
+.remove-ingredient:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 /* Steps Section */
@@ -287,6 +360,29 @@
     .upload-button {
         width: 100%;
     }
+
+    .ingredient-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .ingredient-name {
+        min-width: auto;
+    }
+
+    .ingredient-quantity-input {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .ingredient-item {
+        padding: 0.75rem;
+    }
+
+    .ingredients-list {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Dark Theme Adjustments */
@@ -312,6 +408,15 @@
 [data-theme="dark"] .upload-container {
     background: var(--surface-card);
     border-color: var(--surface-border);
+}
+
+[data-theme="dark"] .ingredient-item {
+    background: var(--surface-card);
+    border-color: var(--surface-border);
+}
+
+[data-theme="dark"] .ingredient-item:hover {
+    border-color: var(--primary-color);
 }
 
 /* Animation */

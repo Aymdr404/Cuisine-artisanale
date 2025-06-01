@@ -6,12 +6,14 @@ import { db } from '@firebaseModule';
 import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
 import { Button } from 'primereact/button';
 import { ConfirmDialog } from 'primereact/confirmdialog';
+import { useAuth } from '@/contexts/AuthContext/AuthContext';
 
 interface Post {
   id: string;
   title: string;
   content: string;
   createdAt: Date;
+  visible?: boolean;
 }
 
 const Posts: React.FC = () => {
@@ -20,8 +22,9 @@ const Posts: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [hasMorePosts, setHasMorePosts] = useState<boolean>(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const { role, user } = useAuth();
 
-  const nbPostsToDisplay = 5; // Increased number of posts to display
+  const nbPostsToDisplay = 5;
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("fr-FR", {
@@ -49,13 +52,23 @@ const Posts: React.FC = () => {
         return {
           title: data.title,
           content: data.content,
-          createdAt: doc.data().createdAt.toDate(),
+          createdAt: data.createdAt.toDate(),
           id: doc.id,
+          visible: data.visible !== false // Default to true if not set
         } as Post;
       });
 
+      // Only filter posts if we have the user's role
+      if (user) {
+        const filteredPosts = postsData.filter(post => post.visible || role === 'admin');
+        setPosts(filteredPosts);
+      } else {
+        // If no user is logged in, show only visible posts
+        const filteredPosts = postsData.filter(post => post.visible);
+        setPosts(filteredPosts);
+      }
+
       const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
-      setPosts(postsData);
       setLastVisible(lastVisiblePost);
       setLoading(false);
       setHasMorePosts(querySnapshot.size === nbPostsToDisplay);
@@ -83,14 +96,16 @@ const Posts: React.FC = () => {
         return {
           title: data.title,
           content: data.content,
-          createdAt: doc.data().createdAt.toDate(),
+          createdAt: data.createdAt.toDate(),
           id: doc.id,
+          visible: data.visible !== false
         } as Post;
       });
 
-      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
-      setPosts((prevPosts) => [...prevPosts, ...postsData]);
-      setLastVisible(lastVisiblePost);
+      // Apply the same filtering logic for loaded posts
+      const filteredPosts = postsData.filter(post => post.visible || role === 'admin');
+      setPosts((prevPosts) => [...prevPosts, ...filteredPosts]);
+      setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
       setHasMorePosts(querySnapshot.size === nbPostsToDisplay);
     } catch (error) {
       console.error("Error getting more posts: ", error);
@@ -115,7 +130,7 @@ const Posts: React.FC = () => {
       unsubscribe();
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [user, role]); // Add user and role as dependencies
 
   return (
     <div className="Posts">
@@ -127,7 +142,8 @@ const Posts: React.FC = () => {
             postId={post.id} 
             title={post.title} 
             content={post.content} 
-            createdAt={formatDate(post.createdAt)} 
+            createdAt={formatDate(post.createdAt)}
+            visible={post.visible}
           />
         ))}
         <section className="LoadMore_section">

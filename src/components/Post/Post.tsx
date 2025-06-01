@@ -3,7 +3,7 @@ import './Post.css';
 import { Button } from 'primereact/button';
 import { toggleLikePost, unlikePost } from '@/services/PostService/PostService';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
-import { deleteDoc, doc, onSnapshot } from '@firebase/firestore';
+import { deleteDoc, doc, onSnapshot, updateDoc } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
@@ -15,19 +15,23 @@ interface PostProps {
   content: string;
   createdAt: string;
   fromRequest?: boolean;
+  visible?: boolean;
 }
 
-const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequest = false }) => {
+const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequest = false, visible = true }) => {
   const { user, role } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(visible);
   const userId = user?.uid;
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "posts", postId), (docSnapshot) => {
       if (docSnapshot.exists()) {
-        setLikes(docSnapshot.data().likes || []);
+        const data = docSnapshot.data();
+        setLikes(data.likes || []);
+        setIsVisible(data.visible !== false); // Default to true if not set
       }
     });
 
@@ -59,6 +63,31 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
         severity: 'error',
         summary: 'Erreur',
         detail: 'Une erreur est survenue lors de l\'action.',
+        life: 3000
+      });
+    }
+    setIsLoading(false);
+  };
+
+  const handleVisibilityToggle = async () => {
+    setIsLoading(true);
+    try {
+      const postRef = doc(db, 'posts', postId);
+      await updateDoc(postRef, {
+        visible: !isVisible
+      });
+      setIsVisible(!isVisible);
+      toast.current?.show({
+        severity: 'success',
+        summary: 'Succès',
+        detail: `Le post est maintenant ${!isVisible ? 'visible' : 'masqué'}.`,
+        life: 3000
+      });
+    } catch (error) {
+      toast.current?.show({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Erreur lors du changement de visibilité.',
         life: 3000
       });
     }
@@ -99,11 +128,11 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
   };
 
   return (
-    <div className={`Post ${fromRequest ? 'Post_request' : ''}`}>
+    <div className={`Post ${fromRequest ? 'Post_request' : ''} ${!isVisible ? 'Post-hidden' : ''}`}>
       <Toast ref={toast} />
       
       <h1>{title}</h1>
-      <p>{content}</p>
+      <p style={{ whiteSpace: 'pre-wrap' }}>{content}</p>
       
       <section className='Section_buttons'>
         {!fromRequest && (
@@ -120,6 +149,14 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
         {role === 'admin' && !fromRequest && (
           <div className='Post_admin_actions'>
             <Button 
+              className='Post_visibilityButton'
+              label={isVisible ? "Masquer" : "Afficher"}
+              icon={isVisible ? "pi pi-eye-slash" : "pi pi-eye"}
+              onClick={handleVisibilityToggle}
+              disabled={isLoading}
+              severity={isVisible ? "warning" : "success"}
+            />
+            <Button 
               className='Post_deleteButton'
               label="Supprimer"
               icon="pi pi-trash"
@@ -130,7 +167,6 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
             <span className="post-date">{createdAt}</span>
           </div>
         )}
-
       </section>
     </div>
   );

@@ -49,9 +49,9 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ closeForm }) => {
 
     setLoading(true);
     try {
-      await addDoc(collection(db, 'postsRequest'), {
+      await addDoc(collection(db, 'posts'), {
         title: title.trim(),
-        content: content.trim(),
+        content: content, // Don't trim content to preserve line breaks
         createdAt: serverTimestamp(),
         userId: user.uid,
         userName: user.displayName || 'Anonymous'
@@ -97,6 +97,7 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ closeForm }) => {
             required
             rows={5}
             autoResize
+            style={{ whiteSpace: 'pre-wrap' }}
           />
         </div>
         <div className="buttons-form">

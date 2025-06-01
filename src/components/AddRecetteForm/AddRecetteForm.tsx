@@ -17,6 +17,7 @@ interface Ingredient {
   id: string;
   name: string;
   quantity?: string;
+  unit?: string;
 }
 
 interface Department {
@@ -93,8 +94,8 @@ const AddRecetteForm: React.FC = () => {
     setPreparationTime(preparationTime ?? 0);
     setCookingTime(cookingTime ?? 0);
 
-    if (!title || !type || !ingredients || preparationTime === null || cookingTime === null || !steps) {
-      alert('Please fill out all fields');
+    if (!title || !type || !ingredients || preparationTime === null || cookingTime === null || !steps || !steps.every(step => step.trim() !== '')) {
+      alert('Veuillez remplir tous les champs');
       return;
     }
 
@@ -107,7 +108,8 @@ const AddRecetteForm: React.FC = () => {
       return ingredient ? { 
         id: ingredient.id, 
         name: ingredient.name, 
-        quantity: ingredientQuantities[id] || 'N/A'
+        quantity: ingredientQuantities[id] || 'N/A',
+        unit: ingredient.unit || ''
       } : null;
     }).filter(Boolean);
     
@@ -201,6 +203,7 @@ const AddRecetteForm: React.FC = () => {
         return {
           name: data.name,
           id: doc.id,
+          unit: data.unit || '',
         };
       });
       
@@ -291,10 +294,7 @@ const AddRecetteForm: React.FC = () => {
                 id="position" 
                 value={position} 
                 options={regions} 
-                onChange={(e: DropdownChangeEvent) => {
-                  const selectedDept = regions.find(dept => dept.code === e.value) || defaultDepartment;
-                  setPosition(selectedDept);
-                }}
+                onChange={(e: DropdownChangeEvent) => setPosition(e.value)}
                 optionLabel="nom" 
                 optionValue="code"
                 placeholder="Sélectionnez un département"
@@ -304,9 +304,9 @@ const AddRecetteForm: React.FC = () => {
 
           {/* Ingredients Section */}
           <section className="form-section ingredients">
-            <h2>Ingrédients</h2>
+            <h2>Ingrédients *</h2>
             <div className="form-group">
-              <label htmlFor="ingredients">Sélection des ingrédients *</label>
+              <label htmlFor="ingredients">Sélection des ingrédients</label>
               <MultiSelect 
                 id="ingredients" 
                 value={ingredients} 
@@ -317,20 +317,48 @@ const AddRecetteForm: React.FC = () => {
                 filter
                 placeholder="Sélectionnez les ingrédients"
                 required
+                className="ingredients-select"
+                panelClassName="ingredients-panel"
+                display="chip"
+                showClear
+                itemTemplate={(option) => option.name}
               />
             </div>
 
-            <div className="ingredients-quantities">
-              {ingredients.map((id) => (
-                <div key={id} className="ingredient-quantity">
-                  <label>{ingredientsList.find(i => i.id === id.toString())?.name}</label>
-                  <InputText 
-                    value={ingredientQuantities[id] || ''} 
-                    onChange={(e) => setIngredientQuantities(prev => ({ ...prev, [id]: e.target.value }))} 
-                    placeholder="Ex: 200g, 2 pièces..."
-                  />
-                </div>
-              ))}
+            <div className="ingredients-list">
+              {ingredients.map((id) => {
+                const ingredient = ingredientsList.find(i => i.id === id.toString());
+                return (
+                  <div key={id} className="ingredient-item">
+                    <div className="ingredient-info">
+                      <span className="ingredient-name">{ingredient?.name}</span>
+                      <div className="ingredient-quantity">
+                        <InputNumber 
+                          value={parseFloat(ingredientQuantities[id]) || null} 
+                          onChange={(e) => setIngredientQuantities(prev => ({ ...prev, [id]: e.value?.toString() || '' }))} 
+                          placeholder="Quantité"
+                          min={0}
+                          mode="decimal"
+                          minFractionDigits={0}
+                          maxFractionDigits={2}
+                          className="ingredient-quantity-input"
+                        />
+                        <span className="ingredient-unit">{ingredient?.unit}</span>
+                      </div>
+                    </div>
+                    <Button 
+                      icon="pi pi-times" 
+                      className="p-button-rounded p-button-danger p-button-text remove-ingredient"
+                      onClick={() => {
+                        setIngredients(ingredients.filter(i => i !== id));
+                        const newQuantities = { ...ingredientQuantities };
+                        delete newQuantities[id];
+                        setIngredientQuantities(newQuantities);
+                      }}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </section>
 
@@ -363,7 +391,7 @@ const AddRecetteForm: React.FC = () => {
 
           {/* Steps Section */}
           <section className="form-section steps">
-            <h2>Étapes de préparation</h2>
+            <h2>Étapes de préparation *</h2>
             <div className="steps-container">
               {steps.map((step, index) => (
                 <div key={index} className="step-item">

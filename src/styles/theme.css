@@ -169,7 +169,6 @@
     }
 
     /* Global Input Styles */
-    .p-inputtext,
     .p-dropdown,
     .p-multiselect,
     .p-inputnumber,
@@ -177,6 +176,18 @@
     .p-textarea {
         background: var(--input-bg) !important;
         border: 1px solid var(--input-border) !important;
+        padding: var(--input-spacing-md) !important;
+        border-radius: var(--border-radius) !important;
+        font-size: 1rem !important;
+        color: var(--text-color) !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+        font-family: var(--font-family) !important;
+    }
+
+    .p-inputtext{
+        background: var(--input-bg) !important;
+        /* border: 1px solid var(--input-border) !important; */
         padding: var(--input-spacing-md) !important;
         border-radius: var(--border-radius) !important;
         font-size: 1rem !important;
@@ -227,6 +238,10 @@
     .p-textarea:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+    }
+
+    .p-multiselect-checkbox{
+        display: none;
     }
 
     /* Dropdown Specific */
@@ -312,7 +327,7 @@
 
     .p-multiselect-panel .p-multiselect-items .p-multiselect-item {
         padding: var(--input-spacing-md) var(--input-spacing-lg) !important;
-        margin: 0 var(--input-spacing-sm) !important;
+        margin-bottom: 0.15rem !important;
         border-radius: var(--border-radius) !important;
         color: var(--text-color) !important;
         transition: all 0.2s ease !important;
