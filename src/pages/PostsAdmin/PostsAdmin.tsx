@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './PostsAdmin.css';
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc, addDoc, updateDoc } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, deleteDoc, doc, addDoc } from 'firebase/firestore';
 import { db } from '@firebaseModule';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';

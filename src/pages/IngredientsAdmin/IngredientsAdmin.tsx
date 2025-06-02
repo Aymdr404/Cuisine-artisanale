@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import './IngredientsAdmin.css';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';

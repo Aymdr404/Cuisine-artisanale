@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './RecettesAdmin.css';
 import { db } from '@firebaseModule';
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc, getDoc, addDoc, updateDoc } from '@firebase/firestore';
+import { collection, onSnapshot, orderBy, query, deleteDoc, doc, getDoc, addDoc } from '@firebase/firestore';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
