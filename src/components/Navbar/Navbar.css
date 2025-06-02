@@ -38,6 +38,8 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
+  border-right: 2px solid var(--surface-border);
+  padding-right: 1rem;
 }
 
 .page-title {

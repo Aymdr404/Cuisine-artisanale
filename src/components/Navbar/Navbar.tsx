@@ -95,18 +95,22 @@ const Navbar: React.FC = () => {
     }
   };
 
-  const getPageTitle = () => {
-    switch (location.pathname) {
-      case '/':
-        return 'Accueil';
-      case '/recettes':
-        return 'Recettes';
-      case '/carte':
-        return 'Carte des Recettes';
-      default:
-        return '';
-    }
-  };
+  // const getPageTitle = () => {
+  //   switch (location.pathname) {
+  //     case '/':
+  //       return 'Accueil';
+  //     case '/recettes':
+  //       return 'Recettes';
+  //     case '/map':
+  //       return 'Carte des Recettes';
+  //     case '/account':
+  //       return 'Mon Profil';
+  //     case '/about':
+  //       return 'A Propos';
+  //     default:
+  //       return '';
+  //   }
+  // };
 
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -122,7 +126,7 @@ const Navbar: React.FC = () => {
         <div className="navbar-container">
           <div className="navbar-brand">
             <h1 className="site-title">Cuisine Artisanale</h1>
-            <span className="page-title">{getPageTitle()}</span>
+            {/* <span className="page-title">{getPageTitle()}</span> */}
           </div>
 
           <div className="navbar-navigation">
