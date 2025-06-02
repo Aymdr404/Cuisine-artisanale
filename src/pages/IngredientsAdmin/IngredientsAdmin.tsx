@@ -6,11 +6,12 @@ import AddIngredient from '@/components/AddIngredient/AddIngredient';
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
 import { db } from '@firebaseModule';
 import { Button } from 'primereact/button';
-import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { InputNumber } from 'primereact/inputnumber';
+import { toastMessages } from '@/utils/toast';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface Ingredient {
   id: string;
@@ -27,7 +28,7 @@ const IngredientsAdmin: React.FC = () => {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [globalFilter, setGlobalFilter] = useState<string>('');
-  const toast = useRef<Toast>(null);
+  const { showToast } = useToast();
 
   const handleFetchIngredients = () => {
     try {
@@ -56,11 +57,10 @@ const IngredientsAdmin: React.FC = () => {
         setLoading(false);
       }, (error) => {
         console.error("Error getting ingredients:", error);
-        toast.current?.show({
+        showToast({
           severity: 'error',
-          summary: 'Erreur',
-          detail: 'Impossible de charger les ingrédients',
-          life: 3000
+          summary: toastMessages.error.default,
+          detail: 'Impossible de charger les ingrédients'
         });
         setLoading(false);
       });
@@ -92,18 +92,17 @@ const IngredientsAdmin: React.FC = () => {
   const handleDelete = async (ingredientId: string) => {
     try {
       await deleteDoc(doc(db, 'ingredients', ingredientId));
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Ingrédient supprimé avec succès',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.delete
       });
     } catch (error) {
-      console.error('Erreur de suppression de l\'ingrédient:', error);
-      toast.current?.show({
+      console.error('Erreur de suppression:', error);
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de supprimer l\'ingrédient',
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.delete,
         life: 3000
       });
     }
@@ -117,7 +116,7 @@ const IngredientsAdmin: React.FC = () => {
         updatedAt: new Date()
       });
       
-      toast.current?.show({
+      showToast({
         severity: 'success',
         summary: 'Succès',
         detail: 'Ingrédient mis à jour avec succès',
@@ -125,7 +124,7 @@ const IngredientsAdmin: React.FC = () => {
       });
     } catch (error) {
       console.error('Erreur de mise à jour:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
         summary: 'Erreur',
         detail: 'Impossible de mettre à jour l\'ingrédient',
@@ -141,7 +140,7 @@ const IngredientsAdmin: React.FC = () => {
         updatedAt: new Date()
       });
       
-      toast.current?.show({
+      showToast({
         severity: 'success',
         summary: 'Succès',
         detail: `Ingrédient marqué comme ${!ingredient.inStock ? 'en stock' : 'en rupture'}`,
@@ -149,7 +148,7 @@ const IngredientsAdmin: React.FC = () => {
       });
     } catch (error) {
       console.error('Erreur de mise à jour du stock:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
         summary: 'Erreur',
         detail: 'Impossible de mettre à jour le stock',
@@ -219,7 +218,6 @@ const IngredientsAdmin: React.FC = () => {
 
   return (
     <div className="ingredients-admin">
-      <Toast ref={toast} />
       <ConfirmDialog />
       
       <div className="table-container">

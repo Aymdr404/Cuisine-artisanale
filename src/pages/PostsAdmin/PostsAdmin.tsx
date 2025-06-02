@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './PostsAdmin.css';
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, deleteDoc, doc, addDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@firebaseModule';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
@@ -9,6 +9,8 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
+import { toastMessages } from '@/utils/toast';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface Post {
   id: string;
@@ -26,6 +28,7 @@ const PostsAdmin: React.FC = () => {
   const [sortField, setSortField] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const toast = useRef<Toast>(null);
+  const { showToast } = useToast();
 
   const sortOptions = [
     { label: 'Plus récent', value: 'createdAt:desc' },
@@ -45,52 +48,51 @@ const PostsAdmin: React.FC = () => {
     });
   };
 
-  const fetchPosts = () => {
+  const handleFetchPosts = () => {
     try {
       setLoading(true);
       const postsQuery = query(
         collection(db, "postsRequest"),
-        orderBy(sortField, sortOrder)
+        orderBy("createdAt", "desc")
       );
 
       const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
         const postsData: Post[] = querySnapshot.docs.map((doc) => {
           const data = doc.data();
           return {
+            id: doc.id,
             title: data.title,
             content: data.content,
-            createdAt: data.createdAt.toDate(),
-            id: doc.id,
-            author: data.author || 'Anonyme',
-            status: data.status || 'pending'
+            createdAt: data.createdAt?.toDate(),
+            author: data.author,
+            status: data.status
           } as Post;
         });
 
         setPosts(postsData);
         setLoading(false);
       }, (error) => {
-        console.error("Error getting posts: ", error);
-        toast.current?.show({
+        console.error("Error getting posts:", error);
+        showToast({
           severity: 'error',
-          summary: 'Erreur',
-          detail: 'Impossible de charger les posts',
-          life: 3000
+          summary: toastMessages.error.default,
+          detail: 'Impossible de charger les posts'
         });
         setLoading(false);
       });
 
       return unsubscribe;
     } catch (error) {
-      console.error("Error in fetchPosts:", error);
+      console.error("Error in handleFetchPosts:", error);
       setLoading(false);
       return () => {};
     }
   };
 
   useEffect(() => {
-    const unsubscribe = fetchPosts();
+    const unsubscribe = handleFetchPosts();
     return () => unsubscribe();
-  }, [sortField, sortOrder]);
+  }, []);
 
   const handleAcceptPost = async (post: Post) => {
     try {
@@ -105,19 +107,17 @@ const PostsAdmin: React.FC = () => {
       // Delete from postsRequest
       await deleteDoc(doc(db, 'postsRequest', post.id));
       
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Le post a été accepté et publié.',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.accept
       });
     } catch (error) {
       console.error('Error accepting post:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Erreur lors de l\'acceptation du post.',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.accept
       });
     }
   };
@@ -125,19 +125,17 @@ const PostsAdmin: React.FC = () => {
   const handleRejectPost = async (postId: string) => {
     try {
       await deleteDoc(doc(db, 'postsRequest', postId));
-      toast.current?.show({
+      showToast({
         severity: 'info',
-        summary: 'Post rejeté',
-        detail: 'Le post a été rejeté avec succès.',
-        life: 3000
+        summary: toastMessages.info.default,
+        detail: toastMessages.info.reject
       });
     } catch (error) {
       console.error('Error rejecting post:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Erreur lors du rejet du post.',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.reject
       });
     }
   };
@@ -177,20 +175,18 @@ const PostsAdmin: React.FC = () => {
 
   const handleDelete = async (postId: string) => {
     try {
-      await deleteDoc(doc(db, 'postsRequest', postId));
-      toast.current?.show({
+      await deleteDoc(doc(db, 'posts', postId));
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Post supprimé avec succès',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.delete
       });
     } catch (error) {
-      console.error("Error deleting post:", error);
-      toast.current?.show({
+      console.error('Erreur de suppression:', error);
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de supprimer le post',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.delete
       });
     }
   };

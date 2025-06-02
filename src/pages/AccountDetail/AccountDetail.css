@@ -3,3 +3,8 @@
   border: 1px solid #ddd;
   margin: 10px;
 }
+
+.AccountDetail .logout-button {
+  display: block;
+  margin: 20px auto;
+}

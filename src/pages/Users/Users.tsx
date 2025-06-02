@@ -10,6 +10,8 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { toastMessages } from '@/utils/toast';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface User {
   userId: string;
@@ -26,6 +28,7 @@ const Users: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const toast = useRef<Toast>(null);
+  const { showToast } = useToast();
 
   const roles = [
     { label: 'Utilisateur', value: 'user' },
@@ -51,11 +54,10 @@ const Users: React.FC = () => {
       setUsers(usersList);
     } catch (error) {
       console.error('Erreur lors du chargement des utilisateurs:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de charger les utilisateurs',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: 'Impossible de charger les utilisateurs'
       });
     } finally {
       setLoading(false);
@@ -79,22 +81,18 @@ const Users: React.FC = () => {
 
   const deleteUser = async (userId: string) => {
     try {
-      const userRef = doc(db, 'users', userId);
-      await deleteDoc(userRef);
-      setUsers((prevUsers) => prevUsers.filter((user) => user.userId !== userId));
-      toast.current?.show({
+      await deleteDoc(doc(db, 'users', userId));
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Utilisateur supprimé avec succès',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.delete
       });
     } catch (error) {
-      console.error('Erreur de suppression de l\'utilisateur:', error);
-      toast.current?.show({
+      console.error('Erreur lors de la suppression:', error);
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de supprimer l\'utilisateur',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.delete
       });
     }
   };
@@ -102,28 +100,21 @@ const Users: React.FC = () => {
   const onCellEditComplete = async (e: any) => {
     const { newValue, field, rowData } = e;
     try {
-      const userRef = doc(db, 'users', rowData.userId);
-      await updateDoc(userRef, { [field]: newValue });
-      
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.userId === rowData.userId ? { ...user, [field]: newValue } : user
-        )
-      );
-
-      toast.current?.show({
+      await updateDoc(doc(db, 'users', rowData.userId), {
+        [field]: newValue,
+        updatedAt: new Date()
+      });
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Utilisateur mis à jour avec succès',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.update
       });
     } catch (error) {
-      console.error('Erreur de mise à jour:', error);
-      toast.current?.show({
+      console.error('Erreur lors de la mise à jour:', error);
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de mettre à jour l\'utilisateur',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.update
       });
     }
   };

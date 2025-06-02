@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './RecettesAdmin.css';
 import { db } from '@firebaseModule';
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc, getDoc, addDoc } from '@firebase/firestore';
+import { collection, onSnapshot, orderBy, query, deleteDoc, doc, getDoc, addDoc, updateDoc } from '@firebase/firestore';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
@@ -11,6 +11,8 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Tag } from 'primereact/tag';
 import { Image } from 'primereact/image';
+import { toastMessages } from '@/utils/toast';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface RecetteInterface {
   recetteId: string;
@@ -34,6 +36,7 @@ const RecettesAdmin: React.FC = () => {
   const [sortField, setSortField] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const toast = useRef<Toast>(null);
+  const { showToast } = useToast();
 
   const sortOptions = [
     { label: 'Plus récent', value: 'createdAt:desc' },
@@ -48,15 +51,15 @@ const RecettesAdmin: React.FC = () => {
     hard: { label: 'Difficile', color: 'var(--danger-color)' }
   };
 
-  const fetchRecettes = () => {
+  const handleFetchRecettes = () => {
     try {
       setLoading(true);
-      const recettesCollection = query(
+      const recettesQuery = query(
         collection(db, "recipesRequest"),
-        orderBy(sortField, sortOrder)
+        orderBy("createdAt", "desc")
       );
 
-      const unsubscribe = onSnapshot(recettesCollection, (querySnapshot) => {
+      const unsubscribe = onSnapshot(recettesQuery, (querySnapshot) => {
         const recettesData: RecetteInterface[] = querySnapshot.docs.map((doc) => {
           const data = doc.data();
           return {
@@ -67,31 +70,31 @@ const RecettesAdmin: React.FC = () => {
             status: data.status || 'pending'
           } as RecetteInterface;
         });
+
         setRecettes(recettesData);
         setLoading(false);
       }, (error) => {
-        console.error("Error getting recettes: ", error);
-        toast.current?.show({
+        console.error("Error getting recettes:", error);
+        showToast({
           severity: 'error',
-          summary: 'Erreur',
-          detail: 'Impossible de charger les recettes',
-          life: 3000
+          summary: toastMessages.error.default,
+          detail: 'Impossible de charger les recettes'
         });
         setLoading(false);
       });
 
       return unsubscribe;
     } catch (error) {
-      console.error("Error in fetchRecettes:", error);
+      console.error("Error in handleFetchRecettes:", error);
       setLoading(false);
       return () => {};
     }
   };
 
   useEffect(() => {
-    const unsubscribe = fetchRecettes();
+    const unsubscribe = handleFetchRecettes();
     return () => unsubscribe();
-  }, [sortField, sortOrder]);
+  }, []);
 
   const handleAcceptRequest = async (recette: RecetteInterface) => {
     try {
@@ -99,11 +102,10 @@ const RecettesAdmin: React.FC = () => {
       const recetteRef = doc(db, 'recipesRequest', recette.recetteId);
       const recetteSnap = await getDoc(recetteRef);
       if (!recetteSnap.exists()) {
-        toast.current?.show({
+        showToast({
           severity: 'error',
-          summary: 'Erreur',
-          detail: 'Recette introuvable',
-          life: 3000
+          summary: toastMessages.error.default,
+          detail: 'Recette introuvable'
         });
         return;
       }
@@ -120,19 +122,17 @@ const RecettesAdmin: React.FC = () => {
       // Delete from recipesRequest
       await deleteDoc(recetteRef);
       
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'La recette a été acceptée et publiée',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: 'La recette a été acceptée et publiée'
       });
     } catch (error) {
       console.error('Error accepting recipe:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Erreur lors de l\'acceptation de la recette',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: 'Erreur lors de l\'acceptation de la recette'
       });
     }
   };
@@ -140,19 +140,17 @@ const RecettesAdmin: React.FC = () => {
   const handleRejectRequest = async (recetteId: string) => {
     try {
       await deleteDoc(doc(db, 'recipesRequest', recetteId));
-      toast.current?.show({
+      showToast({
         severity: 'info',
-        summary: 'Recette rejetée',
-        detail: 'La recette a été rejetée avec succès',
-        life: 3000
+        summary: toastMessages.info.default,
+        detail: 'La recette a été rejetée avec succès'
       });
     } catch (error) {
       console.error('Error rejecting recipe:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Erreur lors du rejet de la recette',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: 'Erreur lors du rejet de la recette'
       });
     }
   };
@@ -193,19 +191,17 @@ const RecettesAdmin: React.FC = () => {
   const handleDelete = async (recetteId: string) => {
     try {
       await deleteDoc(doc(db, 'recipesRequest', recetteId));
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Recette supprimée avec succès',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.delete
       });
     } catch (error) {
-      console.error("Error deleting recipe:", error);
-      toast.current?.show({
+      console.error('Erreur de suppression:', error);
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de supprimer la recette',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.delete
       });
     }
   };

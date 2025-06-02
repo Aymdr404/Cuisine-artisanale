@@ -6,8 +6,8 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { deleteDoc, doc, onSnapshot, updateDoc } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import { confirmDialog } from 'primereact/confirmdialog';
-import { Toast } from 'primereact/toast';
-import { useRef } from 'react';
+import { toastMessages } from '@/utils/toast';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface PostProps {
   postId: string;
@@ -24,7 +24,7 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(visible);
   const userId = user?.uid;
-  const toast = useRef<Toast>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, "posts", postId), (docSnapshot) => {
@@ -42,11 +42,10 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
 
   const handleLike = async () => {
     if (!userId) {
-      toast.current?.show({
+      showToast({
         severity: 'warn',
-        summary: 'Connexion requise',
-        detail: 'Vous devez être connecté pour aimer un post.',
-        life: 3000
+        summary: toastMessages.warning.default,
+        detail: toastMessages.error.auth
       });
       return;
     }
@@ -59,11 +58,10 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
         await toggleLikePost(postId, userId);
       }
     } catch (error) {
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Une erreur est survenue lors de l\'action.',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: 'Une erreur est survenue lors de l\'action.'
       });
     }
     setIsLoading(false);
@@ -77,18 +75,16 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
         visible: !isVisible
       });
       setIsVisible(!isVisible);
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: `Le post est maintenant ${!isVisible ? 'visible' : 'masqué'}.`,
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: `Le post est maintenant ${!isVisible ? 'visible' : 'masqué'}.`
       });
     } catch (error) {
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Erreur lors du changement de visibilité.',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: 'Erreur lors du changement de visibilité.'
       });
     }
     setIsLoading(false);
@@ -110,18 +106,16 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
     try {
       const postRef = doc(db, 'posts', postId);
       await deleteDoc(postRef);
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Le post a été supprimé.',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.delete
       });
     } catch (error) {
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Erreur lors de la suppression du post.',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.delete
       });
     }
     setIsLoading(false);
@@ -129,8 +123,6 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
 
   return (
     <div className={`Post ${fromRequest ? 'Post_request' : ''} ${!isVisible ? 'Post-hidden' : ''}`}>
-      <Toast ref={toast} />
-      
       <h1>{title}</h1>
       <p style={{ whiteSpace: 'pre-wrap' }}>{content}</p>
       

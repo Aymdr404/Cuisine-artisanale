@@ -6,6 +6,8 @@ import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { addDoc, collection } from '@firebase/firestore';
 import { db } from '@firebaseModule';
+import { toastMessages } from '@/utils/toast';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface AddUnitFormProps {
   visible: boolean;
@@ -18,6 +20,7 @@ const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
   const [loading, setLoading] = useState(false);
   const [formErrors, setFormErrors] = useState<{ name?: string; abbreviation?: string }>({});
   const toast = useRef<Toast>(null);
+  const { showToast } = useToast();
 
   const validateForm = () => {
     const errors: { name?: string; abbreviation?: string } = {};
@@ -53,11 +56,10 @@ const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
         isActive: true
       });
 
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Unité ajoutée avec succès',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.create
       });
 
       setName('');
@@ -65,11 +67,10 @@ const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
       onHide();
     } catch (error) {
       console.error('Error creating unit:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de créer l\'unité',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.create
       });
     } finally {
       setLoading(false);

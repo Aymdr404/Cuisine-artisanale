@@ -12,7 +12,16 @@ const AccountDetail: React.FC = () => {
     <div className="AccountDetail">
       <h2>Bienvenue {user?.displayName}</h2>
       <p>Vous pouvez modifier vos informations personnelles ici</p>
-      <Button onClick={logout}>Logout</Button>
+      <Button 
+        className="logout-button" 
+        onClick={logout}
+        style={{ 
+          display: 'block',
+          margin: '20px auto'
+        }}
+      >
+        Logout
+      </Button>
 
     </div>
   );

@@ -10,6 +10,8 @@ import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
+import { toastMessages } from '@/utils/toast';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface Unit {
   id: string;
@@ -25,22 +27,23 @@ const UnitsAdmin: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const toast = useRef<Toast>(null);
+  const { showToast } = useToast();
 
   const handleFetchUnits = () => {
     try {
       setLoading(true);
-      const unitQuery = query(
+      const unitsQuery = query(
         collection(db, "units"),
         orderBy("name", "asc")
       );
 
-      const unsubscribe = onSnapshot(unitQuery, (querySnapshot) => {
+      const unsubscribe = onSnapshot(unitsQuery, (querySnapshot) => {
         const unitsData: Unit[] = querySnapshot.docs.map((doc) => {
           const data = doc.data();
           return {
+            id: doc.id,
             name: data.name,
             abbreviation: data.abbreviation,
-            id: doc.id,
             createdAt: data.createdAt?.toDate(),
             updatedAt: data.updatedAt?.toDate(),
             isActive: data.isActive ?? true
@@ -51,11 +54,10 @@ const UnitsAdmin: React.FC = () => {
         setLoading(false);
       }, (error) => {
         console.error("Error getting units:", error);
-        toast.current?.show({
+        showToast({
           severity: 'error',
-          summary: 'Erreur',
-          detail: 'Impossible de charger les unités',
-          life: 3000
+          summary: toastMessages.error.default,
+          detail: 'Impossible de charger les unités'
         });
         setLoading(false);
       });
@@ -87,19 +89,17 @@ const UnitsAdmin: React.FC = () => {
   const handleDelete = async (unitId: string) => {
     try {
       await deleteDoc(doc(db, 'units', unitId));
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Unité supprimée avec succès',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.delete
       });
     } catch (error) {
-      console.error('Erreur de suppression de l\'unité:', error);
-      toast.current?.show({
+      console.error('Erreur de suppression:', error);
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de supprimer l\'unité',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.delete
       });
     }
   };
@@ -111,20 +111,17 @@ const UnitsAdmin: React.FC = () => {
         [field]: newValue,
         updatedAt: new Date()
       });
-      
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: 'Unité mise à jour avec succès',
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: toastMessages.success.update
       });
     } catch (error) {
       console.error('Erreur de mise à jour:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de mettre à jour l\'unité',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: toastMessages.error.update
       });
     }
   };
@@ -135,20 +132,17 @@ const UnitsAdmin: React.FC = () => {
         isActive: !unit.isActive,
         updatedAt: new Date()
       });
-      
-      toast.current?.show({
+      showToast({
         severity: 'success',
-        summary: 'Succès',
-        detail: `Unité ${!unit.isActive ? 'activée' : 'désactivée'}`,
-        life: 3000
+        summary: toastMessages.success.default,
+        detail: `Unité marquée comme ${!unit.isActive ? 'active' : 'inactive'}`
       });
     } catch (error) {
       console.error('Erreur de mise à jour du statut:', error);
-      toast.current?.show({
+      showToast({
         severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de mettre à jour le statut',
-        life: 3000
+        summary: toastMessages.error.default,
+        detail: 'Impossible de mettre à jour le statut'
       });
     }
   };

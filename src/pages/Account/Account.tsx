@@ -80,6 +80,7 @@ const Account: React.FC = () => {
               severity="danger" 
               text
               onClick={handleLogout}
+              className="logout-button"
             />
           </div>
 

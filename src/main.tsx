@@ -10,6 +10,7 @@ import 'leaflet/dist/leaflet.css';
 
 // Our custom theme (should be after PrimeReact base styles)
 import './styles/theme.css';
+import './styles/toast.css';
 import './index.css';
 
 import App from './App';
