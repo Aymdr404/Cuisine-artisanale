@@ -334,14 +334,21 @@ const AddRecetteForm: React.FC = () => {
                       <span className="ingredient-name">{ingredient?.name}</span>
                       <div className="ingredient-quantity">
                         <InputNumber 
-                          value={parseFloat(ingredientQuantities[id]) || null} 
-                          onChange={(e) => setIngredientQuantities(prev => ({ ...prev, [id]: e.value?.toString() || '' }))} 
+                          value={ingredientQuantities[id] ? parseFloat(ingredientQuantities[id]) : null} 
+                          onChange={(e) => {
+                            const value = e.value;
+                            setIngredientQuantities(prev => ({ 
+                              ...prev, 
+                              [id]: value !== null ? value.toString() : '' 
+                            }));
+                          }}
                           placeholder="Quantité"
                           min={0}
                           mode="decimal"
                           minFractionDigits={0}
                           maxFractionDigits={2}
                           className="ingredient-quantity-input"
+                          locale="fr-FR"
                         />
                         <span className="ingredient-unit">{ingredient?.unit}</span>
                       </div>
@@ -371,9 +378,13 @@ const AddRecetteForm: React.FC = () => {
                 <InputNumber 
                   id="preparationTime" 
                   value={preparationTime} 
-                  onChange={(e) => setPreparationTime(e.value ?? 0)}
+                  onChange={(e) => setPreparationTime(e.value)}
                   min={0}
                   required
+                  mode="decimal"
+                  minFractionDigits={0}
+                  maxFractionDigits={2}
+                  locale="fr-FR"
                 />
               </div>
               <div className="form-group">
@@ -381,9 +392,13 @@ const AddRecetteForm: React.FC = () => {
                 <InputNumber 
                   id="cookingTime" 
                   value={cookingTime} 
-                  onChange={(e) => setCookingTime(e.value ?? 0)}
+                  onChange={(e) => setCookingTime(e.value)}
                   min={0}
                   required
+                  mode="decimal"
+                  minFractionDigits={0}
+                  maxFractionDigits={2}
+                  locale="fr-FR"
                 />
               </div>
             </div>

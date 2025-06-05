@@ -101,7 +101,7 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide }
 
   const fetchUnits = async () => {
     try {
-      const unitsQuery = query(collection(db, 'units'), where('isActive', '==', true));
+      const unitsQuery = query(collection(db, 'units'));
       const querySnapshot = await getDocs(unitsQuery);
       const unitsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
