@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './RecetteDesc.css';
 
 import { useNavigate, useParams } from 'react-router-dom';
@@ -47,6 +47,8 @@ const RecetteDesc: React.FC = () => {
   const hasLiked = userId ? likes.includes(userId) : false;
   const [recette, setRecette] = React.useState<Recette | null>(null);
   const [departements, setDepartements] = useState<Map<string, string>>(new Map());
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const getRecette = async (recipeName: string) => {
     const recettesCollection = collection(db, "recipes");
@@ -127,6 +129,29 @@ const RecetteDesc: React.FC = () => {
     }
   }, [id]);
   
+  useEffect(() => {
+    if (recette?.images && recette.images.length > 1) {
+      intervalRef.current = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => 
+          prevIndex === (recette?.images?.length ?? 0) - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [recette?.images]);
+
+  const handleImageClick = (index: number) => {
+    setCurrentImageIndex(index);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+
   const handleDelete = async () => {
     if (!id) return;
     try {
@@ -232,66 +257,85 @@ const RecetteDesc: React.FC = () => {
 
       <div className="recette-desc-description">
         <div className="recette-desc-info">
-          <p>
-            <strong>Type:</strong> {recette?.type}
-          </p>
-          {recette?.position && (
-            <div className="recette-desc-position">
+          <div className="recette-desc-info-left">
+            <p>
+              <strong>Type:</strong> {recette?.type}
+            </p>
+            {recette?.position && (
+              <div className="recette-desc-position">
+                <p>
+                  <strong>Departement:</strong> {departements.get(recette.position) || "Inconnu"}
+                </p>
+              </div>
+            )}
+            <div className="recette-desc-timing">
               <p>
-                <strong>Departement:</strong> {departements.get(recette.position) || "Inconnu"}
+                <i className="pi pi-clock"></i>
+                <strong>Temps de préparation:</strong> {recette?.preparationTime} min
+              </p>
+              <p>
+                <i className="pi pi-hourglass"></i>
+                <strong>Temps de cuisson:</strong> {recette?.cookingTime} min
               </p>
             </div>
-          )}
-          {recette?.images && recette.images.length > 0 && (
-            <div className="recette-desc-images">
-              {recette.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`${recette.title} - Image ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
-          <div className="recette-desc-timing">
-            <p>
-              <i className="pi pi-clock"></i>
-              <strong>Temps de préparation:</strong> {recette?.preparationTime} min
-            </p>
-            <p>
-              <i className="pi pi-hourglass"></i>
-              <strong>Temps de cuisson:</strong> {recette?.cookingTime} min
-            </p>
+          </div>
+          <div className="recette-desc-info-right">
+            {recette?.images && recette.images.length > 0 && (
+              <div className="recette-desc-gallery">
+                <div className="recette-desc-main-image">
+                  <img
+                    src={recette.images[currentImageIndex]}
+                    alt={`${recette.title} - Image ${currentImageIndex + 1}`}
+                  />
+                </div>
+                {recette.images.length > 1 && (
+                  <div className="recette-desc-thumbnails">
+                    {recette.images.map((image, index) => (
+                      <div
+                        key={index}
+                        className={`recette-desc-thumbnail ${index === currentImageIndex ? 'active' : ''}`}
+                        onClick={() => handleImageClick(index)}
+                      >
+                        <img
+                          src={image}
+                          alt={`${recette.title} - Thumbnail ${index + 1}`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
-
         {recette?.recipeParts.map((part, index) => (
           <div key={index} className="recette-desc-part">
             <h2>{part.title}</h2>
+            <section>
+              <div className="recette-desc-part-ingredients">
+                <h3>Ingrédients</h3>
+                <ul>
+                  {part.ingredients.map((ingredient, idx) => (
+                    <li key={idx}>
+                      <p>
+                        {ingredient.name} - {ingredient.quantity} {ingredient.unit}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <div className="recette-desc-part-ingredients">
-              <h3>Ingrédients</h3>
-              <ul>
-                {part.ingredients.map((ingredient, idx) => (
-                  <li key={idx}>
-                    <p>
-                      {ingredient.name} - {ingredient.quantity} {ingredient.unit}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="recette-desc-part-steps">
-              <h3>Étapes de préparation</h3>
-              <ol>
-                {part.steps.map((step, idx) => (
-                  <li key={idx}>
-                    <h4>{step}</h4>
-                  </li>
-                ))}
-              </ol>
-            </div>
+              <div className="recette-desc-part-steps">
+                <h3>Étapes de préparation</h3>
+                <ol>
+                  {part.steps.map((step, idx) => (
+                    <li key={idx}>
+                      <h4>{step}</h4>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </section>
           </div>
         ))}
 
