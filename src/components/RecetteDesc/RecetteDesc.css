@@ -151,7 +151,6 @@
 
 .recette-desc-part-ingredients li:hover {
   transform: translateX(5px);
-  background-color: var(--surface-hover);
 }
 
 .recette-desc-part-ingredients p {
