@@ -25,22 +25,32 @@ interface Department {
   code: string;
 }
 
+interface RecipePart {
+  title: string;
+  steps: string[];
+  ingredients: { [key: string]: string };
+  selectedIngredients: number[];
+}
+
 const AddRecetteForm: React.FC = () => {
   const { user } = useAuth();
 
   let recetteId: string = '';
   const [title, setTitle] = useState('');
   const [type, setType] = useState<number | null>(null);
-  const [ingredients, setIngredients] = useState<number[]>([]);
   const [preparationTime, setPreparationTime] = useState<number | null>(null);
   const [cookingTime, setCookingTime] = useState<number | null>(null);
   const [video, setVideo] = useState('');
   const [isRecetteCreated, setIsRecetteCreated] = useState<boolean>(false);
-  const [steps, setSteps] = useState<string[]>([]);
+  const [recipeParts, setRecipeParts] = useState<RecipePart[]>([{ 
+    title: 'Recette 1', 
+    steps: [],
+    ingredients: {},
+    selectedIngredients: []
+  }]);
 
   const [regions, setRegions] = useState<Department[]>([]);
   const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
-  const [ingredientQuantities, setIngredientQuantities] = useState<{ [key: string]: string }>({});
 
   const defaultDepartment: Department = { nom: "Aucun département", code: "none" };
   const [position, setPosition] = useState<Department>(defaultDepartment);
@@ -56,18 +66,63 @@ const AddRecetteForm: React.FC = () => {
     { id: 4, name: 'Boisson' },
   ];
 
-  const addStep = () => {
-    setSteps([...steps, '']);
+  const addStep = (partIndex: number) => {
+    const newParts = [...recipeParts];
+    newParts[partIndex].steps.push('');
+    setRecipeParts(newParts);
   };
 
-  const removeStep = (index: number) => {
-    setSteps(steps.filter((_, i) => i !== index));
+  const removeStep = (partIndex: number, stepIndex: number) => {
+    const newParts = [...recipeParts];
+    newParts[partIndex].steps = newParts[partIndex].steps.filter((_, i) => i !== stepIndex);
+    setRecipeParts(newParts);
   };
 
-  const handleStepChange = (index: number, value: string) => {
-    const newSteps = [...steps];
-    newSteps[index] = value;
-    setSteps(newSteps);
+  const handleStepChange = (partIndex: number, stepIndex: number, value: string) => {
+    const newParts = [...recipeParts];
+    newParts[partIndex].steps[stepIndex] = value;
+    setRecipeParts(newParts);
+  };
+
+  const addPart = () => {
+    setRecipeParts([...recipeParts, { 
+      title: `Recette ${recipeParts.length + 1}`, 
+      steps: [],
+      ingredients: {},
+      selectedIngredients: []
+    }]);
+  };
+
+  const removePart = (partIndex: number) => {
+    if (recipeParts.length > 1) {
+      setRecipeParts(recipeParts.filter((_, i) => i !== partIndex));
+    }
+  };
+
+  const handlePartTitleChange = (partIndex: number, value: string) => {
+    const newParts = [...recipeParts];
+    newParts[partIndex].title = value;
+    setRecipeParts(newParts);
+  };
+
+  const handlePartIngredientsChange = (partIndex: number, selectedIds: number[]) => {
+    const newParts = [...recipeParts];
+    newParts[partIndex].selectedIngredients = selectedIds;
+    
+    // Mettre à jour les ingrédients pour cette partie
+    const newIngredients = selectedIds.reduce((acc: { [key: string]: string }, id: number) => ({
+      ...acc,
+      [id]: newParts[partIndex].ingredients[id] || '0'
+    }), {});
+    
+    newParts[partIndex].ingredients = newIngredients;
+    setRecipeParts(newParts);
+  };
+
+  const handleIngredientQuantityChange = (partIndex: number, ingredientId: string, value: string) => {
+    const newParts = [...recipeParts];
+    newParts[partIndex].ingredients[ingredientId] = value;
+    setRecipeParts(newParts);
   };
 
   function generateKeywords(title: string): string[] {
@@ -94,37 +149,38 @@ const AddRecetteForm: React.FC = () => {
     setPreparationTime(preparationTime ?? 0);
     setCookingTime(cookingTime ?? 0);
 
-    if (!title || !type || !ingredients || preparationTime === null || cookingTime === null || !steps || !steps.every(step => step.trim() !== '')) {
+    if (!title || !type || preparationTime === null || cookingTime === null || 
+        !recipeParts.every(part => part.steps.every(step => step.trim() !== ''))) {
       alert('Veuillez remplir tous les champs');
       return;
     }
 
     const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
-
     const selectedType = types.find(t => t.id === type)?.name;
 
-    const selectedIngredients = ingredients.map(id => {
-      const ingredient = ingredientsList.find(i => i.id === id.toString());
-      return ingredient ? { 
-        id: ingredient.id, 
-        name: ingredient.name, 
-        quantity: ingredientQuantities[id] || 'N/A',
-        unit: ingredient.unit || ''
-      } : null;
-    }).filter(Boolean);
-    
-    
+    const formattedRecipeParts = recipeParts.map(part => ({
+      ...part,
+      ingredients: part.selectedIngredients.map(id => {
+        const ingredient = ingredientsList.find(i => i.id === id.toString());
+        return ingredient ? {
+          id: ingredient.id,
+          name: ingredient.name,
+          quantity: part.ingredients[id] || '0',
+          unit: ingredient.unit || ''
+        } : null;
+      }).filter(Boolean)
+    }));
+
     if (!isRecetteCreated) {
-      try{
+      try {
         const docRef = await addDoc(collection(db, 'recipesRequest'), {
           title: '',
           type: '',
-          ingredients: '',
           preparationTime: '',
           cookingTime: '',
           video: '',
           images: [],
-          steps: [],
+          recipeParts: [],
           position: '',
           createdBy: '',
           titleKeywords: [],
@@ -133,22 +189,24 @@ const AddRecetteForm: React.FC = () => {
 
         recetteId = docRef.id;
         setIsRecetteCreated(true);
-      }catch (error) {
+      } catch (error) {
         console.error('Error creating recette:', error);
       }
 
-      try{
+      try {
         const recetteRef = doc(db, 'recipesRequest', recetteId);
+        if (formattedRecipeParts.length == 1) {
+          formattedRecipeParts[0].title = capitalizedTitle;
+        }
         await updateDoc(recetteRef, {
           title: capitalizedTitle,
           type: selectedType,
-          ingredients: selectedIngredients,  
           preparationTime,
           cookingTime,
           video,
           id: recetteId,
           createdAt: new Date(),
-          steps,
+          recipeParts: formattedRecipeParts,
           position: position?.code || 'none',
           createdBy: user?.uid,
           images: imageURLs,
@@ -156,21 +214,23 @@ const AddRecetteForm: React.FC = () => {
           url: generateUrl(capitalizedTitle),
         });
 
-        
-
         setTitle('');
         setType(null);
-        setIngredients([]);
         setPreparationTime(0);
         setCookingTime(0);
         setVideo('');
-        setSteps([]);
+        setRecipeParts([{ 
+          title: 'Recette 1', 
+          steps: [],
+          ingredients: {},
+          selectedIngredients: []
+        }]);
         setPosition(defaultDepartment);
         setImageURLs([]);
         setIsRecetteCreated(false);
         navigateBack();
         toast.success('Recette envoyée à la vérification admin');
-      }catch (error) {
+      } catch (error) {
         console.error('Error updating recette:', error);
       }
     }
@@ -302,73 +362,6 @@ const AddRecetteForm: React.FC = () => {
             </div>
           </section>
 
-          {/* Ingredients Section */}
-          <section className="form-section ingredients">
-            <h2>Ingrédients *</h2>
-            <div className="form-group">
-              <label htmlFor="ingredients">Sélection des ingrédients</label>
-              <MultiSelect 
-                id="ingredients" 
-                value={ingredients} 
-                onChange={(e: MultiSelectChangeEvent) => setIngredients(e.value)} 
-                options={ingredientsList} 
-                optionLabel="name" 
-                optionValue="id"
-                filter
-                placeholder="Sélectionnez les ingrédients"
-                required
-                className="ingredients-select"
-                panelClassName="ingredients-panel"
-                display="chip"
-                showClear
-                itemTemplate={(option) => option.name}
-              />
-            </div>
-
-            <div className="ingredients-list">
-              {ingredients.map((id) => {
-                const ingredient = ingredientsList.find(i => i.id === id.toString());
-                return (
-                  <div key={id} className="ingredient-item">
-                    <div className="ingredient-info">
-                      <span className="ingredient-name">{ingredient?.name}</span>
-                      <div className="ingredient-quantity">
-                        <InputNumber 
-                          value={ingredientQuantities[id] ? parseFloat(ingredientQuantities[id]) : null} 
-                          onChange={(e) => {
-                            const value = e.value;
-                            setIngredientQuantities(prev => ({ 
-                              ...prev, 
-                              [id]: value !== null ? value.toString() : '' 
-                            }));
-                          }}
-                          placeholder="Quantité"
-                          min={0}
-                          mode="decimal"
-                          minFractionDigits={0}
-                          maxFractionDigits={2}
-                          className="ingredient-quantity-input"
-                          locale="fr-FR"
-                        />
-                        <span className="ingredient-unit">{ingredient?.unit}</span>
-                      </div>
-                    </div>
-                    <Button 
-                      icon="pi pi-times" 
-                      className="p-button-rounded p-button-danger p-button-text remove-ingredient"
-                      onClick={() => {
-                        setIngredients(ingredients.filter(i => i !== id));
-                        const newQuantities = { ...ingredientQuantities };
-                        delete newQuantities[id];
-                        setIngredientQuantities(newQuantities);
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
           {/* Timing Section */}
           <section className="form-section timing">
             <h2>Temps de préparation</h2>
@@ -404,33 +397,123 @@ const AddRecetteForm: React.FC = () => {
             </div>
           </section>
 
+          {/* Ingredients Section */}
+          <section className="form-section ingredients">
+            <h2>Ingrédients *</h2>
+            <div className="ingredients-by-part">
+              {recipeParts.map((part, partIndex) => (
+                <div key={partIndex} className="part-ingredients">
+                  <h3>{part.title}</h3>
+                  <div className="part-ingredients-selection">
+                    <MultiSelect 
+                      value={part.selectedIngredients} 
+                      onChange={(e) => handlePartIngredientsChange(partIndex, e.value)} 
+                      options={ingredientsList} 
+                      optionLabel="name" 
+                      optionValue="id"
+                      filter
+                      placeholder="Sélectionnez les ingrédients pour cette partie"
+                      className="part-ingredients-select"
+                      panelClassName="part-ingredients-panel"
+                      display="chip"
+                      showClear
+                      itemTemplate={(option) => option.name}
+                    />
+                  </div>
+                  <div className="ingredients-list">
+                    {part.selectedIngredients.map((id) => {
+                      const ingredient = ingredientsList.find(i => i.id === id.toString());
+                      return (
+                        <div key={id} className="ingredient-item">
+                          <div className="ingredient-info">
+                            <span className="ingredient-name">{ingredient?.name}</span>
+                            <div className="ingredient-quantity">
+                              <InputNumber 
+                                value={part.ingredients[id] ? parseFloat(part.ingredients[id]) : null} 
+                                onChange={(e) => {
+                                  const value = e.value;
+                                  handleIngredientQuantityChange(
+                                    partIndex,
+                                    id.toString(),
+                                    value !== null ? value.toString() : '0'
+                                  );
+                                }}
+                                placeholder="Quantité"
+                                min={0}
+                                mode="decimal"
+                                minFractionDigits={0}
+                                maxFractionDigits={2}
+                                className="ingredient-quantity-input"
+                                locale="fr-FR"
+                              />
+                              <span className="ingredient-unit">{ingredient?.unit}</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* Steps Section */}
           <section className="form-section steps">
             <h2>Étapes de préparation *</h2>
-            <div className="steps-container">
-              {steps.map((step, index) => (
-                <div key={index} className="step-item">
-                  <div className="step-number">{index + 1}</div>
-                  <InputText
-                    value={step}
-                    onChange={(e) => handleStepChange(index, e.target.value)}
-                    placeholder="Décrivez cette étape..."
-                    required
-                  />
-                  <Button 
-                    type="button" 
-                    icon="pi pi-times" 
-                    onClick={() => removeStep(index)}
-                    className="delete-step"
-                  />
+            <div className="recipe-parts-container">
+              {recipeParts.map((part, partIndex) => (
+                <div key={partIndex} className="recipe-part">
+                  <div className="part-header">
+                    <InputText
+                      value={part.title}
+                      onChange={(e) => handlePartTitleChange(partIndex, e.target.value)}
+                      placeholder="Titre de la partie..."
+                      className="part-title"
+                    />
+                    {recipeParts.length > 1 && (
+                      <Button
+                        type="button"
+                        icon="pi pi-times"
+                        onClick={() => removePart(partIndex)}
+                        className="p-button-danger p-button-text remove-part"
+                      />
+                    )}
+                  </div>
+                  <div className="steps-container">
+                    {part.steps.map((step, stepIndex) => (
+                      <div key={stepIndex} className="step-item">
+                        <div className="step-number">{stepIndex + 1}</div>
+                        <InputText
+                          value={step}
+                          onChange={(e) => handleStepChange(partIndex, stepIndex, e.target.value)}
+                          placeholder="Décrivez cette étape..."
+                          required
+                        />
+                        <Button
+                          type="button"
+                          icon="pi pi-times"
+                          onClick={() => removeStep(partIndex, stepIndex)}
+                          className="p-button-danger p-button-text remove-step"
+                        />
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      onClick={() => addStep(partIndex)}
+                      className="add-step"
+                      icon="pi pi-plus"
+                      label="Ajouter une étape"
+                    />
+                  </div>
                 </div>
               ))}
-              <Button 
-                type="button" 
-                onClick={addStep} 
-                className="add-step"
+              <Button
+                type="button"
+                onClick={addPart}
+                className="add-part"
                 icon="pi pi-plus"
-                label="Ajouter une étape"
+                label="Ajouter une partie"
               />
             </div>
           </section>

@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
 import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot } from '@firebase/firestore';
 import { db } from '@firebaseModule';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface RecetteProps {
   recetteId: string;
@@ -25,6 +26,7 @@ export const Recette: React.FC<RecetteProps> = ({
   position = ''
 }) => {
   const { user, role } = useAuth();
+  const { showToast } = useToast();
   const [likes, setLikes] = useState<string[]>([]);
   const userId = user?.uid;
   const hasLiked = userId ? likes.includes(userId) : false;
@@ -40,12 +42,26 @@ export const Recette: React.FC<RecetteProps> = ({
 
   const handleLike = async () => {
     if (!userId) {
-      return alert("Vous devez être connecté pour aimer une recette!");
+      showToast({
+        severity: 'warn',
+        summary: 'Connexion requise',
+        detail: 'Vous devez être connecté pour aimer une recette'
+      });
+      return;
     }
-    if (hasLiked) {
-      await unlikeRecipes(recetteId, userId);
-    } else {
-      await toggleLikeRecipes(recetteId, userId);
+    try {
+      if (hasLiked) {
+        await unlikeRecipes(recetteId, userId);
+      } else {
+        await toggleLikeRecipes(recetteId, userId);
+      }
+    } catch (error) {
+      console.error("Erreur lors du like:", error);
+      showToast({
+        severity: 'error',
+        summary: 'Erreur',
+        detail: 'Une erreur est survenue lors du like'
+      });
     }
   };
 
