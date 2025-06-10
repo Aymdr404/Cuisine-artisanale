@@ -208,9 +208,8 @@ const RecetteDesc: React.FC = () => {
           <Button
             icon={hasLiked ? 'pi pi-heart-fill' : 'pi pi-heart'}
             onClick={handleLike}
-            className="p-button-text Post_likeButton"
+            className="p-button-text"
             severity={hasLiked ? 'danger' : 'info'}
-            label={likes.length.toString()}
           />
         </div>
         {role === 'admin' && (
