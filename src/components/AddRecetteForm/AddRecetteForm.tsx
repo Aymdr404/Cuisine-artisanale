@@ -3,7 +3,7 @@ import './AddRecetteForm.css';
 
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
+import { MultiSelect } from 'primereact/multiselect';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
 
