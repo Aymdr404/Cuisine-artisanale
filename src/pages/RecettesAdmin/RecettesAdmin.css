@@ -40,7 +40,7 @@
 }
 
 /* Recipe Card Styling */
-.recipe-card {
+.recipe-card-admin {
   background: var(--surface-card);
   border-radius: var(--border-radius);
   box-shadow: var(--card-shadow);
@@ -49,7 +49,7 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.recipe-card:hover {
+.recipe-card-admin:hover {
   transform: translateY(-2px);
   box-shadow: var(--card-shadow-hover);
 }
@@ -92,6 +92,7 @@
 
 .recipe-card-content {
   display: flex;
+  flex-direction: column;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }

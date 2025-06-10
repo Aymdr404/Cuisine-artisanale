@@ -7,7 +7,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { AutoComplete } from 'primereact/autocomplete';
 import { Dialog } from 'primereact/dialog';
-import { addDoc, collection, getDocs, query } from '@firebase/firestore';
+import { addDoc, collection, getDocs, query, updateDoc } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import { toastMessages } from '@/utils/toast';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
@@ -26,7 +26,7 @@ interface AddIngredientFormProps {
 
 const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide }) => {
   const [name, setName] = useState('');
-  const [price, setPrice] = useState<number | null>(null);
+  const [price, setPrice] = useState<number | null>(0);
   const [unit, setUnit] = useState<Unit | null>(null);
   const [category, setCategory] = useState('');
   const [units, setUnits] = useState<Unit[]>([]);
@@ -67,13 +67,15 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide }
     setLoading(true);
 
     try {
-      await addDoc(collection(db, 'ingredients'), {
+      const docRef = await addDoc(collection(db, 'ingredients'), {
         name: name.trim(),
         price: price,
-        unit: unit,
+        unit: unit?.abbreviation,
         category: category.trim(),
         createdAt: new Date(),
-        inStock: true
+      });
+      await updateDoc(docRef, {
+        ingredientId: docRef.id,
       });
 
       showToast({

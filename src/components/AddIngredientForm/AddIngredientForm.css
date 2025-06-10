@@ -101,8 +101,8 @@
 .form-field .p-autocomplete {
   width: 100%;
   background: var(--surface-card);
-  border: 1px solid var(--surface-border);
   transition: all 0.2s;
+  gap: 0.5rem;
 }
 
 .form-field .p-inputtext:hover,
@@ -188,34 +188,3 @@
   }
 }
 
-/* Dark Theme Support */
-[data-theme="dark"] .form-field .p-inputtext,
-[data-theme="dark"] .form-field .p-dropdown,
-[data-theme="dark"] .form-field .p-inputnumber,
-[data-theme="dark"] .form-field .p-autocomplete {
-  background: var(--surface-card);
-}
-
-[data-theme="dark"] .form-field .p-dropdown-panel,
-[data-theme="dark"] .form-field .p-autocomplete-panel {
-  background: var(--surface-overlay);
-}
-
-[data-theme="dark"] .form-field .p-dropdown-item:hover,
-[data-theme="dark"] .form-field .p-autocomplete-item:hover {
-  background: var(--surface-hover);
-}
-
-[data-theme="dark"] .form-field .p-inputtext:hover,
-[data-theme="dark"] .form-field .p-dropdown:hover,
-[data-theme="dark"] .form-field .p-inputnumber:hover,
-[data-theme="dark"] .form-field .p-autocomplete:hover {
-  border-color: var(--primary-400);
-}
-
-[data-theme="dark"] .form-field .p-inputtext:focus,
-[data-theme="dark"] .form-field .p-dropdown:focus,
-[data-theme="dark"] .form-field .p-inputnumber:focus,
-[data-theme="dark"] .form-field .p-autocomplete:focus {
-  box-shadow: 0 0 0 2px var(--primary-900);
-}

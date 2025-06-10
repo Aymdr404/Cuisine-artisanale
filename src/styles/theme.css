@@ -173,6 +173,7 @@
     .p-multiselect,
     .p-inputnumber,
     .p-password,
+    .p-autocomplete-items-wrapper,
     .p-textarea {
         background: var(--input-bg) !important;
         border: 1px solid var(--input-border) !important;
@@ -187,7 +188,6 @@
 
     .p-inputtext{
         background: var(--input-bg) !important;
-        /* border: 1px solid var(--input-border) !important; */
         padding: var(--input-spacing-md) !important;
         border-radius: var(--border-radius) !important;
         font-size: 1rem !important;
@@ -199,6 +199,7 @@
 
     .p-inputtext::placeholder,
     .p-dropdown::placeholder,
+    .p-autocomplete-items-wrapper::placeholder,
     .p-multiselect::placeholder {
         color: var(--input-placeholder) !important;
         opacity: 0.7;
@@ -215,6 +216,7 @@
     .p-multiselect:hover:not(:disabled):not(:focus),
     .p-inputnumber:hover:not(:disabled):not(:focus),
     .p-password:hover:not(:disabled):not(:focus),
+    .p-autocomplete-items-wrapper:hover:not(:disabled):not(:focus),
     .p-textarea:hover:not(:disabled):not(:focus) {
         border-color: var(--input-hover-border) !important;
     }
@@ -224,6 +226,7 @@
     .p-multiselect:focus,
     .p-inputnumber:focus,
     .p-password:focus,
+    .p-autocomplete-items-wrapper:focus,
     .p-textarea:focus {
         border-color: var(--input-focus-border) !important;
         box-shadow: var(--input-focus-shadow) !important;
@@ -235,6 +238,7 @@
     .p-multiselect:disabled,
     .p-inputnumber:disabled,
     .p-password:disabled,
+    .p-autocomplete-items-wrapper:disabled,
     .p-textarea:disabled {
         opacity: 0.6;
         cursor: not-allowed;
@@ -242,6 +246,24 @@
 
     .p-multiselect-checkbox{
         display: none;
+    }
+
+    .p-autocomplete-items-wrapper .p-autocomplete-item{
+        padding: var(--input-spacing-md) var(--input-spacing-lg) !important;
+        color: var(--text-color) !important;
+        transition: all 0.2s ease !important;
+        list-style: none;
+        cursor: pointer;
+    }
+
+    .p-autocomplete-items-wrapper .p-autocomplete-item:hover{
+        background: var(--primary-color) !important;
+        color: var(--text-color-inverted) !important;
+    }
+
+    .p-autocomplete-items-wrapper .p-autocomplete-item.p-highlight{
+        background: var(--primary-color) !important;
+        color: var(--text-color-inverted) !important;
     }
 
     /* Dropdown Specific */

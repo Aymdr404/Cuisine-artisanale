@@ -14,6 +14,19 @@ import { Image } from 'primereact/image';
 import { toastMessages } from '@/utils/toast';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
 
+interface RecipePart {
+  title: string;
+  steps: string[];
+  ingredients: Ingredient[];
+}
+
+interface Ingredient {
+  id: string;
+  name: string;
+  quantity: string;
+  unit: string;
+}
+
 interface RecetteInterface {
   recetteId: string;
   title: string;
@@ -21,12 +34,12 @@ interface RecetteInterface {
   createdBy: string;
   createdAt: Date;
   status?: 'pending' | 'approved' | 'rejected';
-  description?: string;
-  prepTime?: number;
-  cookTime?: number;
+  preparationTime?: number;
+  cookingTime?: number;
   servings?: number;
   difficulty?: 'easy' | 'medium' | 'hard';
   images?: string[];
+  recipeParts?: RecipePart[];
 }
 
 const RecettesAdmin: React.FC = () => {
@@ -44,12 +57,6 @@ const RecettesAdmin: React.FC = () => {
     { label: 'Titre A-Z', value: 'title:asc' },
     { label: 'Titre Z-A', value: 'title:desc' }
   ];
-
-  const difficultyOptions = {
-    easy: { label: 'Facile', color: 'var(--success-color)' },
-    medium: { label: 'Moyen', color: 'var(--warning-color)' },
-    hard: { label: 'Difficile', color: 'var(--danger-color)' }
-  };
 
   const handleFetchRecettes = () => {
     try {
@@ -251,7 +258,7 @@ const RecettesAdmin: React.FC = () => {
     };
 
     return (
-      <div className="recipe-card">
+      <div className="recipe-card-admin">
         <div className="recipe-card-header">
           <div className="recipe-title-section">
             <h3>{recette.title}</h3>
@@ -286,32 +293,39 @@ const RecettesAdmin: React.FC = () => {
           )}
           
           <div className="recipe-details">
-            {recette.description && <p>{recette.description}</p>}
             <div className="recipe-metadata">
-              {recette.prepTime && (
+              {recette.preparationTime && (
                 <span className="metadata-item">
-                  <i className="pi pi-clock" /> Préparation: {formatTime(recette.prepTime)}
+                  <i className="pi pi-clock" /> Préparation: {formatTime(recette.preparationTime)}
                 </span>
               )}
-              {recette.cookTime && (
+              {recette.cookingTime && (
                 <span className="metadata-item">
-                  <i className="pi pi-stopwatch" /> Cuisson: {formatTime(recette.cookTime)}
+                  <i className="pi pi-stopwatch" /> Cuisson: {formatTime(recette.cookingTime)}
                 </span>
               )}
-              {recette.servings && (
+              {recette.recipeParts && recette.recipeParts.length > 0 && (
                 <span className="metadata-item">
-                  <i className="pi pi-users" /> {recette.servings} portions
+                  <i className="pi pi-list" /> {recette.recipeParts.length} parties
                 </span>
-              )}
-              {recette.difficulty && (
-                <Tag
-                  value={difficultyOptions[recette.difficulty].label}
-                  severity="info"
-                  style={{ backgroundColor: difficultyOptions[recette.difficulty].color }}
-                />
-              )}
+              )}  
             </div>
           </div>
+          {recette.recipeParts && recette.recipeParts.length > 0 && (
+                <div className="recipe-parts">
+                  {recette.recipeParts.map((part, index) => (
+                    <div key={index} className="recipe-part">
+                      <h4>{part.title}</h4>
+                      <p>{part.steps.join('\n')}</p>
+                      <ul>
+                        {part.ingredients.map((ingredient, index) => (
+                          <li key={index}>{ingredient.name} ({ingredient.quantity} {ingredient.unit})</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
         </div>
 
         <div className="recipe-card-footer">
@@ -331,6 +345,7 @@ const RecettesAdmin: React.FC = () => {
               className="p-button-rounded p-button-success p-button-text"
               onClick={() => confirmAccept(recette)}
               tooltip="Approuver"
+              tooltipOptions={{ position: 'bottom' }}
               disabled={recette.status === 'approved'}
             />
             <Button
@@ -338,6 +353,7 @@ const RecettesAdmin: React.FC = () => {
               className="p-button-rounded p-button-warning p-button-text"
               onClick={() => confirmReject(recette)}
               tooltip="Rejeter"
+              tooltipOptions={{ position: 'bottom' }}
               disabled={recette.status === 'rejected'}
             />
             <Button
@@ -345,6 +361,7 @@ const RecettesAdmin: React.FC = () => {
               className="p-button-rounded p-button-danger p-button-text"
               onClick={() => confirmDelete(recette.recetteId, recette.title)}
               tooltip="Supprimer"
+              tooltipOptions={{ position: 'bottom' }}
             />
           </div>
         </div>
@@ -370,8 +387,7 @@ const RecettesAdmin: React.FC = () => {
         value={recettes.filter(recette => 
           recette.title.toLowerCase().includes(globalFilter.toLowerCase()) ||
           recette.type.toLowerCase().includes(globalFilter.toLowerCase()) ||
-          recette.createdBy.toLowerCase().includes(globalFilter.toLowerCase()) ||
-          recette.description?.toLowerCase().includes(globalFilter.toLowerCase())
+          recette.createdBy.toLowerCase().includes(globalFilter.toLowerCase())
         )}
         layout="grid"
         header={header()}
