@@ -138,6 +138,8 @@
   padding: 1.5rem;
   border-radius: var(--border-radius);
   flex: 1;
+  max-width: 33%;
+  box-sizing: border-box;
 }
 
 .recette-desc-part-ingredients h3 {
@@ -179,7 +181,9 @@
   background-color: var(--surface-section);
   padding: 1.5rem;
   border-radius: var(--border-radius);
-  flex: 1;
+  flex:1;
+  max-width: 66%;
+  box-sizing: border-box;
 }
 
 .recette-desc-part-steps h3 {
