@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './RecetteDesc.css';
+import VideoEmbed from '@components/VideoEmbed/VideoEmbed';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { doc, getDoc, deleteDoc, onSnapshot, query, where, getDocs, collection } from '@firebase/firestore';
@@ -23,7 +24,7 @@ interface Recette {
   cookingTime: number;
   preparationTime: number;
   recipeParts: RecipePart[];
-  video: string;
+  video?: string;
   position: string;
   images?: string[];
 }
@@ -278,6 +279,12 @@ const RecetteDesc: React.FC = () => {
                 <strong>Temps de cuisson:</strong> {recette?.cookingTime} min
               </p>
             </div>
+            {recette?.video && (
+              <h3 className='recette-desc-video'>
+                <strong>Vidéo associée :</strong>
+                <VideoEmbed url={recette.video} />
+              </h3>
+            )}
           </div>
           <div className="recette-desc-info-right">
             {recette?.images && recette.images.length > 0 && (
@@ -339,18 +346,7 @@ const RecetteDesc: React.FC = () => {
           </div>
         ))}
 
-        {recette?.video && (
-          <div className="recette-desc-video">
-            <h3>Vidéo</h3>
-            <a
-              href={recette.video}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Voir la vidéo
-            </a>
-          </div>
-        )}
+        
       </div>
     </div>
   );

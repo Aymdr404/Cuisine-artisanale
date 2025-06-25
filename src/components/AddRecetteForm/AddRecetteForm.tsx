@@ -41,6 +41,7 @@ const AddRecetteForm: React.FC = () => {
   const [preparationTime, setPreparationTime] = useState<number | null>(null);
   const [cookingTime, setCookingTime] = useState<number | null>(null);
   const [video, setVideo] = useState('');
+  const [videoError, setVideoError] = useState('');
   const [isRecetteCreated, setIsRecetteCreated] = useState<boolean>(false);
   const [recipeParts, setRecipeParts] = useState<RecipePart[]>([{ 
     title: 'Recette 1', 
@@ -143,6 +144,12 @@ const AddRecetteForm: React.FC = () => {
     return slugify(title);
   } 
 
+  function isValidVideoUrl(url: string) {
+    // Accepte TikTok, Instagram, YouTube, Facebook, etc.
+    const regex = /^(https?:\/\/)?(www\.)?(tiktok\.com|instagram\.com|youtu\.be|youtube\.com|facebook\.com)\/.+$/i;
+    return regex.test(url);
+  }
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -153,6 +160,13 @@ const AddRecetteForm: React.FC = () => {
         !recipeParts.every(part => part.steps.every(step => step.trim() !== ''))) {
       alert('Veuillez remplir tous les champs');
       return;
+    }
+
+    if (video && !isValidVideoUrl(video)) {
+      setVideoError("Veuillez entrer une URL vidéo TikTok, Instagram ou YouTube valide.");
+      return;
+    } else {
+      setVideoError('');
     }
 
     const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
@@ -527,8 +541,9 @@ const AddRecetteForm: React.FC = () => {
                 id="video" 
                 value={video} 
                 onChange={(e) => setVideo(e.target.value)}
-                placeholder="URL de votre vidéo YouTube"
+                placeholder="URL de votre vidéo TikTok, Instagram, YouTube..."
               />
+              {videoError && <div className="error-message">{videoError}</div>}
             </div>
 
             <div className="form-section">
