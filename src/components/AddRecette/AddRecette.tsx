@@ -19,8 +19,9 @@ const AddRecette: React.FC = () => {
       <p>Share your recipes with the world!</p>
       <br />
       <br />
-      {!user && <h1>You need to be logged in to add a recette</h1>}
       <Button onClick={handleClick} disabled={!user}>Add recette</Button>
+      {!user && <h1>Vous devez être connecté pour ajouter un post</h1>}
+
     </div>
   );
 };

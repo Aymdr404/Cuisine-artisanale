@@ -14,11 +14,12 @@ interface PostProps {
   title: string;
   content: string;
   createdAt: string;
+  userName:string;
   fromRequest?: boolean;
   visible?: boolean;
 }
 
-const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequest = false, visible = true }) => {
+const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequest = false, visible = true, userName }) => {
   const { user, role } = useAuth();
   const [likes, setLikes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -156,7 +157,8 @@ const Post: React.FC<PostProps> = ({ postId, title, content, createdAt, fromRequ
               disabled={isLoading}
               severity="danger"
             />
-            <span className="post-date">{createdAt}</span>
+            <span className="post-date">{createdAt} </span>
+            <span className='post-user'>{userName}</span>
           </div>
         )}
       </section>

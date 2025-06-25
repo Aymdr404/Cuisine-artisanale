@@ -17,10 +17,10 @@ interface AddPostFormProps {
 // List of inappropriate words and phrases (you can expand this list)
 const inappropriateContent = [
   // French inappropriate words
-  'merde', 'putain', 'con', 'connard', 'salope', 'bite', 'cul', 'enculé', 'fdp', 'ta gueule', 'nique', 'bordel', 'chiant', 'emmerde', 'enculeur', 'pédé', 'gouine', 'batard', 'enculée',
+  'merde', 'putain', 'con', 'connard', 'salope', 'bite', 'cul', 'enculé', 'fdp', 'ta gueule', 'nique', 'bordel', 'chiant', 'emmerde', 'enculeur', 'pédé', 'gouine', 'batard', 'enculée', 'test', 'penis',
 
   // English inappropriate words
-  'fuck', 'shit', 'bitch', 'ass', 'dick', 'bastard', 'crap', 'slut', 'motherfucker', 'cunt', 'damn', 'pussy', 'prick', 'whore', 'cock', 'retard', 'jerk', 'douche',
+  'fuck', 'shit', 'bitch', 'ass', 'dick', 'bastard', 'crap', 'slut', 'motherfucker', 'cunt', 'damn', 'pussy', 'prick', 'whore', 'cock', 'retard', 'jerk', 'douche', 'tests'
 ];
 
 const checkInappropriateContent = (text: string): boolean => {
@@ -54,7 +54,8 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ closeForm }) => {
         content: content, // Don't trim content to preserve line breaks
         createdAt: serverTimestamp(),
         userId: user.uid,
-        userName: user.displayName || 'Anonymous'
+        userName: user.displayName || 'Anonymous',
+        visible: false
       });
       closeForm();
     } catch (error) {

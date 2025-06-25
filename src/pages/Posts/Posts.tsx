@@ -14,6 +14,7 @@ interface Post {
   content: string;
   createdAt: Date;
   visible?: boolean;
+  userName: string;
 }
 
 const Posts: React.FC = () => {
@@ -54,7 +55,8 @@ const Posts: React.FC = () => {
           content: data.content,
           createdAt: data.createdAt.toDate(),
           id: doc.id,
-          visible: data.visible !== false // Default to true if not set
+          visible: data.visible !== false, // Default to true if not set
+          userName: data.userName
         } as Post;
       });
 
@@ -144,6 +146,7 @@ const Posts: React.FC = () => {
             content={post.content} 
             createdAt={formatDate(post.createdAt)}
             visible={post.visible}
+            userName={post.userName}
           />
         ))}
         <section className="LoadMore_section">

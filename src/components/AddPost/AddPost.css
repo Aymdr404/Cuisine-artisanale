@@ -6,6 +6,15 @@
   display: none;
 }
 
+.desktop-post .p-button:disabled,
+.desktop-post .p-button.p-disabled {
+  background-color: #cccccc !important;
+  color: #888888 !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
+  border: 1px solid #bbbbbb !important;
+}
+
 .mobile-floating-button {
   position: fixed;
   bottom: 1.5rem;
