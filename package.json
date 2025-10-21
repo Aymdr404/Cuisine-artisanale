@@ -4,20 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-	"dev": "vite",
-	"build": "tsc -b && vite build",
-	"postbuild": "npx react-snap && node copy404.js",
-	"lint": "eslint .",
-	"preview": "vite preview",
-	"predeploy": "npm run build",
-	"deploy": "gh-pages -d dist",
-	"sitemap": "node generateSitemap.js"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "postbuild": "npx react-snap && node copy404.js",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "sitemap": "node generateSitemap.js",
+    "generate": "plop"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@firebase/firestore": "^4.7.7",
     "@google-cloud/storage": "^7.15.1",
     "dotenv": "^16.4.7",
+    "emailjs-com": "^3.2.0",
     "firebase": "^11.3.0",
+    "framer-motion": "^12.23.24",
     "gh-pages": "^6.3.0",
     "leaflet": "^1.9.4",
     "primeicons": "^7.0.0",
@@ -47,19 +51,21 @@
     "vite": "^6.1.0"
   },
   "reactSnap": {
-	"inlineCss": true,
-	"skipThirdPartyRequests": true,
-	"puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
-	"source": "dist",
-	"include": [
-		"/",
-		"/recettes",
-		"/about",
-		"/map",
-		"/account",
-		"/account/mes-recettes",
-		"/account/mes-favoris"
-	]
+    "inlineCss": true,
+    "skipThirdPartyRequests": true,
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ],
+    "source": "dist",
+    "include": [
+      "/",
+      "/recettes",
+      "/about",
+      "/map",
+      "/account",
+      "/account/mes-recettes",
+      "/account/mes-favoris"
+    ]
   }
-
 }

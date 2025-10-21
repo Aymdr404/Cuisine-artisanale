@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { ToastProvider } from './contexts/ToastContext/ToastContext';
 
 import Navbar from '@components/Navbar/Navbar';
+import NewsletterPopup from './components/NewsletterPopup/NewsletterPopup';
 import Home from '@pages/Home/Home';
 import Recipes from '@pages/Recettes/Recettes';
 import About from '@pages/About/About';
@@ -57,6 +58,7 @@ const App = () => {
           </div>
           <LegalMention />
         </Router>
+		<NewsletterPopup />
         <ToastContainer />
         </ToastProvider>
       </ThemeProvider>
