@@ -13,3 +13,10 @@
   border: 1px solid #bbbbbb !important;
 }
 
+
+@media screen and (max-width: 768px) {
+  .AddRecette {
+	display: none;
+  }
+
+}

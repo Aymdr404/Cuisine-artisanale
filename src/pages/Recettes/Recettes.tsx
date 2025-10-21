@@ -32,22 +32,22 @@ const Recettes: React.FC = () => {
     try {
       const recettesCollection = collection(db, "recipes");
       let recettesQuery = query(recettesCollection);
-  
+
       const type = queryParams.get("type");
       const position = queryParams.get("position");
       const keywords = queryParams.get("keywords");
-  
+
       let allRecettes = new Map<string, RecetteData>();
-  
+
       if (keywords) {
         const words = keywords.toLowerCase().split(" ");
-  
+
         for (const word of words) {
           const wordQuery = query(
             recettesCollection,
             where("titleKeywords", "array-contains", word)
           );
-  
+
           const querySnapshot = await getDocs(wordQuery);
           querySnapshot.forEach((doc) => {
             const data = doc.data();
@@ -73,9 +73,9 @@ const Recettes: React.FC = () => {
           });
         });
       }
-  
+
       let recettesData = Array.from(allRecettes.values());
-  
+
       // 🔍 Filtrer selon le type et la position après récupération
       if (type) {
         recettesData = recettesData.filter((r) => r.type === type);
@@ -83,8 +83,9 @@ const Recettes: React.FC = () => {
       if (position) {
         recettesData = recettesData.filter((r) => r.position === position);
       }
-  
+
       setRecettes(recettesData);
+	  console.log("Recettes fetched: ", recettesData);
     } catch (error) {
       console.error("Error getting recettes: ", error);
     }
@@ -98,24 +99,29 @@ const Recettes: React.FC = () => {
         setDepartements(departementMap);
       });
   }, []);
-  
-  
+
+
   return (
     <div className="Recettes">
       <section className='filter_section'>
         <Filtre />
         <AddRecette />
       </section>
-      {recettes &&(
-          <section className='recettes_section'>
-            {recettes.map((recette, index) => (
-              <Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} position={departements.get(recette.position) || "Inconnu"}  />
-            ))}
-          </section>
-      )}
-      {!recettes && (
-        <p>Chargement...</p>
-      )}
+	  <section className='recettes_section'>
+		{recettes &&(
+			<>
+				{recettes.map((recette, index) => (
+				<Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} position={departements.get(recette.position) || "Inconnu"}  />
+				))}
+			</>
+		)}
+		{recettes && recettes.length === 0 && (
+				<h2>Aucune recette trouvée.</h2>
+		)}
+		{!recettes && (
+			<p>Chargement...</p>
+		)}
+		</section>
     </div>
   );
 };

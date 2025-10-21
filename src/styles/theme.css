@@ -10,18 +10,18 @@
         --primary-dark: #2C1810;           /* Deep brown for hover */
         --primary-light: #CD853F;          /* Peru brown for accents */
         --secondary-color: #2C1810;        /* Deep brown */
-        
+
         /* Navbar Colors */
         --primary-color-navbar: #A0522D;   /* Sienna brown */
         --secondary-color-navbar: rgba(44, 24, 16, 0.2); /* Deep brown with opacity */
-        
+
         /* Surface Colors */
         --surface-ground: #FFF9F5;         /* Warm white background */
         --surface-section: #FFF1E6;        /* Light peach section background */
         --surface-card: #FFFFFF;           /* Pure white for cards */
         --surface-overlay: #FFFFFF;        /* Pure white for overlays */
         --surface-border: #E8D5CC;         /* Warm gray border */
-        
+
         /* Background Colors */
         --background-base: #FFFFFF;        /* Base background color */
         --background-paper: #FFF9F5;       /* Paper background color */
@@ -33,7 +33,7 @@
         --text-color-light: #A0522D;        /* Sienna brown */
         --text-color-inverted: #FFFFFF;     /* White text for dark backgrounds */
         --a-hover-color: #CD853F;           /* Peru brown */
-        
+
         /* Button Colors */
         --button-bg: var(--primary-color);
         --button-text: #FFFFFF;            /* White text on buttons */
@@ -41,7 +41,7 @@
         --button-hover-bg: var(--primary-dark);
         --button-hover-text: #FFFFFF;      /* Keeping white text on hover */
         --button-hover-border: var(--primary-dark);
-        
+
         /* Input */
         --input-bg: var(--surface-card);
         --input-text: var(--text-color);
@@ -80,7 +80,7 @@
         /* Border Colors */
         --border-color: #ddd;              /* Default border color */
         --border-color-hover: #A0522D;     /* Border color on hover */
-        
+
         /* Link Colors */
         --link-color: #8B4513;            /* Default link color */
         --link-color-hover: #A0522D;      /* Link color on hover */
@@ -94,52 +94,52 @@
         --primary-dark: #8B4513;           /* Saddle brown as dark variant */
         --primary-light: #DEB887;          /* Burlywood - even lighter for accents */
         --secondary-color: #CD853F;        /* Peru brown */
-        
+
         /* Navbar Colors */
         --primary-color-navbar: #2C1810;   /* Deep brown */
         --secondary-color-navbar: rgba(255, 249, 245, 0.2); /* Warm white with opacity */
-        
+
         /* Surface & Background Colors */
         --surface-ground: #261511;         /* Dark brown background */
         --surface-section: #2C1810;        /* Slightly lighter brown */
         --surface-card: #342013;           /* Main brown */
         --surface-overlay: #342013;        /* Overlay brown */
         --surface-border: #4D2B1D;         /* Light brown border */
-        
+
         /* Background Colors */
         --background-base: #1A0F0D;        /* Dark base background */
         --background-paper: #261511;       /* Dark paper background */
         --background-elevated: #2C1810;    /* Dark elevated surface */
-        
+
         /* Text Colors */
         --text-color: #FFE4D6;             /* Light peach for main text */
         --text-color-secondary: #FFDAB9;    /* Peachpuff for secondary text */
         --text-color-light: #FFE4C4;        /* Bisque for light text */
         --text-color-inverted: #2C1810;     /* Dark brown for light backgrounds */
-        
+
         /* Button Colors */
         --button-bg: var(--primary-color);
         --button-text: #FFFFFF;            /* White text in dark mode */
         --button-hover-text: #FFFFFF;      /* Keeping white text on hover */
         --button-hover-bg: var(--primary-dark);
         --button-hover-border: var(--primary-dark);
-        
+
         /* Component Colors */
         --input-bg: var(--surface-ground);
         --panel-header-bg: var(--surface-section);
         --panel-content-bg: var(--surface-card);
         --panel-border: var(--surface-border);
-        
+
         /* Dropdown */
         --dropdown-color: #4D2B1D;         /* Medium brown */
-        
+
         /* Card Shadow */
         --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 
         /* Border Colors */
         --border-color: #4D2B1D;          /* Darker border for dark mode */
         --border-color-hover: #CD853F;     /* Lighter border on hover for dark mode */
-        
+
         /* Link Colors */
         --link-color: #DEB887;             /* Burlywood - lighter for dark mode */
         --link-color-hover: #FFE4B5;       /* Moccasin - very light on hover */
@@ -169,6 +169,12 @@
     }
 
     /* Global Input Styles */
+
+	.p-input-icon-left {
+		display: flex !important;
+		align-items: center !important;
+	}
+
     .p-dropdown,
     .p-multiselect,
     .p-inputnumber,
@@ -208,7 +214,7 @@
     }
 
     .p-input-icon-left .pi{
-        margin-left: 0.5rem; 
+        margin-left: 0.5rem;
     }
 
     .p-inputtext:hover:not(:disabled):not(:focus),
@@ -497,4 +503,4 @@
     [data-theme="dark"] .p-multiselect-token {
         background: var(--primary-dark) !important;
     }
-} 
+}

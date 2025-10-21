@@ -15,12 +15,12 @@ const AddRecette: React.FC = () => {
 
   return (
     <div className="AddRecette">
-      <h2>Add recette</h2>
-      <p>Share your recipes with the world!</p>
+      <h2>Ajouter une recette</h2>
+      <p>Partage tes recettes avec le monde !</p>
       <br />
       <br />
-      <Button onClick={handleClick} disabled={!user}>Add recette</Button>
-      {!user && <h1>Vous devez être connecté pour ajouter un post</h1>}
+      <Button onClick={handleClick} disabled={!user}>Ajouter une recette</Button>
+      {!user && <h3>Vous devez être connecté pour ajouter un post</h3>}
 
     </div>
   );
