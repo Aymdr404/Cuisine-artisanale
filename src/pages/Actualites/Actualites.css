@@ -1,103 +1,81 @@
-.Actualites {
-  padding: 1rem;
-  max-width: 100%;
-  margin: 0 auto;
-}
-
 .featured-recette {
-  background-color: var(--surface-card);
-  padding: 1rem;
+  text-align: left;
+  background: #fffdf9;
+  border: 1px solid #f2e3d5;
   border-radius: 12px;
-  margin: 1rem auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--surface-border);
+  padding: 1.5rem;
+  max-width: 700px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .featured-recette h2 {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   color: var(--primary-color);
   margin-bottom: 1rem;
-  text-align: left;
+  font-weight: 600;
 }
 
 .featured-card {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 1rem;
-  background: var(--surface-section);
-  border-radius: 8px;
-  padding: 1rem;
-  border: 1px solid var(--surface-border);
 }
 
 .featured-img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+  width: 160px;
+  height: 120px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
 .featured-content {
-  text-align: left;
+  flex: 1;
 }
 
 .featured-content h3 {
   font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-color);
+  margin: 0 0 0.3rem 0;
+  color: #333;
 }
 
 .featured-content p {
+  margin: 0.2rem 0;
+  color: #555;
   font-size: 0.9rem;
-  color: var(--text-color-secondary);
-  margin-bottom: 1rem;
 }
 
 .featured-button {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--button-bg);
+  color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
+  font-weight: 600;
   transition: background-color 0.2s ease;
+  margin-top: 0.5rem;
 }
 
 .featured-button:hover {
-  background-color: var(--primary-dark);
+  background-color: var(--button-hover-bg);
 }
 
-@media screen and (min-width: 768px) {
-  .Actualites {
-    padding: 2rem;
-  }
-
-  .featured-recette {
-    max-width: 600px;
-    padding: 1.5rem;
-  }
-
+@media (max-width: 600px) {
   .featured-card {
-    flex-direction: row;
-    align-items: center;
-    padding: 1.5rem;
+    flex-direction: column;
+    text-align: center;
   }
 
   .featured-img {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: auto;
   }
 
   .featured-content {
-    flex: 1;
-  }
-
-  .featured-button {
-    width: auto;
-    padding: 0.75rem 1.5rem;
+    text-align: center;
   }
 }
