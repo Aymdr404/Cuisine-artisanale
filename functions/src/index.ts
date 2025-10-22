@@ -57,7 +57,7 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
 		console.log(data);
 	}
 
-    if (!weeklySnap.exists()) {
+    if (!weeklySnap.exists) {
       throw new Error("Aucune recette de la semaine trouvée.");
     }
 
@@ -137,3 +137,34 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
     console.error("Erreur lors de l’envoi de l’email :", error);
   }
 };
+
+import { onSchedule } from "firebase-functions/v2/scheduler";
+
+// ------------------- Cron planifié (dimanche 09:00) -------------------
+export const sendWeeklyRecipe = onSchedule(
+  {
+    schedule: "0 9 * * 0",       // chaque dimanche à 09:00
+    timeZone: "Europe/Paris"    // fuseau horaire
+  },
+  async (event) => {
+    try {
+      // Récupérer tous les abonnés depuis Firestore
+      const subscribersSnap = await db.collection("abonnés").get();
+      if (subscribersSnap.empty) {
+        console.log("Aucun abonné trouvé pour la newsletter");
+        return;
+      }
+
+      const subscribers = subscribersSnap.docs.map((doc: { data: () => { (): any; new(): any; email: any; }; }) => doc.data().email) as string[];
+
+      // Envoyer l'email à chaque abonné
+      for (const email of subscribers) {
+        await sendWeeklyRecipeEmail(email);
+      }
+
+      console.log("Emails de la recette de la semaine envoyés à tous les abonnés !");
+    } catch (err) {
+      console.error("Erreur dans le cron de la recette de la semaine :", err);
+    }
+  }
+);
