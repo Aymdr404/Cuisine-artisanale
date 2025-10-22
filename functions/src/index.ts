@@ -1,20 +1,16 @@
 import { onDocumentUpdated } from "firebase-functions/v2/firestore";
-import { onSchedule, ScheduleOptions } from "firebase-functions/v2/scheduler";
-import { Firestore } from "firebase-admin/firestore"
 
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 
 admin.initializeApp();
+const db = admin.firestore();
 
 // Définir les types des données Firestore
 interface RecipeRequest {
     title: string;
 }
 
-interface Subscriber {
-  email: string;
-}
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -51,9 +47,15 @@ export const sendEmailOnNewRecipeRequest = onDocumentUpdated('recipesRequest/{ob
 
 export const sendWeeklyRecipeEmail = async (email: string) => {
   try {
-    // 🔥 1. Récupérer la recette de la semaine depuis Firestore
-    const weeklyRef = doc(db, "weeklyRecipe", "current");
-    const weeklySnap = await getDoc(weeklyRef);
+	// Référence document
+	const weeklyRef = db.collection("weeklyRecipe").doc("current");
+
+	// Récupérer le document
+	const weeklySnap = await weeklyRef.get();
+	if (weeklySnap.exists) {
+		const data = weeklySnap.data();
+		console.log(data);
+	}
 
     if (!weeklySnap.exists()) {
       throw new Error("Aucune recette de la semaine trouvée.");
