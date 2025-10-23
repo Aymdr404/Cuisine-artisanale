@@ -85,7 +85,6 @@ const Recettes: React.FC = () => {
       }
 
       setRecettes(recettesData);
-	  console.log("Recettes fetched: ", recettesData);
     } catch (error) {
       console.error("Error getting recettes: ", error);
     }
