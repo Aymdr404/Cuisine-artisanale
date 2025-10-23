@@ -70,7 +70,7 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
     const recipeUrl = `https://aymeric-sabatier.fr/cuisine-artisanale/recettes/${slug}`;
 
     // Lien de désabonnement
-    const unsubscribeUrl = `https://aymeric-sabatier.fr/unsubscribe?email=${encodeURIComponent(email)}`;
+    const unsubscribeUrl = `https://aymeric-sabatier.fr/cuisine-artisanale/unsubscribe?email=${encodeURIComponent(email)}`;
 
     const mailOptions = {
       from: process.env.EMAIL,
