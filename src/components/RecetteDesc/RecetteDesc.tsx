@@ -38,7 +38,7 @@ interface Ingredient {
 
 const RecetteDesc: React.FC = () => {
   const [id, setId] = useState<string | null>(null);
-  const { recipeName } = useParams(); 
+  const { recipeName } = useParams();
   const navigate = useNavigate();
   const {role, user} = useAuth();
   const { showToast } = useToast();
@@ -72,7 +72,7 @@ const RecetteDesc: React.FC = () => {
             part.ingredients.map(async (ingredient) => {
               const ingredientRef = doc(db, 'ingredients', ingredient.id);
               const ingredientSnap = await getDoc(ingredientRef);
-      
+
               if (ingredientSnap.exists()) {
                 const ingredientData = ingredientSnap.data();
                 return {
@@ -87,7 +87,7 @@ const RecetteDesc: React.FC = () => {
               }
             })
           );
-      
+
           const filteredIngredients = ingredientsDetails.filter((ing) => ing !== null);
           return {
             ...part,
@@ -116,7 +116,7 @@ const RecetteDesc: React.FC = () => {
         setDepartements(departementMap);
       });
   }, []);
-    
+
 
   useEffect(() => {
     if (id) {
@@ -129,11 +129,11 @@ const RecetteDesc: React.FC = () => {
       return () => unsubscribe();
     }
   }, [id]);
-  
+
   useEffect(() => {
     if (recette?.images && recette.images.length > 1) {
       intervalRef.current = setInterval(() => {
-        setCurrentImageIndex((prevIndex) => 
+        setCurrentImageIndex((prevIndex) =>
           prevIndex === (recette?.images?.length ?? 0) - 1 ? 0 : prevIndex + 1
         );
       }, 5000);
@@ -145,6 +145,61 @@ const RecetteDesc: React.FC = () => {
       }
     };
   }, [recette?.images]);
+
+  useEffect(() => {
+	if (!recette) return;
+
+	const structuredData = {
+		"@context": "https://schema.org",
+		"@type": "Recipe",
+		"name": recette.title,
+		"image": recette.images?.[0] || "",
+		"author": {
+		"@type": "Person",
+		"name": user?.displayName || "Auteur inconnu"
+		},
+		"recipeCuisine": departements.get(recette.position) || "France",
+		"recipeCategory": recette.type,
+		"prepTime": `PT${recette.preparationTime}M`,
+		"cookTime": `PT${recette.cookingTime}M`,
+		"recipeIngredient": recette.recipeParts.flatMap(part =>
+		part.ingredients.map(ing => `${ing.quantity} ${ing.unit} ${ing.name}`)
+		),
+		"recipeInstructions": recette.recipeParts.flatMap(part =>
+		part.steps.map(step => ({
+			"@type": "HowToStep",
+			"text": step
+		}))
+		),
+		"video": recette.video
+		? {
+			"@type": "VideoObject",
+			"name": recette.title,
+			"description": `Vidéo de la recette ${recette.title}`,
+			"thumbnailUrl": recette.images?.[0] || "",
+			"uploadDate": new Date().toISOString(),
+			"contentUrl": recette.video
+			}
+		: undefined
+	};
+
+	// Supprime tout ancien script JSON-LD
+	const oldScript = document.getElementById("jsonld-recipe");
+	if (oldScript) oldScript.remove();
+
+	// Crée et insère le nouveau script
+	const script = document.createElement("script");
+	script.id = "jsonld-recipe";
+	script.type = "application/ld+json";
+	script.innerHTML = JSON.stringify(structuredData);
+	document.head.appendChild(script);
+
+	return () => {
+		const existing = document.getElementById("jsonld-recipe");
+		if (existing) existing.remove();
+	};
+	}, [recette, departements]);
+
 
   const handleImageClick = (index: number) => {
     setCurrentImageIndex(index);
@@ -346,7 +401,7 @@ const RecetteDesc: React.FC = () => {
           </div>
         ))}
 
-        
+
       </div>
     </div>
   );
