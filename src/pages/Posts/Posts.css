@@ -21,9 +21,7 @@
   top: 5rem;
   height: fit-content;
   padding: 1.5rem;
-  background: var(--surface-card);
   border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 

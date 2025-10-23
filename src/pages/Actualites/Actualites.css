@@ -1,7 +1,7 @@
 .featured-recette {
   text-align: left;
-  background: #fffdf9;
-  border: 1px solid #f2e3d5;
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
   border-radius: 12px;
   padding: 1.5rem;
   max-width: 700px;
@@ -38,12 +38,12 @@
 .featured-content h3 {
   font-size: 1.1rem;
   margin: 0 0 0.3rem 0;
-  color: #333;
+  color: var(--text-color);
 }
 
 .featured-content p {
   margin: 0.2rem 0;
-  color: #555;
+  color: var(--text-color);
   font-size: 0.9rem;
 }
 
