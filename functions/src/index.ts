@@ -1,9 +1,11 @@
 import { onDocumentUpdated } from "firebase-functions/v2/firestore";
 import { onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
+import cors from "cors";
 
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
+const corsHandler = cors({ origin: true });
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -67,10 +69,10 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
       .replace(/\s+/g, "_")
       .toLowerCase();
 
-    const recipeUrl = `https://aymeric-sabatier.fr/cuisine-artisanale/recettes/${slug}`;
+    const recipeUrl = `https://www.aymeric-sabatier.fr/Cuisine-artisanale/recettes/${slug}`;
 
     // Lien de désabonnement
-    const unsubscribeUrl = `https://aymeric-sabatier.fr/cuisine-artisanale/unsubscribe?email=${encodeURIComponent(email)}`;
+    const unsubscribeUrl = `https://www.aymeric-sabatier.fr/Cuisine-artisanale/unsubscribe?email=${encodeURIComponent(email)}`;
 
     const mailOptions = {
       from: process.env.EMAIL,
@@ -94,7 +96,7 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
         </p>
 
         <div style="text-align:center; margin:25px 0;">
-          <img src="${recipe.image}"
+          <img src="${recipe.images[0]}"
                alt="${recipe.title}"
                style="width:100%; max-width:480px; border-radius:10px;" />
         </div>
@@ -119,7 +121,7 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
 
         <p style="font-size:14px; color:#777; text-align:center;">
           Vous recevez cet email car vous êtes inscrit(e) à la newsletter de
-          <a href="https://aymeric-sabatier.fr/cuisine-artisanale" style="color:#e36414; text-decoration:none;">Cuisine Artisanale</a> 🍰
+          <a href="https://www.aymeric-sabatier.fr/Cuisine-artisanale" style="color:#e36414; text-decoration:none;">Cuisine Artisanale</a> 🍰
           <br/>
           <small>
             <a href="${unsubscribeUrl}" style="color:#e36414; text-decoration:none;">
@@ -169,19 +171,31 @@ export const sendWeeklyRecipe = onSchedule(
   }
 );
 
-export const unsubscribe = onRequest(async (req, res) => {
-  const email = req.query.email as string;
+export const unsubscribe = onRequest((req, res) => {
+  corsHandler(req, res, async () => {
+    const email = req.query.email as string;
 
-  if (!email) {
-    res.status(400).send("Email manquant");
-    return;
-  }
+    if (!email) {
+      res.status(400).json({ success: false, message: "Email manquant" });
+      return;
+    }
 
-  try {
-    await db.collection("abonnés").doc(email).update({ subscribed: false });
-    res.status(200).send("Désabonnement réussi");
-  } catch (error) {
-    console.error("Erreur lors du désabonnement :", error);
-    res.status(500).send("Erreur interne du serveur");
-  }
+    try {
+      const abonnésRef = db.collection("abonnés");
+      const snapshot = await abonnésRef.where("email", "==", email).get();
+
+      if (snapshot.empty) {
+        res.status(404).json({ success: false, message: "Aucun abonné trouvé" });
+        return;
+      }
+
+      await Promise.all(snapshot.docs.map((doc: FirebaseFirestore.QueryDocumentSnapshot) => doc.ref.update({ subscribed: false })));
+
+      res.status(200).json({ success: true, message: "Désabonnement réussi" });
+    } catch (error) {
+      console.error("Erreur lors du désabonnement :", error);
+      res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+    }
+  });
 });
+
