@@ -17,3 +17,8 @@
 .LegalMention a:hover {
   color: var(--link-color-hover);
 }
+
+.legalMention-header {
+	display: flex;
+	flex-direction: column;
+}

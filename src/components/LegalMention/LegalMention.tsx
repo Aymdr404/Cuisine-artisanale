@@ -1,32 +1,23 @@
 import React, { useEffect } from 'react';
 import './LegalMention.css';
 import LienUtiles from '@components/LienUtiles/LienUtiles';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 const LegalMention: React.FC = () => {
-
-  const [ISAboutPAge, setIsAboutPage] = React.useState(false);
+  const [isAboutPage, setIsAboutPage] = React.useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    if(location.pathname === '/about') {
-      setIsAboutPage(true);
-    } else {
-      setIsAboutPage(false);
-    }
-  }
-  , [location]);
-
+    setIsAboutPage(location.pathname === '/about');
+  }, [location]);
 
   return (
     <div className="LegalMention">
       <header className="legalMention-header">
-          <p>Mentions légales / ©Aymeric sabatier</p>
-          {!ISAboutPAge && 
-          (
-            <LienUtiles />
-          )}
-        </header>
+        <Link to="/legal-mentions">Mentions légales / ©Aymeric Sabatier</Link>
+        <Link to="/privacy-policy">Politique de confidentialité / ©Aymeric Sabatier</Link>
+        {!isAboutPage && <LienUtiles />}
+      </header>
     </div>
   );
 };

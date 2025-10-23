@@ -25,6 +25,9 @@ import EditRecette from '@pages/EditRecette/EditRecette';
 import LegalMention from '@components/LegalMention/LegalMention';
 import { ToastContainer } from 'react-toastify';
 import Unsubscribe from "@pages/Unsubscribe/Unsubscribe";
+import LegalMentions from '@pages/LegalMentions/LegalMentions';
+import PolitiquesConfidentiel from '@pages/PolitiquesConfidentiel/PolitiquesConfidentiel';
+import CookieConsent from '@components/CookiesConsent/CookiesConsent';
 
 const App = () => {
   useEffect(() => {
@@ -50,16 +53,18 @@ const App = () => {
               <Route path="/map" element={<RecetteMap />} />
               <Route path="/account/*" element={<Account />} />
 			  <Route path="/unsubscribe" element={<Unsubscribe />} />
+			  <Route path="/legal-mentions" element={<LegalMentions />} />
+			  <Route path="/privacy-policy" element={<PolitiquesConfidentiel />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/admin-panel/*" element={<AdminPanel />} />
               </Route>
-
               <Route path="*" element={<h1>404 - Not Found</h1>} />
             </Routes>
           </div>
           <LegalMention />
         </Router>
 		<NewsletterPopup />
+		<CookieConsent />
         <ToastContainer />
         </ToastProvider>
       </ThemeProvider>
