@@ -1,75 +1,124 @@
+/* === OVERLAY === */
 .newsletter-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.2);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  align-items: flex-end; /* 👈 aligne en bas */
   z-index: 1000;
+  pointer-events: none; /* permet de ne cliquer que sur la popup */
 }
 
+/* === POPUP === */
 .newsletter-popup {
-  background: #fff;
-  border-radius: 1rem;
-  padding: 2rem;
-  max-width: 380px;
-  width: 90%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  background: var(--background-base);
+  border-radius: 1rem 1rem 0 1rem;
+  padding: 1.5rem;
+  width: 360px;
+  max-width: 90%;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   text-align: center;
   position: relative;
-  animation: fadeIn 0.3s ease;
+  overflow: hidden;
+  margin: 1.5rem;
+  pointer-events: all; /* réactive les clics sur la popup */
+  animation: slideUp 0.5s ease-out;
 }
 
+/* === Animation d'apparition === */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* === Animation de fermeture === */
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+/* Ajoute cette classe quand tu veux fermer avec animation */
+.newsletter-popup.closing {
+  animation: slideDown 0.4s ease-in forwards;
+}
+
+/* === TITRE + TEXTE === */
 .newsletter-popup h2 {
-  color: #e36414;
+  color: var(--text-color-light);
   margin-bottom: 0.5rem;
+  font-size: 1.4rem;
 }
 
 .newsletter-popup p {
-  color: #555;
+  color: var(--text-color);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
+/* === FORMULAIRE === */
 .newsletter-popup form {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .newsletter-popup input {
-  padding: 0.6rem;
+  padding: 0.7rem;
   border-radius: 0.5rem;
   border: 1px solid #ddd;
   text-align: center;
+  font-size: 1rem;
 }
 
 .newsletter-popup button {
-  background: #e36414;
+  background: var(--button-bg);
   color: white;
   border: none;
   border-radius: 0.5rem;
-  padding: 0.7rem;
+  padding: 0.8rem;
   cursor: pointer;
-  transition: background 0.3s;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .newsletter-popup button:hover {
-  background: #c7500f;
+  background: var(--button-hover-bg);
+  transform: translateY(-2px);
 }
 
+/* === FERMETURE === */
 .newsletter-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0.5rem;
+  right: 0.7rem;
   background: none;
   border: none;
   font-size: 1.2rem;
   color: #888;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
+.newsletter-close:hover {
+  color: var(--text-color-inverted);
+}
+
+/* === STATUT === */
 .newsletter-status {
   margin-top: 1rem;
   font-size: 0.9rem;
+  color: #444;
 }

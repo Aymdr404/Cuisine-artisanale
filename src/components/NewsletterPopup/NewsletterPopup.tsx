@@ -8,6 +8,8 @@ const NewsletterPopup: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("");
+  const [closing, setClosing] = useState(false);
+
   const db = getFirestore();
 
   // 🔸 Vérifie si la popup doit s'afficher (toutes les 7 jours)
@@ -60,6 +62,15 @@ const NewsletterPopup: React.FC = () => {
     }
   };
 
+	const handleClose = () => {
+	setClosing(true);
+	setTimeout(() => {
+		setShowPopup(false);
+		setClosing(false);
+	}, 400);
+	};
+
+
   return (
     <AnimatePresence>
       {showPopup && (
@@ -70,13 +81,14 @@ const NewsletterPopup: React.FC = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="newsletter-popup"
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ type: "spring", damping: 20, stiffness: 200 }}
-          >
-            <button onClick={() => setShowPopup(false)} className="newsletter-close">
+			className={`newsletter-popup ${closing ? "closing" : ""}`}
+			initial={{ x: 400, opacity: 0 }} // 👉 glisse depuis la droite
+			animate={{ x: 0, opacity: 1 }}
+			exit={{ x: 400, opacity: 0 }}
+			transition={{ type: "spring", damping: 20, stiffness: 200 }}
+			>
+
+            <button onClick={handleClose} className="newsletter-close">
               ✕
             </button>
 
