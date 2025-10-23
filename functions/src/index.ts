@@ -1,4 +1,6 @@
 import { onDocumentUpdated } from "firebase-functions/v2/firestore";
+import { onRequest } from "firebase-functions/v2/https";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
@@ -47,15 +49,8 @@ export const sendEmailOnNewRecipeRequest = onDocumentUpdated('recipesRequest/{ob
 
 export const sendWeeklyRecipeEmail = async (email: string) => {
   try {
-	// Référence document
-	const weeklyRef = db.collection("weeklyRecipe").doc("current");
-
-	// Récupérer le document
-	const weeklySnap = await weeklyRef.get();
-	if (weeklySnap.exists) {
-		const data = weeklySnap.data();
-		console.log(data);
-	}
+    const weeklyRef = db.collection("weeklyRecipe").doc("current");
+    const weeklySnap = await weeklyRef.get();
 
     if (!weeklySnap.exists) {
       throw new Error("Aucune recette de la semaine trouvée.");
@@ -63,7 +58,7 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
 
     const recipe = weeklySnap.data();
 
-    // 🔗 Lien dynamique vers la recette
+    // Crée le slug pour l’URL de la recette
     const slug = recipe.title
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -72,9 +67,11 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
       .replace(/\s+/g, "_")
       .toLowerCase();
 
-    const recipeUrl = `https://tonsite.fr/recettes/${slug}`;
+    const recipeUrl = `https://aymeric-sabatier.fr/cuisine-artisanale/recettes/${slug}`;
 
-    // 💌 2. Construire l’email HTML dynamique
+    // Lien de désabonnement
+    const unsubscribeUrl = `https://aymeric-sabatier.fr/unsubscribe?email=${encodeURIComponent(email)}`;
+
     const mailOptions = {
       from: process.env.EMAIL,
       to: email,
@@ -122,15 +119,18 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
 
         <p style="font-size:14px; color:#777; text-align:center;">
           Vous recevez cet email car vous êtes inscrit(e) à la newsletter de
-          <a href="https://tonsite.fr" style="color:#e36414; text-decoration:none;">Recettes Gourmandes</a> 🍰
+          <a href="https://aymeric-sabatier.fr/cuisine-artisanale" style="color:#e36414; text-decoration:none;">Cuisine Artisanale</a> 🍰
           <br/>
-          <small>Vous pouvez vous désabonner à tout moment.</small>
+          <small>
+            <a href="${unsubscribeUrl}" style="color:#e36414; text-decoration:none;">
+              Se désabonner
+            </a>
+          </small>
         </p>
       </div>
       `,
     };
 
-    // 📤 3. Envoi du mail
     await transporter.sendMail(mailOptions);
     console.log("Email envoyé avec succès à", email);
   } catch (error) {
@@ -138,7 +138,7 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
   }
 };
 
-import { onSchedule } from "firebase-functions/v2/scheduler";
+
 
 // ------------------- Cron planifié (dimanche 09:00) -------------------
 export const sendWeeklyRecipe = onSchedule(
@@ -149,7 +149,7 @@ export const sendWeeklyRecipe = onSchedule(
   async (event) => {
     try {
       // Récupérer tous les abonnés depuis Firestore
-      const subscribersSnap = await db.collection("abonnés").get();
+      const subscribersSnap = await db.collection("abonnés").where("subscribed", "==", true).get();
       if (subscribersSnap.empty) {
         console.log("Aucun abonné trouvé pour la newsletter");
         return;
@@ -168,3 +168,20 @@ export const sendWeeklyRecipe = onSchedule(
     }
   }
 );
+
+export const unsubscribe = onRequest(async (req, res) => {
+  const email = req.query.email as string;
+
+  if (!email) {
+    res.status(400).send("Email manquant");
+    return;
+  }
+
+  try {
+    await db.collection("abonnés").doc(email).update({ subscribed: false });
+    res.status(200).send("Désabonnement réussi");
+  } catch (error) {
+    console.error("Erreur lors du désabonnement :", error);
+    res.status(500).send("Erreur interne du serveur");
+  }
+});

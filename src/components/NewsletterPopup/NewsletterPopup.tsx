@@ -35,6 +35,7 @@ const NewsletterPopup: React.FC = () => {
       await addDoc(collection(db, "abonnés"), {
         email,
         date: serverTimestamp(),
+		subscribed: true,
       });
 
       // Envoie via EmailJS

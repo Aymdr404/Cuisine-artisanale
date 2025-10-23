@@ -24,6 +24,7 @@ import AdminPanel from '@pages/AdminPanel/AdminPanel';
 import EditRecette from '@pages/EditRecette/EditRecette';
 import LegalMention from '@components/LegalMention/LegalMention';
 import { ToastContainer } from 'react-toastify';
+import Unsubscribe from "@pages/Unsubscribe/Unsubscribe";
 
 const App = () => {
   useEffect(() => {
@@ -48,7 +49,7 @@ const App = () => {
               <Route path="/recettes/:id/edit" element={<EditRecette />} />
               <Route path="/map" element={<RecetteMap />} />
               <Route path="/account/*" element={<Account />} />
-
+			  <Route path="/unsubscribe" element={<Unsubscribe />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/admin-panel/*" element={<AdminPanel />} />
               </Route>
