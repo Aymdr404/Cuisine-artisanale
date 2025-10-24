@@ -81,7 +81,8 @@ const AddRecetteForm: React.FC = () => {
 		});
 	};
 
-	const nextStep = () => {
+	const nextStep = (e?: React.FormEvent) => {
+		e?.preventDefault();
 		let isValid = true;
 		let message = '';
 
@@ -125,7 +126,7 @@ const AddRecetteForm: React.FC = () => {
 
 		// si tout est bon, on passe à l’étape suivante
 		if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
-		};
+	};
 
 
 	const searchIngredients = (query: string, partIndex: number) => {
@@ -211,6 +212,7 @@ const AddRecetteForm: React.FC = () => {
   }
 
   const handleSubmit = async (event: React.FormEvent) => {
+	console.log('Submitting form...');
     event.preventDefault();
 
     setPreparationTime(preparationTime ?? 0);
@@ -246,6 +248,7 @@ const AddRecetteForm: React.FC = () => {
     }));
 
     if (!isRecetteCreated) {
+		console.log('Creating new recette...');
       try {
         const docRef = await addDoc(collection(db, 'recipesRequest'), {
           title: '',
@@ -261,12 +264,13 @@ const AddRecetteForm: React.FC = () => {
           url: '',
         });
 
+
         recetteId = docRef.id;
         setIsRecetteCreated(true);
       } catch (error) {
         console.error('Error creating recette:', error);
       }
-
+	  console.log('Recette ID after creation:', recetteId);
       try {
         const recetteRef = doc(db, 'recipesRequest', recetteId);
         if (formattedRecipeParts.length == 1) {
@@ -586,37 +590,79 @@ const AddRecetteForm: React.FC = () => {
 
 			{currentStep === 5 && (
 				<section className="form-section media">
-					<h2>Médias</h2>
+					<h2>📸 Médias</h2>
+					<p className="section-subtitle">
+					Ajoute une vidéo (facultatif) et téléverse quelques images illustrant ta recette.
+					</p>
+
+					{/* --- Lien vidéo --- */}
 					<div className="form-group">
-						<label htmlFor="video">Lien vidéo</label>
-						<InputText id="video" value={video} onChange={(e) => setVideo(e.target.value)} placeholder="URL TikTok, Instagram, YouTube..." />
-						{videoError && <div className="error-message">{videoError}</div>}
+					<label htmlFor="video">Lien vidéo</label>
+					<InputText
+						id="video"
+						value={video}
+						onChange={(e) => setVideo(e.target.value)}
+						placeholder="URL TikTok, Instagram, YouTube..."
+						className="video-input"
+					/>
+					{videoError && <div className="error-message">{videoError}</div>}
 					</div>
 
+					{/* --- Upload d'images --- */}
+					<div className="form-group upload-section">
 					<h3>Images</h3>
-					<input type="file" multiple onChange={handleFileChange} accept="image/*" />
-					<Button label="Télécharger les images" icon="pi pi-upload" onClick={handleUpload} disabled={images.length === 0 || uploading} />
+
+					<div className="upload-actions">
+						<label htmlFor="file-upload" className="custom-file-upload">
+						<i className="pi pi-image"></i> Sélectionner des images
+						</label>
+						<input
+						id="file-upload"
+						type="file"
+						multiple
+						onChange={handleFileChange}
+						accept="image/*"
+						/>
+						<Button
+						label={uploading ? "Téléchargement..." : "Télécharger"}
+						icon="pi pi-upload"
+						onClick={handleUpload}
+						disabled={images.length === 0 || uploading}
+						/>
+					</div>
+
+					{images.length > 0 && !uploading && (
+						<p className="upload-info">
+						{images.length} image{images.length > 1 ? 's' : ''} sélectionnée{images.length > 1 ? 's' : ''}.
+						</p>
+					)}
+					</div>
+
+					{/* --- Aperçu des images --- */}
 					{imageURLs.length > 0 && (
 					<div className="image-grid">
 						{imageURLs.map((url, index) => (
-						<img key={index} src={url} alt={`Preview ${index + 1}`} className="image-preview" />
+						<div key={index} className="image-card">
+							<img src={url} alt={`Preview ${index + 1}`} className="image-preview" />
+						</div>
 						))}
 					</div>
 					)}
 				</section>
-			)}
+				)}
+
 		</div>
 
 			<footer className="form-actions">
-			{currentStep > 1 && (
-				<Button type="button" label="Précédent" icon="pi pi-arrow-left" className="p-button-secondary" onClick={prevStep} />
-			)}
-			{currentStep < totalSteps ? (
-				<Button type="button" label="Suivant" icon="pi pi-arrow-right" className="p-button-primary" onClick={nextStep} />
-			) : (
-				<Button type="submit" label="Créer la recette" icon="pi pi-check" className="p-button-success" />
-			)}
-			<Button type="button" label="Annuler" icon="pi pi-times" className="cancel-button" onClick={navigateBack} />
+				{currentStep > 1 && (
+					<Button type="button" label="Précédent" icon="pi pi-arrow-left" className="p-button-secondary" onClick={prevStep} />
+				)}
+				{currentStep < totalSteps ? (
+					<Button type="button" label="Suivant" icon="pi pi-arrow-right" className="p-button-primary" onClick={nextStep} />
+				) : (
+					<Button type="submit" label="Créer la recette" icon="pi pi-check" className="p-button-success" />
+				)}
+				<Button type="button" label="Annuler" icon="pi pi-times" className="cancel-button" onClick={navigateBack} />
 			</footer>
 		</form>
     </div>
