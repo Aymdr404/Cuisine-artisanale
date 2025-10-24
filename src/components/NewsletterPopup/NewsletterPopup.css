@@ -7,7 +7,6 @@
   justify-content: flex-end;
   align-items: flex-end; /* 👈 aligne en bas */
   z-index: 1000;
-  pointer-events: none; /* permet de ne cliquer que sur la popup */
 }
 
 /* === POPUP === */
