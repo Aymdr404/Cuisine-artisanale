@@ -12,6 +12,7 @@ import { collection, addDoc, updateDoc, doc, query, getDocs } from 'firebase/fir
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toast } from 'react-toastify';
+import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface Ingredient {
   id: string;
@@ -39,6 +40,7 @@ const AddRecetteForm: React.FC = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 5;
+  const { showToast } = useToast();
 
   const prevStep = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
@@ -524,12 +526,18 @@ const AddRecetteForm: React.FC = () => {
 					label="Ajouter une sous-recette"
 					icon="pi pi-plus"
 					className="p-button-text p-button-sm"
-					onClick={() =>
+					onClick={() =>{
 						setRecipeParts([
 						...recipeParts,
 						{ title: `Recette ${recipeParts.length + 1}`, steps: [], ingredients: {}, selectedIngredients: [] }
 						])
-					}
+						showToast({
+							severity: 'info',
+							summary: 'Nouvelle sous-recette',
+							detail: 'Penser a ajouter les ingrédients dans la page précédente.',
+							life: 2000
+						});
+					}}
 				/>
 
 				{recipeParts.map((part, partIndex) => (
