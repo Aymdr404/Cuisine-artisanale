@@ -40,9 +40,6 @@ const AddRecetteForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 5;
 
-  const nextStep = () => {
-    if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
-  };
   const prevStep = () => {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
@@ -84,6 +81,52 @@ const AddRecetteForm: React.FC = () => {
 		});
 	};
 
+	const nextStep = () => {
+		let isValid = true;
+		let message = '';
+
+		switch (currentStep) {
+			case 1:
+			if (!title.trim()) {
+				isValid = false;
+				message = 'Veuillez entrer un titre pour votre recette.';
+			}
+			break;
+
+			case 2:
+			if (!type || preparationTime === null || cookingTime === null) {
+				isValid = false;
+				message = 'Veuillez remplir le type de plat et les temps de préparation/cuisson.';
+			}
+			break;
+
+			case 3:
+			if (!recipeParts.some(part => part.selectedIngredients.length > 0)) {
+				isValid = false;
+				message = 'Veuillez ajouter au moins un ingrédient.';
+			}
+			break;
+
+			case 4:
+			if (!recipeParts.every(part => part.steps.length > 0 && part.steps.every(s => s.trim() !== ''))) {
+				isValid = false;
+				message = 'Veuillez décrire au moins une étape de préparation.';
+			}
+			break;
+
+			default:
+			break;
+		}
+
+		if (!isValid) {
+			toast.error(message);
+			return;
+		}
+
+		// si tout est bon, on passe à l’étape suivante
+		if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+		};
+
 
 	const searchIngredients = (query: string, partIndex: number) => {
 	const filtered = ingredientsList.filter(
@@ -99,13 +142,13 @@ const AddRecetteForm: React.FC = () => {
 	};
 
 	const addIngredient = (ingredient: Ingredient, partIndex: number) => {
-	const newParts = [...recipeParts];
-	newParts[partIndex].selectedIngredients.push(ingredient.id);
-	newParts[partIndex].ingredients[ingredient.id] = '0';
-	setRecipeParts(newParts);
+		const newParts = [...recipeParts];
+		newParts[partIndex].selectedIngredients.push(ingredient.id);
+		newParts[partIndex].ingredients[ingredient.id] = '0';
+		setRecipeParts(newParts);
 
-	// On vide le champ uniquement ici
-	handleQueryChange('', partIndex);
+		// On vide le champ uniquement ici
+		handleQueryChange('', partIndex);
 	};
 
 	const removeIngredient = (partIndex: number, ingredientId: string) => {
