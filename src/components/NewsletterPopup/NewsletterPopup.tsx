@@ -12,13 +12,13 @@ const NewsletterPopup: React.FC = () => {
 
   const db = getFirestore();
 
-  // 🔸 Vérifie si la popup doit s'afficher (toutes les 7 jours)
+  // 🔸 Vérifie si la popup doit s'afficher (toutes les 31 jours)
   useEffect(() => {
     const lastShown = localStorage.getItem("newsletter_last_shown");
-    const oneWeek = 7 * 24 * 60 * 60 * 1000;
+    const oneMonth = 31 * 24 * 60 * 60 * 1000;
     const now = Date.now();
 
-    if (!lastShown || now - parseInt(lastShown) > oneWeek) {
+    if (!lastShown || now - parseInt(lastShown) > oneMonth) {
       const timer = setTimeout(() => {
         setShowPopup(true);
         localStorage.setItem("newsletter_last_shown", now.toString());
