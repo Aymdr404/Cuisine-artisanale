@@ -18,9 +18,10 @@
         /* Surface Colors */
         --surface-ground: #FFF9F5;         /* Warm white background */
         --surface-section: #FFF1E6;        /* Light peach section background */
-        --surface-card: #FFFFFF;           /* Pure white for cards */
+        --surface-card: #f8ecec;           /* Pure white for cards */
         --surface-overlay: #FFFFFF;        /* Pure white for overlays */
         --surface-border: #E8D5CC;         /* Warm gray border */
+		--surface-hover: #fad4a7;          /* Hover surface color */
 
         /* Background Colors */
         --background-base: #FFFFFF;        /* Base background color */
@@ -105,6 +106,7 @@
         --surface-card: #342013;           /* Main brown */
         --surface-overlay: #342013;        /* Overlay brown */
         --surface-border: #4D2B1D;         /* Light brown border */
+		--surface-hover: #965533;          /* Hover surface color */
 
         /* Background Colors */
         --background-base: #1A0F0D;        /* Dark base background */
@@ -175,6 +177,17 @@
 		align-items: center !important;
 	}
 
+
+	.p-autocomplete {
+		width: 100% !important;
+		button {
+			border-radius: 0 0.75rem 0.75rem 0 !important;
+		}
+		input {
+			border-radius: 0.75rem 0 0 0.75rem !important;
+		}
+	}
+
     .p-dropdown,
     .p-multiselect,
     .p-inputnumber,
@@ -182,7 +195,6 @@
     .p-autocomplete-items-wrapper,
     .p-textarea {
         background: var(--input-bg) !important;
-        border: 1px solid var(--input-border) !important;
         padding: var(--input-spacing-md) !important;
         border-radius: var(--border-radius) !important;
         font-size: 1rem !important;
@@ -284,11 +296,11 @@
         padding: var(--input-spacing-md) var(--input-spacing-lg) !important;
         color: var(--text-color) !important;
         transition: all 0.2s ease !important;
-    }
-
-    .p-dropdown-item:hover {
-        background: var(--surface-hover) !important;
-    }
+		cursor: pointer;
+		&:hover {
+			background: var(--surface-hover) !important;
+		   }
+	}
 
     .p-dropdown-item.p-highlight {
         background: var(--primary-color) !important;

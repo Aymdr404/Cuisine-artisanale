@@ -442,7 +442,7 @@
 
 .user-role {
   background: var(--primary-color);
-  color: var(--primary-color-text);
+  color: var(--button-text);
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
   border-radius: var(--border-radius);

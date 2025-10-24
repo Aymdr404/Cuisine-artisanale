@@ -3,9 +3,9 @@ import './AddRecetteForm.css';
 
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
-import { MultiSelect } from 'primereact/multiselect';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
+import { AutoComplete } from 'primereact/autocomplete';
 
 import { db, storage } from '@firebaseModule';
 import { collection, addDoc, updateDoc, doc, query, getDocs } from 'firebase/firestore';
@@ -29,13 +29,24 @@ interface RecipePart {
   title: string;
   steps: string[];
   ingredients: { [key: string]: string };
-  selectedIngredients: number[];
+  selectedIngredients: string[]; // <-- changer de number[] à string[]
 }
+
 
 const AddRecetteForm: React.FC = () => {
   const { user } = useAuth();
-
   let recetteId: string = '';
+
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 5;
+
+  const nextStep = () => {
+    if (currentStep < totalSteps) setCurrentStep(currentStep + 1);
+  };
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
+  };
+
   const [title, setTitle] = useState('');
   const [type, setType] = useState<number | null>(null);
   const [preparationTime, setPreparationTime] = useState<number | null>(null);
@@ -43,8 +54,8 @@ const AddRecetteForm: React.FC = () => {
   const [video, setVideo] = useState('');
   const [videoError, setVideoError] = useState('');
   const [isRecetteCreated, setIsRecetteCreated] = useState<boolean>(false);
-  const [recipeParts, setRecipeParts] = useState<RecipePart[]>([{ 
-    title: 'Recette 1', 
+  const [recipeParts, setRecipeParts] = useState<RecipePart[]>([{
+    title: 'Recette 1',
     steps: [],
     ingredients: {},
     selectedIngredients: []
@@ -52,13 +63,57 @@ const AddRecetteForm: React.FC = () => {
 
   const [regions, setRegions] = useState<Department[]>([]);
   const [ingredientsList, setIngredientsList] = useState<Ingredient[]>([]);
-
   const defaultDepartment: Department = { nom: "Aucun département", code: "none" };
   const [position, setPosition] = useState<Department>(defaultDepartment);
 
   const [images, setImages] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [imageURLs, setImageURLs] = useState<string[]>([]);
+
+  const [filteredIngredients, setFilteredIngredients] = useState<Ingredient[][]>(
+	recipeParts.map(() => [])
+	);
+
+	const [queries, setQueries] = useState<string[]>(recipeParts.map(() => ''));
+
+	const handleQueryChange = (value: string, partIndex: number) => {
+		setQueries(prev => {
+			const newQueries = [...prev];
+			newQueries[partIndex] = value; // mettre à jour uniquement l'index correspondant
+			return newQueries;
+		});
+	};
+
+
+	const searchIngredients = (query: string, partIndex: number) => {
+	const filtered = ingredientsList.filter(
+		ing => ing.name.toLowerCase().includes(query.toLowerCase()) &&
+			!recipeParts[partIndex].selectedIngredients.includes(ing.id)
+	);
+
+	setFilteredIngredients(prev => {
+		const newFiltered = [...prev];
+		newFiltered[partIndex] = filtered;
+		return newFiltered;
+	});
+	};
+
+	const addIngredient = (ingredient: Ingredient, partIndex: number) => {
+	const newParts = [...recipeParts];
+	newParts[partIndex].selectedIngredients.push(ingredient.id);
+	newParts[partIndex].ingredients[ingredient.id] = '0';
+	setRecipeParts(newParts);
+
+	// On vide le champ uniquement ici
+	handleQueryChange('', partIndex);
+	};
+
+	const removeIngredient = (partIndex: number, ingredientId: string) => {
+		const newParts = [...recipeParts];
+		newParts[partIndex].selectedIngredients = newParts[partIndex].selectedIngredients.filter(id => id !== ingredientId);
+		delete newParts[partIndex].ingredients[ingredientId];
+		setRecipeParts(newParts);
+	};
 
   const types = [
     { id: 1, name: 'Entrée' },
@@ -73,52 +128,17 @@ const AddRecetteForm: React.FC = () => {
     setRecipeParts(newParts);
   };
 
-  const removeStep = (partIndex: number, stepIndex: number) => {
-    const newParts = [...recipeParts];
-    newParts[partIndex].steps = newParts[partIndex].steps.filter((_, i) => i !== stepIndex);
-    setRecipeParts(newParts);
-  };
+   const removeStep = (partIndex: number, stepIndex: number) => {
+     const newParts = [...recipeParts];
+     newParts[partIndex].steps = newParts[partIndex].steps.filter((_, i) => i !== stepIndex);
+     setRecipeParts(newParts);
+   };
 
   const handleStepChange = (partIndex: number, stepIndex: number, value: string) => {
     const newParts = [...recipeParts];
     newParts[partIndex].steps[stepIndex] = value;
     setRecipeParts(newParts);
-  };
-
-  const addPart = () => {
-    setRecipeParts([...recipeParts, { 
-      title: `Recette ${recipeParts.length + 1}`, 
-      steps: [],
-      ingredients: {},
-      selectedIngredients: []
-    }]);
-  };
-
-  const removePart = (partIndex: number) => {
-    if (recipeParts.length > 1) {
-      setRecipeParts(recipeParts.filter((_, i) => i !== partIndex));
-    }
-  };
-
-  const handlePartTitleChange = (partIndex: number, value: string) => {
-    const newParts = [...recipeParts];
-    newParts[partIndex].title = value;
-    setRecipeParts(newParts);
-  };
-
-  const handlePartIngredientsChange = (partIndex: number, selectedIds: number[]) => {
-    const newParts = [...recipeParts];
-    newParts[partIndex].selectedIngredients = selectedIds;
-    
-    // Mettre à jour les ingrédients pour cette partie
-    const newIngredients = selectedIds.reduce((acc: { [key: string]: string }, id: number) => ({
-      ...acc,
-      [id]: newParts[partIndex].ingredients[id] || '0'
-    }), {});
-    
-    newParts[partIndex].ingredients = newIngredients;
-    setRecipeParts(newParts);
-  };
+   };
 
   const handleIngredientQuantityChange = (partIndex: number, ingredientId: string, value: string) => {
     const newParts = [...recipeParts];
@@ -127,25 +147,22 @@ const AddRecetteForm: React.FC = () => {
   };
 
   function generateKeywords(title: string): string[] {
-    return title.toLowerCase().split(" "); // Découpe en mots simples
+    return title.toLowerCase().split(" ");
   }
 
-  const slugify = (str: string) => {
-    return str
-      .normalize("NFD")
+  const slugify = (str: string) =>
+    str.normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^\w\s-]/g, "")
       .trim()
       .replace(/\s+/g, "_")
       .toLowerCase();
-  };
 
   function generateUrl(title: string): string {
     return slugify(title);
-  } 
+  }
 
   function isValidVideoUrl(url: string) {
-    // Accepte TikTok, Instagram, YouTube, Facebook, etc.
     const regex = /^(https?:\/\/)?(www\.)?(tiktok\.com|instagram\.com|youtu\.be|youtube\.com|facebook\.com)\/.+$/i;
     return regex.test(url);
   }
@@ -156,8 +173,8 @@ const AddRecetteForm: React.FC = () => {
     setPreparationTime(preparationTime ?? 0);
     setCookingTime(cookingTime ?? 0);
 
-    if (!title || !type || preparationTime === null || cookingTime === null || 
-        !recipeParts.every(part => part.steps.every(step => step.trim() !== ''))) {
+    if (!title || !type || preparationTime === null || cookingTime === null ||
+      !recipeParts.every(part => part.steps.every(step => step.trim() !== ''))) {
       alert('Veuillez remplir tous les champs');
       return;
     }
@@ -233,12 +250,7 @@ const AddRecetteForm: React.FC = () => {
         setPreparationTime(0);
         setCookingTime(0);
         setVideo('');
-        setRecipeParts([{ 
-          title: 'Recette 1', 
-          steps: [],
-          ingredients: {},
-          selectedIngredients: []
-        }]);
+        setRecipeParts([{ title: 'Recette 1', steps: [], ingredients: {}, selectedIngredients: [] }]);
         setPosition(defaultDepartment);
         setImageURLs([]);
         setIsRecetteCreated(false);
@@ -249,7 +261,7 @@ const AddRecetteForm: React.FC = () => {
       }
     }
   };
-  
+
   useEffect(() => {
     fetch("https://geo.api.gouv.fr/departements")
       .then(res => res.json())
@@ -270,22 +282,16 @@ const AddRecetteForm: React.FC = () => {
     try {
       const recettesCollection = collection(db, "ingredients");
       let recettesQuery = query(recettesCollection);
-
       const querySnapshot = await getDocs(recettesQuery);
       const recettesData: Ingredient[] = querySnapshot.docs.map((doc) => {
         const data = doc.data();
-        return {
-          name: data.name,
-          id: doc.id,
-          unit: data.unit || '',
-        };
+        return { name: data.name, id: doc.id, unit: data.unit || '' };
       });
-      
       setIngredientsList(recettesData);
     } catch (error) {
       console.error("Error getting recettes: ", error);
     }
-  }
+  };
 
   const handleFileChange = (e: { target: { files: any; }; }) => {
     setImages([...e.target.files]);
@@ -294,7 +300,7 @@ const AddRecetteForm: React.FC = () => {
   const handleUpload = async () => {
     if (images.length === 0) return;
     setUploading(true);
-    const urls: string[] | ((prevState: never[]) => never[]) = [];
+    const urls: string[] = [];
 
     for (let image of images) {
       const storageRef = ref(storage, `recipes/${title}/${image.name}`);
@@ -325,263 +331,251 @@ const AddRecetteForm: React.FC = () => {
     window.history.back();
   };
 
+  	const removePart = (partIndex: number) => {
+		const newParts = recipeParts.filter((_, i) => i !== partIndex);
+		setRecipeParts(newParts);
+	};
+
   return (
     <div className="add-recipe-container">
-      <header className="add-recipe-header">
-        <h1>Composer votre propre recette</h1>
-        <p className="subtitle">Les champs marqués d'un * sont obligatoires</p>
-      </header>
+      	<header className="add-recipe-header">
+			<h1>Composer votre propre recette</h1>
+			<p className="subtitle">Les champs marqués d'un * sont obligatoires</p>
+		</header>
 
-      <form onSubmit={handleSubmit} className="recipe-form">
-        <div className="form-grid">
-          {/* Basic Information Section */}
-          <section className="form-section basic-info">
-            <h2>Informations de base</h2>
-            <div className="form-group">
-              <label htmlFor="title">Titre *</label>
-              <InputText 
-                id="title" 
-                value={title} 
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Entrez le titre de votre recette"
-                required 
-              />
-            </div>
+		{/* Barre de progression */}
+		<div className="step-progress">
+			Étape {currentStep} sur {totalSteps}
+			<div className="progress-bar">
+			<div className="progress" style={{ width: `${(currentStep / totalSteps) * 100}%` }} />
+			</div>
+		</div>
 
-            <div className="form-group">
-              <label htmlFor="type">Type de plat *</label>
-              <Dropdown 
-                id="type" 
-                value={type} 
-                options={types} 
-                onChange={(e: DropdownChangeEvent) => setType(e.value)} 
-                optionLabel="name" 
-                optionValue="id"
-                placeholder="Sélectionnez un type"
-                required
-              />
-            </div>
+      	<form onSubmit={handleSubmit} className="recipe-form">
+			<div className="form-grid">
+				{currentStep === 1 && (
+					<section className="form-section basic-info">
 
-            <div className="form-group">
-              <label htmlFor="position">Département d'origine</label>
-              <Dropdown 
-                id="position" 
-                value={position} 
-                options={regions} 
-                onChange={(e: DropdownChangeEvent) => setPosition(e.value)}
-                optionLabel="nom" 
-                optionValue="code"
-                placeholder="Sélectionnez un département"
-              />
-            </div>
-          </section>
+						<h2>Création de votre recette</h2>
+						<div className="form-group">
+							<label htmlFor="title">Titre *</label>
+							<InputText id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Entrez le titre" required />
+						</div>
+						<p><i>Elle sera analysée et traitée dans les plus brefs délais par nos équipes.</i></p>
+						<p><i>Si votre recette respecte nos critères, elle sera publiée sur notre plateforme.</i></p>
+					</section>
+				)}
 
-          {/* Timing Section */}
-          <section className="form-section timing">
-            <h2>Temps de préparation</h2>
-            <div className="time-inputs">
-              <div className="form-group">
-                <label htmlFor="preparationTime">Préparation (min) *</label>
-                <InputNumber 
-                  id="preparationTime" 
-                  value={preparationTime} 
-                  onChange={(e) => setPreparationTime(e.value)}
-                  min={0}
-                  required
-                  mode="decimal"
-                  minFractionDigits={0}
-                  maxFractionDigits={2}
-                  locale="fr-FR"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="cookingTime">Cuisson (min) *</label>
-                <InputNumber 
-                  id="cookingTime" 
-                  value={cookingTime} 
-                  onChange={(e) => setCookingTime(e.value)}
-                  min={0}
-                  required
-                  mode="decimal"
-                  minFractionDigits={0}
-                  maxFractionDigits={2}
-                  locale="fr-FR"
-                />
-              </div>
-            </div>
-          </section>
+				{currentStep === 2 && (
+					<section className="form-section timing">
+						<div className='type-section'>
+							<h2>Type et origine</h2>
+							<div className="form-group">
+								<label htmlFor="type">Type de plat *</label>
+								<Dropdown id="type" value={type} options={types} onChange={(e: DropdownChangeEvent) => setType(e.value)} optionLabel="name" optionValue="id" placeholder="Sélectionnez un type" required />
+							</div>
 
-          {/* Ingredients Section */}
-          <section className="form-section ingredients">
-            <h2>Ingrédients *</h2>
-            <div className="ingredients-by-part">
-              {recipeParts.map((part, partIndex) => (
-                <div key={partIndex} className="part-ingredients">
-                  <h3>{part.title}</h3>
-                  <div className="part-ingredients-selection">
-                    <MultiSelect 
-                      value={part.selectedIngredients} 
-                      onChange={(e) => handlePartIngredientsChange(partIndex, e.value)} 
-                      options={ingredientsList} 
-                      optionLabel="name" 
-                      optionValue="id"
-                      filter
-                      placeholder="Sélectionnez les ingrédients pour cette partie"
-                      className="part-ingredients-select"
-                      panelClassName="part-ingredients-panel"
-                      display="chip"
-                      showClear
-                      itemTemplate={(option) => option.name}
-                    />
-                  </div>
-                  <div className="ingredients-list">
-                    {part.selectedIngredients.map((id) => {
-                      const ingredient = ingredientsList.find(i => i.id === id.toString());
-                      return (
-                        <div key={id} className="ingredient-item">
-                          <div className="ingredient-info">
-                            <span className="ingredient-name">{ingredient?.name}</span>
-                            <div className="ingredient-quantity">
-                              <InputNumber 
-                                value={part.ingredients[id] ? parseFloat(part.ingredients[id]) : null} 
-                                onChange={(e) => {
-                                  const value = e.value;
-                                  handleIngredientQuantityChange(
-                                    partIndex,
-                                    id.toString(),
-                                    value !== null ? value.toString() : '0'
-                                  );
-                                }}
-                                placeholder="Quantité"
-                                min={0}
-                                mode="decimal"
-                                minFractionDigits={0}
-                                maxFractionDigits={2}
-                                className="ingredient-quantity-input"
-                                locale="fr-FR"
-                              />
-                              <span className="ingredient-unit">{ingredient?.unit}</span>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+							<div className="form-group">
+								<label htmlFor="position">Département d'origine</label>
+								<Dropdown id="position" value={position} options={regions} onChange={(e: DropdownChangeEvent) => setPosition(e.value)} optionLabel="nom" optionValue="code" placeholder="Sélectionnez un département" />
+							</div>
+						</div>
 
-          {/* Steps Section */}
-          <section className="form-section steps">
-            <h2>Étapes de préparation *</h2>
-            <div className="recipe-parts-container">
-              {recipeParts.map((part, partIndex) => (
-                <div key={partIndex} className="recipe-part">
-                  <div className="part-header">
-                    <InputText
-                      value={part.title}
-                      onChange={(e) => handlePartTitleChange(partIndex, e.target.value)}
-                      placeholder="Titre de la partie..."
-                      className="part-title"
-                    />
-                    {recipeParts.length > 1 && (
-                      <Button
-                        type="button"
-                        icon="pi pi-times"
-                        onClick={() => removePart(partIndex)}
-                        className="p-button-danger p-button-text remove-part"
-                      />
-                    )}
-                  </div>
-                  <div className="steps-container">
-                    {part.steps.map((step, stepIndex) => (
-                      <div key={stepIndex} className="step-item">
-                        <div className="step-number">{stepIndex + 1}</div>
-                        <InputText
-                          value={step}
-                          onChange={(e) => handleStepChange(partIndex, stepIndex, e.target.value)}
-                          placeholder="Décrivez cette étape..."
-                          required
-                        />
-                        <Button
-                          type="button"
-                          icon="pi pi-times"
-                          onClick={() => removeStep(partIndex, stepIndex)}
-                          className="p-button-danger p-button-text remove-step"
-                        />
-                      </div>
-                    ))}
-                    <Button
-                      type="button"
-                      onClick={() => addStep(partIndex)}
-                      className="add-step"
-                      icon="pi pi-plus"
-                      label="Ajouter une étape"
-                    />
-                  </div>
-                </div>
-              ))}
-              <Button
-                type="button"
-                onClick={addPart}
-                className="add-part"
-                icon="pi pi-plus"
-                label="Ajouter une partie"
-              />
-            </div>
-          </section>
+						<div className="time-inputs">
+							<h2>Temps de préparation</h2>
+							<div className="form-group">
+								<label htmlFor="preparationTime">Préparation (min) *</label>
+								<InputNumber id="preparationTime" value={preparationTime} onChange={(e) => setPreparationTime(e.value)} min={0} required mode="decimal" locale="fr-FR" />
+							</div>
+							<div className="form-group">
+								<label htmlFor="cookingTime">Cuisson (min) *</label>
+								<InputNumber id="cookingTime" value={cookingTime} onChange={(e) => setCookingTime(e.value)} min={0} required mode="decimal" locale="fr-FR" />
+							</div>
+						</div>
+					</section>
+				)}
 
-          {/* Media Section */}
-          <section className="form-section media">
-            <h2>Médias</h2>
-            <div className="form-group">
-              <label htmlFor="video">Lien vidéo</label>
-              <InputText 
-                id="video" 
-                value={video} 
-                onChange={(e) => setVideo(e.target.value)}
-                placeholder="URL de votre vidéo TikTok, Instagram, YouTube..."
-              />
-              {videoError && <div className="error-message">{videoError}</div>}
-            </div>
+			{currentStep === 3 && (
+				<section className="form-section ingredients">
+					<h2>Ingrédients *</h2>
+					{recipeParts.map((part, partIndex) => {
+						return (
+							<div key={partIndex} className="part-ingredients">
+							<h3>{part.title}</h3>
 
-            <div className="form-section">
-              <h2>Images</h2>
-              <div className="upload-container">
-                <input
-                  type="file"
-                  multiple
-                  onChange={handleFileChange}
-                  className="file-input"
-                  accept="image/*"
-                />
-                <Button
-                  label="Télécharger les images"
-                  icon="pi pi-upload"
-                  onClick={handleUpload}
-                  disabled={images.length === 0 || uploading}
-                  className="upload-button"
-                />
-              </div>
-              {imageURLs.length > 0 && (
-                <div className="image-grid">
-                  {imageURLs.map((url, index) => (
-                    <div key={index} className="image-preview">
-                      <img src={url} alt={`Preview ${index + 1}`} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
+							<AutoComplete
+								field="name"
+								suggestions={filteredIngredients[partIndex] || []}
+								completeMethod={(e) => searchIngredients(e.query, partIndex)}
+								placeholder="Tapez un ingrédient"
+								value={queries[partIndex]}
+								onChange={(e) => {
+									if (typeof e.value === 'string') {
+										handleQueryChange(e.value, partIndex);
+									}
+								}}
 
-        <footer className="form-actions">
-          <Button type="submit" label="Créer la recette" icon="pi pi-check" className="submit-button" />
-          <Button type="button" label="Annuler" icon="pi pi-times" className="cancel-button" onClick={navigateBack} />
-        </footer>
-      </form>
+								onSelect={(e) => {
+									addIngredient(e.value, partIndex);    // ajoute l'ingrédient
+									handleQueryChange('', partIndex);     // vide le champ après sélection
+								}}
+								dropdown
+								onKeyDown={(e) => {
+									if (e.key === 'Enter') {
+										e.preventDefault(); // éviter le submit du form
+										const filtered = filteredIngredients[partIndex] || [];
+										if (filtered.length > 0) {
+											addIngredient(filtered[0], partIndex); // on prend le premier
+										}
+										handleQueryChange('', partIndex); // vide le champ
+									}
+								}}
+							/>
+
+							<section className="ingredient-quantities">
+								{part.selectedIngredients.map((id) => {
+									const ingredient = ingredientsList.find(i => i.id === id);
+									return (
+									<div key={id} className="ingredient-item">
+										<span>{ingredient?.name}</span>
+										<InputNumber
+											value={part.ingredients[id] ? parseFloat(part.ingredients[id]) : null}
+											onChange={(e) => handleIngredientQuantityChange(partIndex, id, e.value?.toString() || '0')}
+											placeholder="Quantité"
+											min={0}
+											mode="decimal"
+										/>
+										<span>{ingredient?.unit}</span>
+										<button
+											type="button"
+											className="remove-ingredient-btn"
+											onClick={() => removeIngredient(partIndex, id)}
+											title="Supprimer cet ingrédient"
+										>
+										❌
+										</button>
+									</div>
+									);
+								})}
+							</section>
+						</div>
+					);
+					})}
+				</section>
+				)}
+
+
+			{currentStep === 4 && (
+			<section className="form-section steps">
+				<h2>🧑‍🍳 Étapes de préparation *</h2>
+				<p className="section-subtitle">
+				Ajoute les étapes de chaque partie de ta recette (ex: pâte à cookie, brownie...).
+				</p>
+
+				<Button
+					type="button"
+					label="Ajouter une sous-recette"
+					icon="pi pi-plus"
+					className="p-button-text p-button-sm"
+					onClick={() =>
+						setRecipeParts([
+						...recipeParts,
+						{ title: `Recette ${recipeParts.length + 1}`, steps: [], ingredients: {}, selectedIngredients: [] }
+						])
+					}
+				/>
+
+				{recipeParts.map((part, partIndex) => (
+		<div key={partIndex} className="recipe-part-steps">
+			<div className="part-header">
+			<h3>{part.title}</h3>
+
+				{/* 🔴 Bouton supprimer une sous-recette */}
+				{partIndex !== 0 && (
+					<button
+						type="button"
+						className="delete-part-btn"
+						onClick={() => removePart(partIndex)}
+						title="Supprimer cette sous-recette"
+					>
+						<i className="pi pi-trash"></i>
+					</button>
+				)}
+			</div>
+
+			{part.steps.map((step, stepIndex) => (
+				<div key={stepIndex} className="step-card">
+					<div className="step-header">
+						<span className="step-number">{stepIndex + 1}</span>
+						<label>Étape {stepIndex + 1}</label>
+						<button
+							type="button"
+							className="delete-step-btn"
+							onClick={() => removeStep(partIndex, stepIndex)}
+							title="Supprimer cette étape"
+						>
+							<i className="pi pi-trash"></i>
+						</button>
+						</div>
+
+						<textarea
+							className="step-textarea"
+							placeholder="Décris cette étape de préparation..."
+							value={step}
+							onChange={(e) => handleStepChange(partIndex, stepIndex, e.target.value)}
+							rows={3}
+						/>
+					</div>
+					))}
+
+					<button
+					type="button"
+					className="add-step-btn"
+					onClick={() => addStep(partIndex)}
+					>
+					<i className="pi pi-plus"></i> Ajouter une étape à {part.title}
+					</button>
+				</div>
+				))}
+
+				</section>
+			)}
+
+			{currentStep === 5 && (
+				<section className="form-section media">
+					<h2>Médias</h2>
+					<div className="form-group">
+						<label htmlFor="video">Lien vidéo</label>
+						<InputText id="video" value={video} onChange={(e) => setVideo(e.target.value)} placeholder="URL TikTok, Instagram, YouTube..." />
+						{videoError && <div className="error-message">{videoError}</div>}
+					</div>
+
+					<h3>Images</h3>
+					<input type="file" multiple onChange={handleFileChange} accept="image/*" />
+					<Button label="Télécharger les images" icon="pi pi-upload" onClick={handleUpload} disabled={images.length === 0 || uploading} />
+					{imageURLs.length > 0 && (
+					<div className="image-grid">
+						{imageURLs.map((url, index) => (
+						<img key={index} src={url} alt={`Preview ${index + 1}`} className="image-preview" />
+						))}
+					</div>
+					)}
+				</section>
+			)}
+		</div>
+
+			<footer className="form-actions">
+			{currentStep > 1 && (
+				<Button type="button" label="Précédent" icon="pi pi-arrow-left" className="p-button-secondary" onClick={prevStep} />
+			)}
+			{currentStep < totalSteps ? (
+				<Button type="button" label="Suivant" icon="pi pi-arrow-right" className="p-button-primary" onClick={nextStep} />
+			) : (
+				<Button type="submit" label="Créer la recette" icon="pi pi-check" className="p-button-success" />
+			)}
+			<Button type="button" label="Annuler" icon="pi pi-times" className="cancel-button" onClick={navigateBack} />
+			</footer>
+		</form>
     </div>
   );
 };
