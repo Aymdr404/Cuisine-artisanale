@@ -140,7 +140,7 @@ const AddRecetteForm: React.FC = () => {
 			ing => ing.name.toLowerCase().includes(query.toLowerCase()) &&
 				!recipeParts[partIndex].selectedIngredients.includes(ing.id)
 		);
-
+		// ajoute l'option de création si le query n'est pas vide
 		const suggestions = [
 				{
 					id: 'new',
@@ -148,7 +148,7 @@ const AddRecetteForm: React.FC = () => {
 					isNew: true,
 					rawName: query,
 				}, ...filtered
-				];
+			];
 
 		setFilteredIngredients(prev => {
 			const newFiltered = [...prev];

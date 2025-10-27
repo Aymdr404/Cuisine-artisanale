@@ -307,6 +307,17 @@
         color: var(--text-color-inverted) !important;
     }
 
+	.p-dropdown-label {
+		border-radius: var(--border-radius) 0 0 var(--border-radius) !important;
+	}
+
+	.p-dropdown-trigger {
+		padding: 0 var(--input-spacing-md) !important;
+		color: var(--text-color-inverted) !important;
+		background: var(--button-bg) !important;
+		border-radius: 0 var(--border-radius) var(--border-radius) 0 !important;
+	}
+
     /* MultiSelect Enhanced Styling */
     .p-multiselect {
         min-height: var(--input-height-md);

@@ -18,7 +18,6 @@ interface Ingredient {
   name: string;
   price: number;
   unit: string;
-  category: string;
   createdAt?: Date;
   updatedAt?: Date;
   inStock?: boolean;
@@ -45,7 +44,7 @@ const IngredientsAdmin: React.FC = () => {
             name: data.name,
             price: data.price,
             unit: data.unit,
-            category: data.category,
+            category: data.category ?? '',
             id: doc.id,
             createdAt: data.createdAt?.toDate(),
             updatedAt: data.updatedAt?.toDate(),
@@ -115,7 +114,7 @@ const IngredientsAdmin: React.FC = () => {
         [field]: newValue,
         updatedAt: new Date()
       });
-      
+
       showToast({
         severity: 'success',
         summary: 'Succès',
@@ -139,7 +138,7 @@ const IngredientsAdmin: React.FC = () => {
         inStock: !ingredient.inStock,
         updatedAt: new Date()
       });
-      
+
       showToast({
         severity: 'success',
         summary: 'Succès',
@@ -178,9 +177,6 @@ const IngredientsAdmin: React.FC = () => {
     return `${rowData.price.toFixed(2)} €`;
   };
 
-  const categoryTemplate = (rowData: Ingredient) => {
-    return <Tag value={rowData.category} />;
-  };
 
   const stockTemplate = (rowData: Ingredient) => {
     return (
@@ -219,7 +215,7 @@ const IngredientsAdmin: React.FC = () => {
   return (
     <div className="ingredients-admin">
       <ConfirmDialog />
-      
+
       <div className="table-container">
         <DataTable
           value={ingredients}
@@ -263,14 +259,6 @@ const IngredientsAdmin: React.FC = () => {
             field="unit"
             header="Unité"
             sortable
-            editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback?.(e.target.value)} />}
-            onCellEditComplete={handleCellEdit}
-          />
-          <Column
-            field="category"
-            header="Catégorie"
-            sortable
-            body={categoryTemplate}
             editor={(options) => <InputText value={options.value} onChange={(e) => options.editorCallback?.(e.target.value)} />}
             onCellEditComplete={handleCellEdit}
           />

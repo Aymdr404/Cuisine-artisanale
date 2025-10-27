@@ -5,7 +5,6 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
-import { AutoComplete } from 'primereact/autocomplete';
 import { Dialog } from 'primereact/dialog';
 import { addDoc, collection, getDocs, query, updateDoc } from '@firebase/firestore';
 import { db } from '@firebaseModule';
@@ -30,7 +29,6 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 	const [name, setName] = useState('');
 	const [price, setPrice] = useState<number | null>(0);
 	const [unit, setUnit] = useState<Unit | null>(null);
-	const [category, setCategory] = useState('');
 	const [units, setUnits] = useState<Unit[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [formErrors, setFormErrors] = useState<{
@@ -38,15 +36,12 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 		unit?: string;
 		category?: string;
 	}>({});
-	const [categories, setCategories] = useState<string[]>([]);
-	const [filteredCategories, setFilteredCategories] = useState<string[]>([]);
 	const { showToast } = useToast();
 
 	useEffect(() => {
 		if (visible) {
 			setName(initialName || '');
 			fetchUnits();
-			fetchCategories();
 		}
 	}, [visible, initialName]);
 
@@ -58,9 +53,6 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 		}
 		if (!unit) {
 			errors.unit = 'L\'unité est requise';
-		}
-		if (!category.trim()) {
-			errors.category = 'La catégorie est requise';
 		}
 
 		setFormErrors(errors);
@@ -81,7 +73,6 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 				name: name.trim(),
 				price: price,
 				unit: unit?.abbreviation,
-				category: category.trim(),
 				createdAt: new Date(),
 			});
 
@@ -94,7 +85,6 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 				name: name.trim(),
 				price,
 				unit: unit?.abbreviation,
-				category: category.trim(),
 			};
 
 			showToast({
@@ -106,7 +96,6 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 			setName('');
 			setPrice(null);
 			setUnit(null);
-			setCategory('');
 			onHide();
 
 			if (onIngredientCreated) onIngredientCreated(newIngredient);
@@ -144,31 +133,19 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
     }
   };
 
-  const fetchCategories = async () => {
-    try {
-      const ingredientsQuery = query(collection(db, 'ingredients'));
-      const querySnapshot = await getDocs(ingredientsQuery);
-      const uniqueCategories = [...new Set(
-        querySnapshot.docs.map(doc => doc.data().category)
-      )].filter(Boolean);
-      setCategories(uniqueCategories);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
-
-  	const searchCategories = (event: { query: string }) => {
-		const filtered = categories.filter(cat =>
-			cat.toLowerCase().includes(event.query.toLowerCase())
-		);
-		setFilteredCategories(filtered);
-	};
-
 	useEffect(() => {
 		if (visible) {
-			fetchUnits();
-			fetchCategories();
+			// Bloque le scroll du body
+			document.body.style.overflow = 'hidden';
+		} else {
+			// Rétablit le scroll quand la modale est fermée
+			document.body.style.overflow = '';
 		}
+
+		// Nettoyage au démontage du composant
+		return () => {
+			document.body.style.overflow = '';
+		};
 	}, [visible]);
 
 	const dialogFooter = (
@@ -206,82 +183,62 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 			<p className="required-field-note">* Champs requis</p>
 
 			<div className="form-field">
-			<label htmlFor="name">
-				Nom <span className="required">*</span>
-			</label>
-			<span className="p-input-icon-right">
-				<i className={name ? "pi pi-check" : "pi pi-times"}
-				style={{ color: name ? 'var(--green-500)' : 'var(--red-500)' }} />
-				<InputText
-				id="name"
-				value={name}
-				onChange={(e) => {
-					setName(e.target.value);
-					setFormErrors({ ...formErrors, name: undefined });
-				}}
-				placeholder="Entrez le nom de l'ingrédient"
-				className={formErrors.name ? 'p-invalid' : ''}
-				/>
-			</span>
-			{formErrors.name && <small className="p-error">{formErrors.name}</small>}
+				<label htmlFor="name">
+					Nom <span className="required">*</span>
+				</label>
+				<span className="p-input-icon-right">
+					<i className={name ? "pi pi-check" : "pi pi-times"}
+					style={{ color: name ? 'var(--green-500)' : 'var(--red-500)' }} />
+					<InputText
+					id="name"
+					value={name}
+					onChange={(e) => {
+						setName(e.target.value);
+						setFormErrors({ ...formErrors, name: undefined });
+					}}
+					placeholder="Entrez le nom de l'ingrédient"
+					className={formErrors.name ? 'p-invalid' : ''}
+					/>
+				</span>
+				{formErrors.name && <small className="p-error">{formErrors.name}</small>}
 			</div>
 
 			<div className="form-row">
-			<div className="form-field">
-				<label htmlFor="price">Prix</label>
-				<InputNumber
-					id="price"
-					value={price}
-					onValueChange={(e) => setPrice(e.value || null)}
-					mode="currency"
-					currency="EUR"
-					locale="fr-FR"
-					placeholder="0,00 €"
-					minFractionDigits={2}
-				/>
-			</div>
+				<div className="form-field">
+					<label htmlFor="price">Prix</label>
+					<InputNumber
+						id="price"
+						value={price}
+						onValueChange={(e) => setPrice(e.value || null)}
+						mode="currency"
+						currency="EUR"
+						locale="fr-FR"
+						placeholder="0,00 €"
+						minFractionDigits={2}
+					/>
+				</div>
 
-			<div className="form-field">
-				<label htmlFor="unit">
-				Unité <span className="required">*</span>
-				</label>
-				<Dropdown
-					id="unit"
-					value={unit}
-					options={units}
-					onChange={(e) => {
-						setUnit(e.value);
-						setFormErrors({ ...formErrors, unit: undefined });
-					}}
-					optionLabel="name"
-					placeholder="Sélectionnez une unité"
-					className={formErrors.unit ? 'p-invalid' : ''}
-					filter
-					emptyMessage="Aucune unité trouvée"
-					emptyFilterMessage="Aucune unité ne correspond"
-				/>
-				{formErrors.unit && <small className="p-error">{formErrors.unit}</small>}
-			</div>
-			</div>
-
-			<div className="form-field">
-			<label htmlFor="category">
-				Catégorie <span className="required">*</span>
-			</label>
-			<AutoComplete
-				id="category"
-				value={category}
-				suggestions={filteredCategories}
-				completeMethod={searchCategories}
-				onChange={(e) => {
-					setCategory(e.value);
-					setFormErrors({ ...formErrors, category: undefined });
-				}}
-				placeholder="Entrez ou sélectionnez une catégorie"
-				className={formErrors.category ? 'p-invalid' : ''}
-				dropdown
-			/>
-			{formErrors.category && <small className="p-error">{formErrors.category}</small>}
+				<div className="form-field">
+					<label htmlFor="unit">
+					Unité <span className="required">*</span>
+					</label>
+					<Dropdown
+						id="unit"
+						value={unit}
+						options={units}
+						onChange={(e) => {
+							setUnit(e.value);
+							setFormErrors({ ...formErrors, unit: undefined });
+						}}
+						optionLabel="name"
+						placeholder="Sélectionnez une unité"
+						className={formErrors.unit ? 'p-invalid' : ''}
+						filter
+						emptyMessage="Aucune unité trouvée"
+						emptyFilterMessage="Aucune unité ne correspond"
+					/>
+					{formErrors.unit && <small className="p-error">{formErrors.unit}</small>}
+				</div>
 			</div>
 		</div>
 		</Dialog>
