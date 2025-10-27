@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Actualites.css';
 import { db } from '@firebaseModule';
-import { collection, doc, getDocs, getDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc, setDoc, query, where } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 
 interface RecetteData {
@@ -37,9 +37,11 @@ const Actualites: React.FC = () => {
         }
       }
 
-      // Sinon on choisit une nouvelle recette aléatoire
+      // Sinon on choisit une nouvelle recette aléatoire différente de la précédente
+      const previousRecetteId = weeklySnap.data()?.recetteId;
       const recettesCollection = collection(db, "recipes");
-      const querySnapshot = await getDocs(recettesCollection);
+      const q = query(recettesCollection, where("recetteId", "!=", previousRecetteId));
+      const querySnapshot = await getDocs(q);
       const recettes: RecetteData[] = [];
 
       querySnapshot.forEach((docSnap) => {
