@@ -13,6 +13,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toast } from 'react-toastify';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
+import AddIngredientForm from '../AddIngredientForm/AddIngredientForm';
 
 interface Ingredient {
   id: string;
@@ -69,9 +70,12 @@ const AddRecetteForm: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [imageURLs, setImageURLs] = useState<string[]>([]);
 
-  const [filteredIngredients, setFilteredIngredients] = useState<Ingredient[][]>(
-	recipeParts.map(() => [])
+  	const [filteredIngredients, setFilteredIngredients] = useState<Ingredient[][]>(
+		recipeParts.map(() => [])
 	);
+	const [showAddIngredientDialog, setShowAddIngredientDialog] = useState(false);
+	const [newIngredientName, setNewIngredientName] = useState('');
+	const [currentPartIndex, setCurrentPartIndex] = useState<number | null>(null);
 
 	const [queries, setQueries] = useState<string[]>(recipeParts.map(() => ''));
 
@@ -132,16 +136,25 @@ const AddRecetteForm: React.FC = () => {
 
 
 	const searchIngredients = (query: string, partIndex: number) => {
-	const filtered = ingredientsList.filter(
-		ing => ing.name.toLowerCase().includes(query.toLowerCase()) &&
-			!recipeParts[partIndex].selectedIngredients.includes(ing.id)
-	);
+		const filtered = ingredientsList.filter(
+			ing => ing.name.toLowerCase().includes(query.toLowerCase()) &&
+				!recipeParts[partIndex].selectedIngredients.includes(ing.id)
+		);
 
-	setFilteredIngredients(prev => {
-		const newFiltered = [...prev];
-		newFiltered[partIndex] = filtered;
-		return newFiltered;
-	});
+		const suggestions = filtered.length > 0	? filtered: [
+				{
+					id: 'new',
+					name: `➕ Créer "${query}"`,
+					isNew: true,
+					rawName: query,
+				},
+				];
+
+		setFilteredIngredients(prev => {
+			const newFiltered = [...prev];
+			newFiltered[partIndex] = suggestions;
+			return newFiltered;
+		});
 	};
 
 	const addIngredient = (ingredient: Ingredient, partIndex: number) => {
@@ -446,6 +459,18 @@ const AddRecetteForm: React.FC = () => {
 
 			{currentStep === 3 && (
 				<section className="form-section ingredients">
+					<AddIngredientForm
+						visible={showAddIngredientDialog}
+						onHide={() => setShowAddIngredientDialog(false)}
+						initialName={newIngredientName}
+						onIngredientCreated={(newIngredient) => {
+							// Optionnel : ajoute-le à ta liste globale si tu veux le garder en mémoire
+							setIngredientsList((prev) => [...prev, newIngredient]);
+							// Et directement à la recette courante
+							addIngredient(newIngredient, currentPartIndex !== null ? currentPartIndex : 0);
+							setShowAddIngredientDialog(false);
+						}}
+					/>
 					<h2>Ingrédients *</h2>
 					{recipeParts.map((part, partIndex) => {
 						return (
@@ -465,10 +490,20 @@ const AddRecetteForm: React.FC = () => {
 								}}
 
 								onSelect={(e) => {
-									addIngredient(e.value, partIndex);    // ajoute l'ingrédient
+									const selected = e.value;
+
+									if (selected.id === 'new') {
+										// Ouvre la modale de création avec le nom déjà saisi
+										setNewIngredientName(selected.name.replace('➕ Créer "', '').replace('"', ''));
+										setShowAddIngredientDialog(true);
+										setCurrentPartIndex(partIndex);
+									} else {
+										addIngredient(selected, partIndex);
+									}   // ajoute l'ingrédient
 									handleQueryChange('', partIndex);     // vide le champ après sélection
 								}}
 								dropdown
+
 								onKeyDown={(e) => {
 									if (e.key === 'Enter') {
 										e.preventDefault(); // éviter le submit du form
