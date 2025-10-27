@@ -51,8 +51,7 @@ const Account: React.FC = () => {
   if (!user) {
     return (
       <div className="account-loading">
-        <ProgressSpinner />
-        <p>Chargement de votre profil...</p>
+        <h2>Vous n'êtes pas connecté</h2>
       </div>
     );
   }
@@ -65,19 +64,19 @@ const Account: React.FC = () => {
             {user.photoURL ? (
               <Avatar image={user.photoURL} size="xlarge" shape="circle" />
             ) : (
-              <Avatar 
-                label={user.displayName?.charAt(0) || "U"} 
-                size="xlarge" 
+              <Avatar
+                label={user.displayName?.charAt(0) || "U"}
+                size="xlarge"
                 shape="circle"
                 style={{ backgroundColor: 'var(--primary-color)' }}
               />
             )}
             <h2>{user.displayName || "Utilisateur"}</h2>
             <p className="user-email">{user.email}</p>
-            <Button 
-              label="Déconnexion" 
-              icon="pi pi-sign-out" 
-              severity="danger" 
+            <Button
+              label="Déconnexion"
+              icon="pi pi-sign-out"
+              severity="danger"
               text
               onClick={handleLogout}
               className="logout-button"
@@ -90,7 +89,7 @@ const Account: React.FC = () => {
                 key={item.to}
                 to={item.to}
                 end={item.to === '/account'}
-                className={({ isActive }) => 
+                className={({ isActive }) =>
                   `nav-item ${isActive ? 'active' : ''}`
                 }
                 onClick={() => setActiveLink(item.to)}
