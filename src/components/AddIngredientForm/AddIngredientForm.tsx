@@ -10,6 +10,7 @@ import { addDoc, collection, getDocs, query, updateDoc } from '@firebase/firesto
 import { db } from '@firebaseModule';
 import { toastMessages } from '@/utils/toast';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
+import AddUnitForm from '../AddUnitForm/AddUnitForm';
 
 interface Unit {
   id: string;
@@ -37,6 +38,7 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 		category?: string;
 	}>({});
 	const { showToast } = useToast();
+	const [showAddUnitDialog, setShowAddUnitDialog] = useState(false);
 
 	useEffect(() => {
 		if (visible) {
@@ -234,13 +236,35 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 						placeholder="Sélectionnez une unité"
 						className={formErrors.unit ? 'p-invalid' : ''}
 						filter
-						emptyMessage="Aucune unité trouvée"
-						emptyFilterMessage="Aucune unité ne correspond"
+						emptyFilterMessage={
+							<div
+								className="create-unit-option"
+								onClick={() => setShowAddUnitDialog(true)}
+								style={{
+									cursor: 'pointer',
+									color: 'var(--primary-color)',
+									padding: '0.5rem 1rem',
+									textAlign: 'center',
+								}}
+							>
+								➕ Créer une nouvelle unité
+							</div>
+							}
 					/>
 					{formErrors.unit && <small className="p-error">{formErrors.unit}</small>}
 				</div>
 			</div>
 		</div>
+		<AddUnitForm
+			visible={showAddUnitDialog}
+			onHide={() => setShowAddUnitDialog(false)}
+			onUnitCreated={(newUnit) => {
+				setUnits((prev) => [...prev, newUnit]); // ajoute la nouvelle unité à la liste
+				setUnit(newUnit); // la sélectionne automatiquement
+				setShowAddUnitDialog(false);
+			}}
+			initialName={name}
+		/>
 		</Dialog>
 	);
 };

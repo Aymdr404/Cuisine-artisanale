@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './AddUnitForm.css';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -10,11 +10,13 @@ import { toastMessages } from '@/utils/toast';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
 
 interface AddUnitFormProps {
-  visible: boolean;
-  onHide: () => void;
+	visible: boolean;
+	onHide: () => void;
+	onUnitCreated?: (unit: { id: string; name: string; abbreviation: string }) => void;
+	initialName?: string;
 }
 
-const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
+const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide, onUnitCreated, initialName }) => {
   const [name, setName] = useState('');
   const [abbreviation, setAbbreviation] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,9 +24,15 @@ const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
   const toast = useRef<Toast>(null);
   const { showToast } = useToast();
 
+  useEffect(() => {
+		if (visible) {
+			setName(initialName || '');
+		}
+	}, [visible, initialName]);
+
   const validateForm = () => {
     const errors: { name?: string; abbreviation?: string } = {};
-    
+
     if (!name.trim()) {
       errors.name = 'Le nom est requis';
     }
@@ -49,33 +57,42 @@ const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
     setLoading(true);
 
     try {
-      await addDoc(collection(db, 'units'), {
-        name: name.trim(),
-        abbreviation: abbreviation.trim(),
-        createdAt: new Date(),
-        isActive: true
-      });
+		const docRef = await addDoc(collection(db, 'units'), {
+			name: name.trim(),
+			abbreviation: abbreviation.trim(),
+			createdAt: new Date(),
+			isActive: true
+		});
 
-      showToast({
-        severity: 'success',
-        summary: toastMessages.success.default,
-        detail: toastMessages.success.create
-      });
+		if (onUnitCreated) {
+			onUnitCreated({
+			id: docRef.id,
+			name: name.trim(),
+			abbreviation: abbreviation.trim()
+			});
+		}
 
-      setName('');
-      setAbbreviation('');
-      onHide();
+		showToast({
+			severity: 'success',
+			summary: toastMessages.success.default,
+			detail: toastMessages.success.create
+		});
+
+		setName('');
+		setAbbreviation('');
+		onHide();
     } catch (error) {
-      console.error('Error creating unit:', error);
-      showToast({
-        severity: 'error',
-        summary: toastMessages.error.default,
-        detail: toastMessages.error.create
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+		console.error('Error creating unit:', error);
+		showToast({
+			severity: 'error',
+			summary: toastMessages.error.default,
+			detail: toastMessages.error.create
+		});
+	} finally {
+		setLoading(false);
+	}
+};
+
 
   const dialogFooter = (
     <div className="form-actions">
@@ -100,7 +117,7 @@ const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
   return (
     <>
       <Toast ref={toast} />
-      
+
       <Dialog
         header="Ajouter une unité"
         visible={visible}
@@ -119,7 +136,7 @@ const AddUnitForm: React.FC<AddUnitFormProps> = ({ visible, onHide }) => {
               Nom <span className="required">*</span>
             </label>
             <span className="p-input-icon-right">
-              <i className={name ? "pi pi-check" : "pi pi-times"} 
+              <i className={name ? "pi pi-check" : "pi pi-times"}
                  style={{ color: name ? 'var(--green-500)' : 'var(--red-500)' }} />
               <InputText
                 id="name"
