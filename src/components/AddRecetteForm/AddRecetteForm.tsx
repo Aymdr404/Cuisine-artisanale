@@ -141,13 +141,13 @@ const AddRecetteForm: React.FC = () => {
 				!recipeParts[partIndex].selectedIngredients.includes(ing.id)
 		);
 
-		const suggestions = filtered.length > 0	? filtered: [
+		const suggestions = [
 				{
 					id: 'new',
 					name: `➕ Créer "${query}"`,
 					isNew: true,
 					rawName: query,
-				},
+				}, ...filtered
 				];
 
 		setFilteredIngredients(prev => {
@@ -493,7 +493,6 @@ const AddRecetteForm: React.FC = () => {
 									const selected = e.value;
 
 									if (selected.id === 'new') {
-										// Ouvre la modale de création avec le nom déjà saisi
 										setNewIngredientName(selected.name.replace('➕ Créer "', '').replace('"', ''));
 										setShowAddIngredientDialog(true);
 										setCurrentPartIndex(partIndex);
