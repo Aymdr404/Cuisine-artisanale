@@ -141,14 +141,18 @@ const AddRecetteForm: React.FC = () => {
 				!recipeParts[partIndex].selectedIngredients.includes(ing.id)
 		);
 		// ajoute l'option de création si le query n'est pas vide
-		const suggestions = [
-				{
+		const suggestions =
+			query.trim() !== ''
+				? [
+					{
 					id: 'new',
 					name: `➕ Créer "${query}"`,
 					isNew: true,
 					rawName: query,
-				}, ...filtered
-			];
+					},
+					...filtered,
+				]
+			: filtered;
 
 		setFilteredIngredients(prev => {
 			const newFiltered = [...prev];
