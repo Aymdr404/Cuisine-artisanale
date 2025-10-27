@@ -203,23 +203,41 @@ export const sendWeeklyRecipe = onSchedule(
   },
   async (event) => {
     try {
-      // Récupérer tous les abonnés depuis Firestore
-      const subscribersSnap = await db.collection("abonnés").where("subscribed", "==", true).get();
-      if (subscribersSnap.empty) {
-        console.log("Aucun abonné trouvé pour la newsletter");
-        return;
-      }
+		// Sélectionner une recette aléatoire
+	  	const recipesRef = db.collection("recipes");
+		const snapshot = await recipesRef.get();
+		const recipes = snapshot.docs.map((doc: { id: any; data: () => any; }) => ({ id: doc.id, ...doc.data() }));
+		const randomRecipe = recipes[Math.floor(Math.random() * recipes.length)];
 
-      const subscribers = subscribersSnap.docs.map((doc: { data: () => { (): any; new(): any; email: any; }; }) => doc.data().email) as string[];
+		// Mettre à jour la recette de la semaine dans Firestore
+		const weeklyRef = db.collection("weeklyRecipe").doc("current");
+		const today = new Date();
+		const currentWeek = `${today.getFullYear()}-W${Math.ceil((((today as any) - (new Date(today.getFullYear(),0,1) as any)) / 86400000 + new Date(today.getFullYear(),0,1).getDay()+1)/7)}`;
+		await weeklyRef.set({
+			...randomRecipe,
+			week: currentWeek,
+			createdAt: admin.firestore.FieldValue.serverTimestamp(),
+		});
 
-      // Envoyer l'email à chaque abonné
-      for (const email of subscribers) {
-        await sendWeeklyRecipeEmail(email);
-      }
+		console.log("Recette de la semaine mise à jour :", randomRecipe.title);
 
-      console.log("Emails de la recette de la semaine envoyés à tous les abonnés !");
+		// Récupérer tous les abonnés depuis Firestore
+		const subscribersSnap = await db.collection("abonnés").where("subscribed", "==", true).get();
+		if (subscribersSnap.empty) {
+			console.log("Aucun abonné trouvé pour la newsletter");
+			return;
+		}
+
+		const subscribers = subscribersSnap.docs.map((doc: { data: () => { (): any; new(): any; email: any; }; }) => doc.data().email) as string[];
+
+		// Envoyer l'email à chaque abonné
+		for (const email of subscribers) {
+			await sendWeeklyRecipeEmail(email);
+		}
+
+		console.log("Emails de la recette de la semaine envoyés à tous les abonnés !");
     } catch (err) {
-      console.error("Erreur dans le cron de la recette de la semaine :", err);
+      	console.error("Erreur dans le cron de la recette de la semaine :", err);
     }
   }
 );

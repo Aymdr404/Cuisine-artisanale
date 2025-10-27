@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Actualites.css';
 import { db } from '@firebaseModule';
-import { collection, doc, getDocs, getDoc, setDoc, query, where } from 'firebase/firestore';
+import { doc, getDoc} from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 
 interface RecetteData {
@@ -24,60 +24,19 @@ const Actualites: React.FC = () => {
     try {
       const weeklyRef = doc(db, "weeklyRecipe", "current");
       const weeklySnap = await getDoc(weeklyRef);
-      const today = new Date();
-      const currentWeek = `${today.getFullYear()}-W${getWeekNumber(today)}`;
 
-      // Si on a déjà une recette enregistrée cette semaine, on la garde
+
       if (weeklySnap.exists()) {
-        const data = weeklySnap.data() as RecetteData & { week?: string };
-        if (data.week === currentWeek) {
-          setFeaturedRecette(data);
-          setLoading(false);
-          return;
-        }
+		setFeaturedRecette(weeklySnap.data() as RecetteData);
+		setLoading(false);
+		return;
+
       }
-
-      // Sinon on choisit une nouvelle recette aléatoire différente de la précédente
-      const previousRecetteId = weeklySnap.data()?.recetteId;
-      const recettesCollection = collection(db, "recipes");
-      const q = query(recettesCollection, where("recetteId", "!=", previousRecetteId));
-      const querySnapshot = await getDocs(q);
-      const recettes: RecetteData[] = [];
-
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        recettes.push({
-          title: data.title,
-          type: data.type,
-          position: data.position,
-          recetteId: docSnap.id,
-          images: data.images ?? [],
-        });
-      });
-
-      const randomRecette = recettes[Math.floor(Math.random() * recettes.length)];
-
-      // Sauvegarde dans Firestore pour être utilisée par les emails et les visiteurs
-      await setDoc(weeklyRef, {
-        ...randomRecette,
-        week: currentWeek,
-        createdAt: new Date(),
-      });
-
-      setFeaturedRecette(randomRecette);
     } catch (error) {
       console.error("Erreur lors du chargement de la recette de la semaine :", error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const getWeekNumber = (d: Date): number => {
-    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    const dayNum = date.getUTCDay() || 7;
-    date.setUTCDate(date.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-    return Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
   };
 
   const slugify = (str: string) =>
