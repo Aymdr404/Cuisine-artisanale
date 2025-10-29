@@ -222,7 +222,7 @@ export const sendWeeklyRecipe = onSchedule(
 		console.log("Recette de la semaine mise à jour :", randomRecipe.title);
 
 		// Récupérer tous les abonnés depuis Firestore
-		const subscribersSnap = await db.collection("abonnés").where("subscribed", "==", true).get();
+		const subscribersSnap = await db.collection("abonnes").where("subscribed", "==", true).get();
 		if (subscribersSnap.empty) {
 			console.log("Aucun abonné trouvé pour la newsletter");
 			return;
@@ -252,7 +252,7 @@ export const unsubscribe = onRequest((req, res) => {
     }
 
     try {
-      const abonnésRef = db.collection("abonnés");
+      const abonnésRef = db.collection("abonnes");
       const snapshot = await abonnésRef.where("email", "==", email).get();
 
       if (snapshot.empty) {

@@ -34,7 +34,7 @@ const NewsletterPopup: React.FC = () => {
 
     try {
       // Enregistre l'email dans Firestore
-      await addDoc(collection(db, "abonnés"), {
+      await addDoc(collection(db, "abonnes"), {
         email,
         date: serverTimestamp(),
 		subscribed: true,
