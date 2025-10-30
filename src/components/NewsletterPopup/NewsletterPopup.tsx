@@ -47,7 +47,7 @@ const NewsletterPopup: React.FC = () => {
         {
           user_email: email,
           recette_nom: "Recette de la semaine",
-          recette_url: "https://aymeric-sabatier.fr/Cuisine-artisanale",
+          recette_url: "https://www.aymeric-sabatier.fr/Cuisine-artisanale",
 		  company_name: "Cuisine Artisanale"
         },
         "5xnfDEFOuf9OciDAG"   // 🔹 Ta clé publique EmailJS
