@@ -45,9 +45,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         if (currentUser) {
           setUser(currentUser);
-          
+
           const userRole = await fetchUserRole(currentUser.uid);
-          
+
           if (!userRole) {
             await createUserInFirestore(currentUser.uid, currentUser.email || "");
             setRole("user");
@@ -74,6 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setError(null);
       await signOut(auth);
       setRole(null);
+      window.location.href = "/";
     } catch (err) {
       console.error("Error signing out:", err);
       setError(err instanceof Error ? err.message : "Error signing out");
@@ -85,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setError(null);
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      
+
       if (result.user) {
         const userRole = await fetchUserRole(result.user.uid);
         if (!userRole) {
