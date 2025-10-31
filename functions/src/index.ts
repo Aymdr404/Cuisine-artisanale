@@ -128,63 +128,72 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
     const unsubscribeUrl = `https://www.aymeric-sabatier.fr/Cuisine-artisanale/unsubscribe?email=${encodeURIComponent(email)}`;
 
     const mailOptions = {
-      from: process.env.EMAIL,
-      to: email,
-      subject: `🍰 Votre recette de la semaine : ${recipe.title}`,
-      html: `
-      <div style="
-        font-family: 'Segoe UI', sans-serif;
-        background-color: #fff8f2;
-        color: #333;
-        padding: 20px;
-        border-radius: 12px;
-        max-width: 600px;
-        margin: 0 auto;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      ">
-        <h1 style="text-align:center; color:#e36414;">🍪 ${recipe.title}</h1>
-        <p style="text-align:center; font-size:16px;">Bonjour gourmand(e) !</p>
-        <p style="font-size:15px; line-height:1.6;">
-          Découvrez notre nouvelle recette ${recipe.type.toLowerCase()} de la semaine : simple, savoureuse et parfaite pour vos repas du dimanche 😋
-        </p>
+		from: process.env.EMAIL,
+		to: email,
+		subject: `🍰 Votre recette de la semaine : ${recipe.title}`,
+		html: `
+		<div style="
+			font-family: 'Segoe UI', sans-serif;
+			background-color: #FFF9F5;
+			color: #2C1810;
+			padding: 24px;
+			border-radius: 12px;
+			max-width: 600px;
+			margin: 0 auto;
+			border: 1px solid #E8D5CC;
+			box-shadow: 0 5px 15px rgba(44,24,16,0.08);
+		">
+			<h1 style="text-align:center; color:#8B4513; margin-top:0;">🍪 ${recipe.title}</h1>
+			<p style="text-align:center; font-size:16px; color:#7D4F50;">Bonjour gourmand(e) !</p>
 
-        <div style="text-align:center; margin:25px 0;">
-          <img src="${recipe.images[0]}"
-               alt="${recipe.title}"
-               style="width:100%; max-width:480px; border-radius:10px;" />
-        </div>
+			<p style="font-size:15px; line-height:1.6; color:#2C1810;">
+			Découvrez notre nouvelle recette ${recipe.type.toLowerCase()} de la semaine : simple, savoureuse et parfaite pour vos repas du dimanche 😋
+			</p>
 
-        <div style="text-align:center;">
-          <a href="${recipeUrl}"
-             style="
-               background-color:#e36414;
-               color:#fff;
-               padding:12px 24px;
-               border-radius:8px;
-               text-decoration:none;
-               font-weight:bold;
-               display:inline-block;
-               transition:background 0.3s;
-             ">
-             👉 Voir la recette complète
-          </a>
-        </div>
+			<div style="text-align:center; margin:25px 0;">
+			<img src="${recipe.images[0]}"
+				alt="${recipe.title}"
+				style="width:100%; max-width:480px; border-radius:10px; border:1px solid #E8D5CC;" />
+			</div>
 
-        <hr style="margin:30px 0; border:none; border-top:1px solid #eee;">
+			<div style="text-align:center;">
+			<a href="${recipeUrl}"
+				style="
+				background-color:#8B4513;
+				color:#FFF;
+				padding:12px 24px;
+				border-radius:8px;
+				text-decoration:none;
+				font-weight:bold;
+				display:inline-block;
+				transition:background 0.3s;
+				"
+				onmouseover="this.style.backgroundColor='#A0522D';"
+				onmouseout="this.style.backgroundColor='#8B4513';"
+			>
+				👉 Voir la recette complète
+			</a>
+			</div>
 
-        <p style="font-size:14px; color:#777; text-align:center;">
-          Vous recevez cet email car vous êtes inscrit(e) à la newsletter de
-          <a href="https://www.aymeric-sabatier.fr/Cuisine-artisanale" style="color:#e36414; text-decoration:none;">Cuisine Artisanale</a> 🍰
-          <br/>
-          <small>
-            <a href="${unsubscribeUrl}" style="color:#e36414; text-decoration:none;">
-              Se désabonner
-            </a>
-          </small>
-        </p>
-      </div>
-      `,
-    };
+			<hr style="margin:30px 0; border:none; border-top:1px solid #E8D5CC;">
+
+			<p style="font-size:14px; color:#7D4F50; text-align:center;">
+			Vous recevez cet email car vous êtes inscrit(e) à la newsletter de
+			<a href="https://www.aymeric-sabatier.fr/Cuisine-artisanale"
+				style="color:#8B4513; text-decoration:none; font-weight:bold;">
+				Cuisine Artisanale
+			</a> 🍰
+			<br/>
+			<small>
+				<a href="${unsubscribeUrl}"
+				style="color:#A0522D; text-decoration:none;">
+				Se désabonner
+				</a>
+			</small>
+			</p>
+		</div>
+		`,
+	};
 
     await transporter.sendMail(mailOptions);
     console.log("Email envoyé avec succès à", email);
