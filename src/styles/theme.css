@@ -172,11 +172,27 @@
 
     /* Global Input Styles */
 
+	/* --- FIX p-input-icon-left overlapping issue --- */
 	.p-input-icon-left {
-		display: flex !important;
+		position: relative !important;
+		display: inline-flex !important;
 		align-items: center !important;
 	}
 
+	.p-input-icon-left > i {
+		position: absolute !important;
+		left: 0.75rem !important;
+		top: 50% !important;
+		transform: translateY(-50%) !important;
+		pointer-events: none !important;
+		z-index: 1 !important;
+		color: var(--text-color-secondary);
+	}
+
+	.p-input-icon-left > .p-inputtext {
+		padding-left: 2rem !important;
+		position: relative !important;
+	}
 
 	.p-autocomplete {
 		width: 100% !important;
@@ -223,10 +239,6 @@
         opacity: 0.7;
         font-size: 1rem !important;
         text-align: center;
-    }
-
-    .p-input-icon-left .pi{
-        margin-left: 0.5rem;
     }
 
     .p-inputtext:hover:not(:disabled):not(:focus),
