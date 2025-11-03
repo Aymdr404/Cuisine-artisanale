@@ -79,21 +79,85 @@ const RecetteMap: React.FC = () => {
     }
   };
 
-  const filteredRecettes = useMemo(() => {
-    return recettes.filter(recette => {
-      const matchesSearch = recette.title.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = !selectedType || recette.type === selectedType;
-      const matchesDepartement = !selectedDepartement || recette.position === selectedDepartement;
-      return matchesSearch && matchesType && matchesDepartement;
-    });
-  }, [recettes, searchTerm, selectedType, selectedDepartement]);
+	function levenshtein(a: string, b: string): number {
+		const matrix = [];
+		for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+		for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+		for (let i = 1; i <= b.length; i++) {
+			for (let j = 1; j <= a.length; j++) {
+			if (b.charAt(i - 1) === a.charAt(j - 1)) {
+				matrix[i][j] = matrix[i - 1][j - 1];
+			} else {
+				matrix[i][j] = Math.min(
+				matrix[i - 1][j - 1] + 1, // substitution
+				matrix[i][j - 1] + 1,     // insertion
+				matrix[i - 1][j] + 1      // suppression
+				);
+			}
+			}
+		}
+		return matrix[b.length][a.length];
+	}
+
+	function correctKeyword(word: string, allTitles: string[]): string {
+		let bestMatch = word;
+		let bestScore = Infinity; // plus petit = plus proche
+
+		for (const title of allTitles) {
+			const titleWords = title.toLowerCase().split(" ");
+			for (const tWord of titleWords) {
+			const distance = levenshtein(word, tWord);
+			if (distance < bestScore) {
+				bestScore = distance;
+				bestMatch = tWord;
+			}
+			}
+		}
+
+		// Si la distance est petite (1 ou 2 lettres d’écart), on corrige
+		if (bestScore <= 2) {
+			// console.log(`🔤 Correction "${word}" → "${bestMatch}"`);
+			return bestMatch;
+		}
+		return word;
+	}
+
+
+	const filteredRecettes = useMemo(() => {
+		if (!recettes.length) return [];
+
+		const allTitles = recettes.map(r => r.title);
+		const searchWords = searchTerm.toLowerCase().split(" ").filter(Boolean);
+
+		// 🧠 Correction automatique des fautes
+		const correctedWords = searchWords.map(w => correctKeyword(w, allTitles));
+		const correctedSearch = correctedWords.join(" ");
+
+		return recettes.filter(recette => {
+			const title = recette.title.toLowerCase();
+			const matchesSearch =
+			correctedSearch === "" ||
+			correctedWords.some(w => title.includes(w));
+
+			const matchesType =
+			!selectedType || selectedType === "" || recette.type === selectedType;
+
+			const matchesDepartement =
+			!selectedDepartement || selectedDepartement === "" || recette.position === selectedDepartement;
+
+			return matchesSearch && matchesType && matchesDepartement;
+		});
+	}, [recettes, searchTerm, selectedType, selectedDepartement]);
+
+
 
   const getDepartementPolygon = (departementName: string): [number, number][] => {
     const departement = geojsonData.features.find(
       (feature) => feature.properties.nom === departementName
     ) as DepartementFeature | undefined;
 
-    return departement 
+    return departement
       ? departement.geometry.coordinates[0].map((coord) => [coord[1], coord[0]])
       : [];
   };
@@ -185,7 +249,7 @@ const RecetteMap: React.FC = () => {
           className="map-container"
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          
+
           {geojsonData.features.map((departement, index) => (
             <Polygon
               key={index}
