@@ -75,15 +75,15 @@ const Filtre: React.FC = () => {
   return (
     <div className="Filtre">
       <h2>Filtrer les recettes</h2>
-      
+
       <section className='filtre_input'>
         <div>
           <h3>Nom de la recette</h3>
           <span className="p-input-icon-left">
             <i className="pi pi-search" />
-            <InputText 
-              placeholder="Rechercher une recette..." 
-              value={name} 
+            <InputText
+              placeholder="Rechercher une recette..."
+              value={name}
               onChange={(e) => setName(e.target.value)}
               onKeyPress={handleKeyPress}
             />
@@ -95,11 +95,11 @@ const Filtre: React.FC = () => {
           <div className="Filtre_type">
             {typeRecette.map((type) => (
               <div key={type.id}>
-                <RadioButton 
-                  inputId={type.id.toString()} 
-                  name="type" 
-                  value={type.name} 
-                  onChange={(e) => setSelectedType(e.value)} 
+                <RadioButton
+                  inputId={type.id.toString()}
+                  name="type"
+                  value={type.name}
+                  onChange={(e) => setSelectedType(e.value)}
                   checked={selectedType === type.name}
                 />
                 <label htmlFor={type.id.toString()}>{type.name}</label>
@@ -110,13 +110,13 @@ const Filtre: React.FC = () => {
 
         <div className='formRecette_region'>
           <h3>Département</h3>
-          <Dropdown 
-            id='position' 
-            value={position} 
+          <Dropdown
+            id='position'
+            value={position}
             options={[
               { nom: "Tous les départements", code: '' },
               ...departements
-            ]} 
+            ]}
             onChange={(e: DropdownChangeEvent) => setPosition(e.value)}
             optionLabel="nom"
             placeholder="Sélectionner un département"
@@ -126,14 +126,14 @@ const Filtre: React.FC = () => {
       </section>
 
       <div className="filtre_buttons">
-        <Button 
-          label='Filtrer' 
+        <Button
+          label='Filtrer'
           icon="pi pi-filter"
           loading={isLoading}
           onClick={useFilter}
         />
-        <Button 
-          label='Réinitialiser' 
+        <Button
+          label='Réinitialiser'
           icon="pi pi-refresh"
           className="p-button-secondary"
           onClick={resetFilter}

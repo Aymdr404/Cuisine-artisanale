@@ -10,94 +10,186 @@ import { useLocation } from 'react-router-dom';
 
 
 interface RecetteData {
-  recetteId: string;
-  title: string;
-  type: string;
-  images?: string[];
-  position: string;
+	recetteId: string;
+	title: string;
+	type: string;
+	images?: string[];
+	position: string;
 }
 
 const Recettes: React.FC = () => {
 
-  const [recettes, setRecettes] = useState<RecetteData[]>([]);
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const [departements, setDepartements] = useState<Map<string, string>>(new Map());
+	const [recettes, setRecettes] = useState<RecetteData[]>([]);
+	const location = useLocation();
+	const queryParams = new URLSearchParams(location.search);
+	const [departements, setDepartements] = useState<Map<string, string>>(new Map());
 
-  useEffect(() => {
-    fetchRecettes();
-  }, [location.search]);
+	useEffect(() => {
+		fetchRecettes();
+	}, [location.search]);
 
-  const fetchRecettes = async () => {
-    try {
-      const recettesCollection = collection(db, "recipes");
-      let recettesQuery = query(recettesCollection);
 
-      const type = queryParams.get("type");
-      const position = queryParams.get("position");
-      const keywords = queryParams.get("keywords");
+	function generateWordVariants(word: string): string[] {
+		const base = word.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // supprime les accents
+		const variants = new Set<string>([base]);
 
-      let allRecettes = new Map<string, RecetteData>();
+		// Gérer pluriels simples
+		if (base.endsWith("s")) variants.add(base.slice(0, -1));
+		else variants.add(base + "s");
 
-      if (keywords) {
-        const words = keywords.toLowerCase().split(" ");
+		// Gérer quelques formes simples de fautes
+		if (base.endsWith("ie")) variants.add(base.slice(0, -2) + "y");
+		if (base.endsWith("y")) variants.add(base.slice(0, -1) + "ie");
 
-        for (const word of words) {
-          const wordQuery = query(
-            recettesCollection,
-            where("titleKeywords", "array-contains", word)
-          );
+		return Array.from(variants);
+	}
 
-          const querySnapshot = await getDocs(wordQuery);
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            allRecettes.set(doc.id, {
-              title: data.title,
-              type: data.type,
-              position: data.position,
-              recetteId: doc.id,
-              images: data.images ?? [],
-            });
-          });
-        }
-      } else {
-        const querySnapshot = await getDocs(recettesQuery);
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          allRecettes.set(doc.id, {
-            title: data.title,
-            type: data.type,
-            position: data.position,
-            recetteId: doc.id,
-            images: data.images ?? [],
-          });
-        });
-      }
+	function levenshtein(a: string, b: string): number {
+		const m = a.length;
+		const n = b.length;
+		const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-      let recettesData = Array.from(allRecettes.values());
+		for (let i = 0; i <= m; i++) dp[i][0] = i;
+		for (let j = 0; j <= n; j++) dp[0][j] = j;
 
-      // 🔍 Filtrer selon le type et la position après récupération
-      if (type) {
-        recettesData = recettesData.filter((r) => r.type === type);
-      }
-      if (position) {
-        recettesData = recettesData.filter((r) => r.position === position);
-      }
+		for (let i = 1; i <= m; i++) {
+			for (let j = 1; j <= n; j++) {
+			const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+			dp[i][j] = Math.min(
+				dp[i - 1][j] + 1, // suppression
+				dp[i][j - 1] + 1, // insertion
+				dp[i - 1][j - 1] + cost // remplacement
+			);
+			}
+		}
+		return dp[m][n];
+	}
 
-      setRecettes(recettesData);
-    } catch (error) {
-      console.error("Error getting recettes: ", error);
-    }
-  };
+	function similarity(a: string, b: string): number {
+		const maxLen = Math.max(a.length, b.length);
+		return 1 - levenshtein(a.toLowerCase(), b.toLowerCase()) / maxLen;
+	}
 
-  useEffect(() => {
-    fetch("https://geo.api.gouv.fr/departements")
-      .then(res => res.json())
-      .then(data => {
-        const departementMap: Map<string, string> = new Map(data.map((dep: { code: string; nom: string }) => [dep.code, dep.nom]));
-        setDepartements(departementMap);
-      });
-  }, []);
+
+	const fetchRecettes = async () => {
+		try {
+			const recettesCollection = collection(db, "recipes");
+
+			const type = queryParams.get("type");
+			const position = queryParams.get("position");
+			const keywords = queryParams.get("keywords");
+
+			let allRecettes = new Map<string, RecetteData>();
+
+			if (keywords) {
+				const words = keywords.split(" ");
+				for (const word of words) {
+					const variants = generateWordVariants(word);
+					if (variants.length === 0) continue;
+					let found = false;
+
+					console.log();
+					const wordQuery = query(
+						recettesCollection,
+						where("titleKeywords", "array-contains-any", variants)
+					);
+
+					const querySnapshot = await getDocs(wordQuery);
+
+					if (querySnapshot.empty) {
+						console.log("⚠️ Aucun résultat Firestore pour :", variants);
+					}
+					if (!querySnapshot.empty) found = true;
+
+					querySnapshot.forEach((doc) => {
+						const data = doc.data();
+						allRecettes.set(doc.id, {
+						title: data.title,
+						type: data.type,
+						position: data.position,
+						recetteId: doc.id,
+						images: data.images ?? [],
+						});
+					});
+
+					// ---------------------------
+					// Étape 2 : Fallback fuzzy si Firestore n’a rien trouvé
+					// ---------------------------
+					if (!found) {
+						console.log(`⚠️ Aucun match Firestore pour "${word}", fallback fuzzy`);
+						const allDocs = await getDocs(recettesCollection);
+						allDocs.forEach((doc) => {
+							const data = doc.data();
+							allRecettes.set(doc.id, {
+							title: data.title,
+							type: data.type,
+							position: data.position,
+							recetteId: doc.id,
+							images: data.images ?? [],
+							});
+						});
+					}
+				}
+			} else {
+				// Aucun mot-clé → récupérer tout
+				const querySnapshot = await getDocs(recettesCollection);
+				querySnapshot.forEach((doc) => {
+					const data = doc.data();
+					allRecettes.set(doc.id, {
+					title: data.title,
+					type: data.type,
+					position: data.position,
+					recetteId: doc.id,
+					images: data.images ?? [],
+					});
+				});
+			}
+
+			let recettesData = Array.from(allRecettes.values());
+			if (keywords) {
+				const cleanedKeywords = keywords.toLowerCase().split(" ");
+				const SIMILARITY_THRESHOLD = 0.6;
+
+				recettesData = recettesData
+					.map((r) => {
+					const title = r.title.toLowerCase();
+					const maxScore = Math.max(
+						...cleanedKeywords.map((k) => similarity(k, title))
+					);
+					return { ...r, score: maxScore };
+					})
+					.filter(
+					(r) =>
+						r.score >= SIMILARITY_THRESHOLD ||
+						cleanedKeywords.some((k) => r.title.toLowerCase().includes(k))
+					)
+					.sort((a, b) => b.score - a.score);
+
+				console.log("Résultats filtrés :", recettesData);
+				}
+
+			// 🔍 Filtrer selon le type et la position après récupération
+			if (type) {
+				recettesData = recettesData.filter((r) => r.type === type);
+			}
+			if (position) {
+				recettesData = recettesData.filter((r) => r.position === position);
+			}
+
+			setRecettes(recettesData);
+		} catch (error) {
+			console.error("Error getting recettes: ", error);
+		}
+  	};
+
+	useEffect(() => {
+		fetch("https://geo.api.gouv.fr/departements")
+		.then(res => res.json())
+		.then(data => {
+			const departementMap: Map<string, string> = new Map(data.map((dep: { code: string; nom: string }) => [dep.code, dep.nom]));
+			setDepartements(departementMap);
+		});
+	}, []);
 
 
   return (
