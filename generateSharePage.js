@@ -56,7 +56,7 @@ async function generateSharePages() {
 </head>
 <body>
   <script>
-    window.location.href = "https://tonnom.github.io/Cuisine-artisanale/recettes/${url}";
+    window.location.href = "https://www.aymeric-sabatier/Cuisine-artisanale/recettes/${url}";
   </script>
 </body>
 </html>
