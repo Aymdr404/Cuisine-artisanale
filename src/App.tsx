@@ -29,8 +29,6 @@ import LegalMentions from '@pages/LegalMentions/LegalMentions';
 import PolitiquesConfidentiel from '@pages/PolitiquesConfidentiel/PolitiquesConfidentiel';
 import CookieConsent from '@components/CookiesConsent/CookiesConsent';
 
-import { HelmetProvider } from '@dr.pogodin/react-helmet';
-
 const App = () => {
   useEffect(() => {
     window.onbeforeunload = function () {
@@ -42,7 +40,6 @@ const App = () => {
     <AuthProvider>
       <ThemeProvider>
         <ToastProvider>
-			<HelmetProvider>
 				<Router basename='/Cuisine-artisanale'>
 				<Navbar />
 				<div className="wrapper">
@@ -66,7 +63,6 @@ const App = () => {
 				</div>
 				<LegalMention />
 				</Router>
-			</HelmetProvider>
 			<NewsletterPopup />
 			<CookieConsent />
         	<ToastContainer />

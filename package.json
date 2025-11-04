@@ -12,16 +12,19 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "sitemap": "node generateSitemap.js",
-    "generate": "plop"
+    "sharePage": "node generateSharePage.js",
+    "generate": "plop",
+	"deployAll": "npm run sharePage && npm run build && npm run deploy"
+
   },
   "dependencies": {
-    "@dr.pogodin/react-helmet": "^3.0.4",
     "@emailjs/browser": "^4.4.1",
     "@firebase/firestore": "^4.7.7",
     "@google-cloud/storage": "^7.15.1",
     "dotenv": "^16.4.7",
     "emailjs-com": "^3.2.0",
     "firebase": "^11.3.0",
+    "firebase-admin": "^13.5.0",
     "framer-motion": "^12.23.24",
     "gh-pages": "^6.3.0",
     "leaflet": "^1.9.4",

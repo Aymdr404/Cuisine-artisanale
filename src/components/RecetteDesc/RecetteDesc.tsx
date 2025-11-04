@@ -13,8 +13,6 @@ import { useToast } from '@/contexts/ToastContext/ToastContext';
 import { Rating } from 'primereact/rating';
 import { InputTextarea } from 'primereact/inputtextarea';
 
-import { Helmet } from '@dr.pogodin/react-helmet';
-
 interface RecipePart {
   title: string;
   steps: string[];
@@ -365,42 +363,6 @@ const RecetteDesc: React.FC = () => {
 
   return (
 	<>
-		{recette && (
-			<Helmet>
-				{/* --- Balises principales --- */}
-				<title>{`${recette.title} | Cuisine Artisanale`}</title>
-				<meta
-					name="description"
-					content={`Découvrez la recette ${recette.title}, un délicieux plat ${recette.type} prêt en ${recette.preparationTime + recette.cookingTime} minutes.`}
-				/>
-
-				{/* --- Open Graph (Facebook, LinkedIn, etc.) --- */}
-				<meta property="og:title" content={recette.title} />
-				<meta
-					property="og:description"
-					content={`Découvrez la recette ${recette.title} sur Cuisine Artisanale.`}
-				/>
-				<meta
-					property="og:image"
-					content={recette.images?.[0] || '/default-recipe.jpg'}
-				/>
-				<meta property="og:type" content="article" />
-				<meta property="og:url" content={window.location.href} />
-
-				{/* --- Twitter Card --- */}
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta name="twitter:title" content={recette.title} />
-				<meta
-					name="twitter:description"
-					content={`Découvrez la recette ${recette.title}.`}
-				/>
-				<meta
-					name="twitter:image"
-					content={recette.images?.[0] || '/default-recipe.jpg'}
-				/>
-			</Helmet>
-		)}
-
 		<div className="RecetteDesc">
 			<ConfirmDialog />
 			<div className="recette-desc-button-container">
@@ -428,7 +390,7 @@ const RecetteDesc: React.FC = () => {
 							navigator.share({
 								title: recette?.title,
 								text: `Découvrez la recette ${recette?.title} sur Cuisine Artisanale`,
-								url: window.location.href,
+								url: `https://aymeric-sabatier.fr/Cuisine-artisanale/share/${recipeName}`
 							});
 							} else {
 							navigator.clipboard.writeText(window.location.href);
@@ -444,14 +406,14 @@ const RecetteDesc: React.FC = () => {
 				{role === 'admin' && (
 				<div className="recette-desc-admin-buttons">
 					<Button
-					icon="pi pi-pencil"
-					onClick={() => navigate(`/recettes/${id}/edit`)}
-					className="p-button-text"
+						icon="pi pi-pencil"
+						onClick={() => navigate(`/recettes/${id}/edit`)}
+						className="p-button-text"
 					/>
 					<Button
-					icon="pi pi-trash"
-					onClick={confirmDelete}
-					className="p-button-text p-button-danger"
+						icon="pi pi-trash"
+						onClick={confirmDelete}
+						className="p-button-text p-button-danger"
 					/>
 				</div>
 				)}
