@@ -48,7 +48,7 @@ async function generateSharePages() {
   <meta property="og:description" content="${description}" />
   <meta property="og:image" content="${image}" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://aymeric-sabatier.fr/Cuisine-artisanale/recettes/${url}" />
+  <meta property="og:url" content="https://www.aymeric-sabatier.fr/Cuisine-artisanale/recettes/${url}" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${title}" />
   <meta name="twitter:description" content="${description}" />

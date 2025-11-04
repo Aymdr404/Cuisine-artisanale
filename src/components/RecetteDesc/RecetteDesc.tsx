@@ -390,7 +390,7 @@ const RecetteDesc: React.FC = () => {
 							navigator.share({
 								title: recette?.title,
 								text: `Découvrez la recette ${recette?.title} sur Cuisine Artisanale`,
-								url: `https://aymeric-sabatier.fr/Cuisine-artisanale/share/${recipeName}`
+								url: `https://www.aymeric-sabatier.fr/Cuisine-artisanale/share/${recipeName}`
 							});
 							} else {
 							navigator.clipboard.writeText(window.location.href);
