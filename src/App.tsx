@@ -29,6 +29,8 @@ import LegalMentions from '@pages/LegalMentions/LegalMentions';
 import PolitiquesConfidentiel from '@pages/PolitiquesConfidentiel/PolitiquesConfidentiel';
 import CookieConsent from '@components/CookiesConsent/CookiesConsent';
 
+import { HelmetProvider } from '@dr.pogodin/react-helmet';
+
 const App = () => {
   useEffect(() => {
     window.onbeforeunload = function () {
@@ -40,32 +42,34 @@ const App = () => {
     <AuthProvider>
       <ThemeProvider>
         <ToastProvider>
-        <Router basename='/Cuisine-artisanale'>
-          <Navbar />
-          <div className="wrapper">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/recettes" element={<Recipes />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
-              <Route path="/recettes/:recipeName" element={<RecetteDesc />} />
-              <Route path="/recettes/:id/edit" element={<EditRecette />} />
-              <Route path="/map" element={<RecetteMap />} />
-              <Route path="/account/*" element={<Account />} />
-			  <Route path="/unsubscribe" element={<Unsubscribe />} />
-			  <Route path="/legal-mentions" element={<LegalMentions />} />
-			  <Route path="/privacy-policy" element={<PolitiquesConfidentiel />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/admin-panel/*" element={<AdminPanel />} />
-              </Route>
-              <Route path="*" element={<h1>404 - Not Found</h1>} />
-            </Routes>
-          </div>
-          <LegalMention />
-        </Router>
-		<NewsletterPopup />
-		<CookieConsent />
-        <ToastContainer />
+			<HelmetProvider>
+				<Router basename='/Cuisine-artisanale'>
+				<Navbar />
+				<div className="wrapper">
+					<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/recettes" element={<Recipes />} />
+					<Route path="/about" element={<About />} />
+					<Route path="/recettes/add-recipe" element={<AddRecetteForm />} />
+					<Route path="/recettes/:recipeName" element={<RecetteDesc />} />
+					<Route path="/recettes/:id/edit" element={<EditRecette />} />
+					<Route path="/map" element={<RecetteMap />} />
+					<Route path="/account/*" element={<Account />} />
+					<Route path="/unsubscribe" element={<Unsubscribe />} />
+					<Route path="/legal-mentions" element={<LegalMentions />} />
+					<Route path="/privacy-policy" element={<PolitiquesConfidentiel />} />
+					<Route element={<ProtectedRoute />}>
+						<Route path="/admin-panel/*" element={<AdminPanel />} />
+					</Route>
+					<Route path="*" element={<h1>404 - Not Found</h1>} />
+					</Routes>
+				</div>
+				<LegalMention />
+				</Router>
+			</HelmetProvider>
+			<NewsletterPopup />
+			<CookieConsent />
+        	<ToastContainer />
         </ToastProvider>
       </ThemeProvider>
     </AuthProvider>

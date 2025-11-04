@@ -13,6 +13,8 @@ import { useToast } from '@/contexts/ToastContext/ToastContext';
 import { Rating } from 'primereact/rating';
 import { InputTextarea } from 'primereact/inputtextarea';
 
+import { Helmet } from '@dr.pogodin/react-helmet';
+
 interface RecipePart {
   title: string;
   steps: string[];
@@ -362,192 +364,247 @@ const RecetteDesc: React.FC = () => {
 	};
 
   return (
-    <div className="RecetteDesc">
-      <ConfirmDialog />
-      <div className="recette-desc-button-container">
-        <div className="recette-desc-button-container-left">
-          <Button
-            icon="pi pi-arrow-left"
-            onClick={() => navigate(-1)}
-            className="p-button-text"
-          />
-          <Button
-            icon="pi pi-home"
-            onClick={() => navigate("/")}
-            className="p-button-text"
-          />
-          <Button
-            icon={hasLiked ? 'pi pi-heart-fill' : 'pi pi-heart'}
-            onClick={handleLike}
-            className="p-button-text"
-            severity={hasLiked ? 'danger' : 'info'}
-          />
-        </div>
-        {role === 'admin' && (
-          <div className="recette-desc-admin-buttons">
-            <Button
-              icon="pi pi-pencil"
-              onClick={() => navigate(`/recettes/${id}/edit`)}
-              className="p-button-text"
-            />
-            <Button
-              icon="pi pi-trash"
-              onClick={confirmDelete}
-              className="p-button-text p-button-danger"
-            />
-          </div>
-        )}
-      </div>
+	<>
+		{recette && (
+			<Helmet>
+				{/* --- Balises principales --- */}
+				<title>{`${recette.title} | Cuisine Artisanale`}</title>
+				<meta
+					name="description"
+					content={`Découvrez la recette ${recette.title}, un délicieux plat ${recette.type} prêt en ${recette.preparationTime + recette.cookingTime} minutes.`}
+				/>
 
-      <h1 className="recette-desc-title">{recette?.title}</h1>
+				{/* --- Open Graph (Facebook, LinkedIn, etc.) --- */}
+				<meta property="og:title" content={recette.title} />
+				<meta
+					property="og:description"
+					content={`Découvrez la recette ${recette.title} sur Cuisine Artisanale.`}
+				/>
+				<meta
+					property="og:image"
+					content={recette.images?.[0] || '/default-recipe.jpg'}
+				/>
+				<meta property="og:type" content="article" />
+				<meta property="og:url" content={window.location.href} />
 
-      <div className="recette-desc-description">
-        <div className="recette-desc-info">
-          <div className="recette-desc-info-left">
-            <p>
-              <strong>Type:</strong> {recette?.type}
-            </p>
-            {recette?.position && (
-              <div className="recette-desc-position">
-                <p>
-                  <strong>Departement:</strong> {departements.get(recette.position) || "Inconnu"}
-                </p>
-              </div>
-            )}
-            <div className="recette-desc-timing">
-              <p>
-                <i className="pi pi-clock"></i>
-                <strong>Temps de préparation:</strong> {recette?.preparationTime} min
-              </p>
-              <p>
-                <i className="pi pi-hourglass"></i>
-                <strong>Temps de cuisson:</strong> {recette?.cookingTime} min
-              </p>
-            </div>
-            {recette?.video && (
-              <h3 className='recette-desc-video'>
-                <strong>Vidéo associée :</strong>
-                <VideoEmbed url={recette.video} />
-              </h3>
-            )}
-          </div>
-          <div className="recette-desc-info-right">
-            {recette?.images && recette.images.length > 0 && (
-              <div className="recette-desc-gallery">
-                <div className="recette-desc-main-image">
-                  <img
-                    src={recette.images[currentImageIndex]}
-                    alt={`${recette.title} - Image ${currentImageIndex + 1}`}
-                  />
-                </div>
-                {recette.images.length > 1 && (
-                  <div className="recette-desc-thumbnails">
-                    {recette.images.map((image, index) => (
-                      <div
-                        key={index}
-                        className={`recette-desc-thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                        onClick={() => handleImageClick(index)}
-                      >
-                        <img
-                          src={image}
-                          alt={`${recette.title} - Thumbnail ${index + 1}`}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-        {recette?.recipeParts.map((part, index) => (
-          <div key={index} className="recette-desc-part">
-            <h2>{part.title}</h2>
-            <section>
-              <div className="recette-desc-part-ingredients">
-                <h3>Ingrédients</h3>
-                <ul>
-                  {part.ingredients.map((ingredient, idx) => (
-                    <li key={idx}>
-                      <p>
-                        {ingredient.name} - {ingredient.quantity} {ingredient.unit}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+				{/* --- Twitter Card --- */}
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta name="twitter:title" content={recette.title} />
+				<meta
+					name="twitter:description"
+					content={`Découvrez la recette ${recette.title}.`}
+				/>
+				<meta
+					name="twitter:image"
+					content={recette.images?.[0] || '/default-recipe.jpg'}
+				/>
+			</Helmet>
+		)}
 
-              <div className="recette-desc-part-steps">
-                <h3>Étapes de préparation</h3>
-                <ol>
-                  {part.steps.map((step, idx) => (
-                    <li key={idx}>
-                      <h4>{step}</h4>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </section>
-          </div>
-        ))}
-      </div>
-	  <div className="recette-reviews-section">
-			<section className="recette-reviews-header">
-				<h2>Notes et avis</h2>
-				{averageRating && (
-				<div className="recette-average-rating">
-					<Rating value={parseFloat(averageRating)} readOnly cancel={false} />
-					<span>{averageRating} / 5 ({reviews.length} avis)</span>
-				</div>
-				)}
-				<div className="recette-review-form">
-					<h3>Laisser un avis</h3>
-					<Rating value={newRating ?? undefined} onChange={(e) => setNewRating(e.value ?? null)} cancel={false} />
-					<InputTextarea
-						value={newReview}
-						onChange={(e) => setNewReview(e.target.value)}
-						rows={4}
-						cols={40}
-						placeholder="Votre message..."
+		<div className="RecetteDesc">
+			<ConfirmDialog />
+			<div className="recette-desc-button-container">
+				<div className="recette-desc-button-container-left">
+					<Button
+						icon="pi pi-arrow-left"
+						onClick={() => navigate(-1)}
+						className="p-button-text"
 					/>
 					<Button
-						label="Envoyer"
-						icon="pi pi-send"
-						onClick={handleAddReview}
-						className="mt-2"
-						disabled={!user}
+						icon="pi pi-home"
+						onClick={() => navigate("/")}
+						className="p-button-text"
 					/>
-					{!user && (<h3>Connectez vous pour laisser un avis</h3>)}
+					<Button
+						icon={hasLiked ? 'pi pi-heart-fill' : 'pi pi-heart'}
+						onClick={handleLike}
+						className="p-button-text"
+						severity={hasLiked ? 'danger' : 'info'}
+					/>
+					<Button
+						icon="pi pi-share-alt"
+						onClick={() => {
+							if (navigator.share) {
+							navigator.share({
+								title: recette?.title,
+								text: `Découvrez la recette ${recette?.title} sur Cuisine Artisanale`,
+								url: window.location.href,
+							});
+							} else {
+							navigator.clipboard.writeText(window.location.href);
+							showToast({
+								severity: 'info',
+								summary: 'Lien copié',
+								detail: 'Lien de la recette copié dans le presse-papiers',
+							});
+							}
+						}}
+					/>
+					</div>
+				{role === 'admin' && (
+				<div className="recette-desc-admin-buttons">
+					<Button
+					icon="pi pi-pencil"
+					onClick={() => navigate(`/recettes/${id}/edit`)}
+					className="p-button-text"
+					/>
+					<Button
+					icon="pi pi-trash"
+					onClick={confirmDelete}
+					className="p-button-text p-button-danger"
+					/>
 				</div>
-			</section>
+				)}
+			</div>
 
-			{reviews.length === 0 && <p>Aucun avis pour le moment.</p>}
-			<ul className="recette-reviews-list">
-				{reviews.map((r) => (
-					<li key={r.id} className="recette-review">
-						<div className="recette-review-header">
-							<strong>{r.userName}</strong>
-							<Rating value={r.rating} readOnly cancel={false} />
-							{user && role == "admin" && (
-								<div>
-									<Button
-										icon="pi pi-trash"
-										onClick={() => deleteReview(r.id!)}
-										className="p-button-danger p-button-rounded"
-										tooltip="Supprimer l'avis"
-									/>
-								</div>
-							)}
+			<h1 className="recette-desc-title">{recette?.title}</h1>
+
+			<div className="recette-desc-description">
+				<div className="recette-desc-info">
+				<div className="recette-desc-info-left">
+					<p>
+					<strong>Type:</strong> {recette?.type}
+					</p>
+					{recette?.position && (
+					<div className="recette-desc-position">
+						<p>
+						<strong>Departement:</strong> {departements.get(recette.position) || "Inconnu"}
+						</p>
+					</div>
+					)}
+					<div className="recette-desc-timing">
+					<p>
+						<i className="pi pi-clock"></i>
+						<strong>Temps de préparation:</strong> {recette?.preparationTime} min
+					</p>
+					<p>
+						<i className="pi pi-hourglass"></i>
+						<strong>Temps de cuisson:</strong> {recette?.cookingTime} min
+					</p>
+					</div>
+					{recette?.video && (
+					<h3 className='recette-desc-video'>
+						<strong>Vidéo associée :</strong>
+						<VideoEmbed url={recette.video} />
+					</h3>
+					)}
+				</div>
+				<div className="recette-desc-info-right">
+					{recette?.images && recette.images.length > 0 && (
+					<div className="recette-desc-gallery">
+						<div className="recette-desc-main-image">
+						<img
+							src={recette.images[currentImageIndex]}
+							alt={`${recette.title} - Image ${currentImageIndex + 1}`}
+						/>
 						</div>
-						<p>{r.message}</p>
-						<small>{r.createdAt?.toDate?.().toLocaleString?.() || ''}</small>
-					</li>
+						{recette.images.length > 1 && (
+						<div className="recette-desc-thumbnails">
+							{recette.images.map((image, index) => (
+							<div
+								key={index}
+								className={`recette-desc-thumbnail ${index === currentImageIndex ? 'active' : ''}`}
+								onClick={() => handleImageClick(index)}
+							>
+								<img
+								src={image}
+								alt={`${recette.title} - Thumbnail ${index + 1}`}
+								/>
+							</div>
+							))}
+						</div>
+						)}
+					</div>
+					)}
+				</div>
+				</div>
+				{recette?.recipeParts.map((part, index) => (
+				<div key={index} className="recette-desc-part">
+					<h2>{part.title}</h2>
+					<section>
+					<div className="recette-desc-part-ingredients">
+						<h3>Ingrédients</h3>
+						<ul>
+						{part.ingredients.map((ingredient, idx) => (
+							<li key={idx}>
+							<p>
+								{ingredient.name} - {ingredient.quantity} {ingredient.unit}
+							</p>
+							</li>
+						))}
+						</ul>
+					</div>
+
+					<div className="recette-desc-part-steps">
+						<h3>Étapes de préparation</h3>
+						<ol>
+						{part.steps.map((step, idx) => (
+							<li key={idx}>
+							<h4>{step}</h4>
+							</li>
+						))}
+						</ol>
+					</div>
+					</section>
+				</div>
 				))}
-			</ul>
+			</div>
+			<div className="recette-reviews-section">
+				<section className="recette-reviews-header">
+					<h2>Notes et avis</h2>
+					{averageRating && (
+					<div className="recette-average-rating">
+						<Rating value={parseFloat(averageRating)} readOnly cancel={false} />
+						<span>{averageRating} / 5 ({reviews.length} avis)</span>
+					</div>
+					)}
+					<div className="recette-review-form">
+						<h3>Laisser un avis</h3>
+						<Rating value={newRating ?? undefined} onChange={(e) => setNewRating(e.value ?? null)} cancel={false} />
+						<InputTextarea
+							value={newReview}
+							onChange={(e) => setNewReview(e.target.value)}
+							rows={4}
+							cols={40}
+							placeholder="Votre message..."
+						/>
+						<Button
+							label="Envoyer"
+							icon="pi pi-send"
+							onClick={handleAddReview}
+							className="mt-2"
+							disabled={!user}
+						/>
+						{!user && (<h3>Connectez vous pour laisser un avis</h3>)}
+					</div>
+				</section>
+
+				{reviews.length === 0 && <p>Aucun avis pour le moment.</p>}
+				<ul className="recette-reviews-list">
+					{reviews.map((r) => (
+						<li key={r.id} className="recette-review">
+							<div className="recette-review-header">
+								<strong>{r.userName}</strong>
+								<Rating value={r.rating} readOnly cancel={false} />
+								{user && role == "admin" && (
+									<div>
+										<Button
+											icon="pi pi-trash"
+											onClick={() => deleteReview(r.id!)}
+											className="p-button-danger p-button-rounded"
+											tooltip="Supprimer l'avis"
+										/>
+									</div>
+								)}
+							</div>
+							<p>{r.message}</p>
+							<small>{r.createdAt?.toDate?.().toLocaleString?.() || ''}</small>
+						</li>
+					))}
+				</ul>
+			</div>
 		</div>
-
-
-    </div>
+	</>
   );
 };
 
