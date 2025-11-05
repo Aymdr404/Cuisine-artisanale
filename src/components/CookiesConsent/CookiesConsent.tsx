@@ -20,32 +20,30 @@ const CookieConsent: React.FC = () => {
 		ads: false,
 	});
 	const [expanded, setExpanded] = useState(false); // pour l’animation du détail
-  let annonId: string = "";
+	let annonId: string;
 
-  useEffect(() => {
-    const stored = localStorage.getItem('cookieConsent');
-    if (!stored) setShowBanner(true);
-  }, []);
-
-
-  useEffect(() => {
-  const storedAnonId = localStorage.getItem('anonId');
-  if (!storedAnonId) {
-    annonId = uuidv4();
-    localStorage.setItem('anonId', annonId);
-  } else {
-    annonId = storedAnonId;
-  }
-  }, []);
+	useEffect(() => {
+		const stored = localStorage.getItem('cookieConsent');
+		if (!stored) setShowBanner(true);
+	}, []);
 
 
   const saveConsent = async (finalChoices: CookieChoice) => {
     localStorage.setItem('cookieConsent', JSON.stringify(finalChoices));
     setShowBanner(false);
 
+	const storedAnonId = localStorage.getItem('anonId');
+	if (!storedAnonId) {
+		annonId = uuidv4();
+		localStorage.setItem('anonId', annonId);
+	} else {
+		annonId = storedAnonId;
+	}
+
 	try {
+
 		await addDoc(collection(db, 'cookieConsent'), {
-			annonId,
+			annonId: annonId,
 			choices: finalChoices,
 			timestamp: serverTimestamp(),
 			userAgent: navigator.userAgent,
