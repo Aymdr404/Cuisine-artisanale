@@ -194,24 +194,31 @@ const Recettes: React.FC = () => {
 
   return (
     <div className="Recettes">
-      <section className='filter_section'>
-        <Filtre />
-        <AddRecette />
-      </section>
-	  <section className='recettes_section'>
-		{recettes &&(
-			<>
-				{recettes.map((recette, index) => (
-				<Recette key={index} recetteId={recette.recetteId} title={recette.title} type={recette.type} images={recette.images} position={departements.get(recette.position) || "Inconnu"}  />
-				))}
-			</>
-		)}
-		{recettes && recettes.length === 0 && (
-				<h2>Aucune recette trouvée.</h2>
-		)}
-		{!recettes && (
-			<p>Chargement...</p>
-		)}
+		<section className='filter_section'>
+			<Filtre />
+			<AddRecette />
+		</section>
+		<section className='recettes_section'>
+			{recettes.length === 0 && !recettes && (
+				Array.from({ length: 5 }).map((_, i) => (
+				<div key={i} className="recette-skeleton">
+					<div className="skeleton-image"></div>
+					<div className="skeleton-title"></div>
+					<div className="skeleton-content"></div>
+				</div>
+				))
+			)}
+
+			{recettes.map((recette, index) => (
+				<Recette
+					key={index}
+					recetteId={recette.recetteId}
+					title={recette.title}
+					type={recette.type}
+					images={recette.images}
+					position={departements.get(recette.position) || "Inconnu"}
+				/>
+			))}
 		</section>
     </div>
   );

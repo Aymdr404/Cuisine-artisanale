@@ -106,6 +106,9 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 				src={images[0]}
 				alt={title}
 				className="recipe-image"
+				width={600}
+				height={400}
+				loading="lazy"
 			/>
 		);
 	};
