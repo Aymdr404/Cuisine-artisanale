@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, Suspense } from 'react';
 import './Posts.css';
-import Post from '@/components/Post/Post';
 import AddPost from '@/components/AddPost/AddPost';
 import { db } from '@firebaseModule';
-import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
+import { collection, getDocs, limit, orderBy, query, startAfter } from 'firebase/firestore';
 import { Button } from 'primereact/button';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
+
+// Lazy-load du composant Post
+const PostComponent = React.lazy(() => import('@/components/Post/Post'));
 
 interface Post {
   id: string;
@@ -17,6 +19,8 @@ interface Post {
   userName: string;
 }
 
+const nbPostsToDisplay = 5;
+
 const Posts: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [lastVisible, setLastVisible] = useState<any>(null);
@@ -25,10 +29,8 @@ const Posts: React.FC = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const { role, user } = useAuth();
 
-  const nbPostsToDisplay = 5;
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("fr-FR", {
+  const formatDate = (date: Date) =>
+    date.toLocaleDateString("fr-FR", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -36,52 +38,39 @@ const Posts: React.FC = () => {
       hour: "2-digit",
       minute: "2-digit"
     });
-  };
 
-  const fetchPosts = () => {
+  // 📌 Initial fetch des posts
+  const fetchInitialPosts = async () => {
     setLoading(true);
-
-    const postsQuery = query(
-      collection(db, "posts"),
-      orderBy("createdAt", "desc"),
-      limit(nbPostsToDisplay)
-    );
-
-    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+    try {
+      const postsQuery = query(
+        collection(db, "posts"),
+        orderBy("createdAt", "desc"),
+        limit(nbPostsToDisplay)
+      );
+      const querySnapshot = await getDocs(postsQuery);
       const postsData: Post[] = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
+          id: doc.id,
           title: data.title,
           content: data.content,
           createdAt: data.createdAt.toDate(),
-          id: doc.id,
-          visible: data.visible !== false, // Default to true if not set
+          visible: data.visible !== false,
           userName: data.userName
         } as Post;
       });
-
-      // Only filter posts if we have the user's role
-      if (user) {
-        const filteredPosts = postsData.filter(post => post.visible || role === 'admin');
-        setPosts(filteredPosts);
-      } else {
-        // If no user is logged in, show only visible posts
-        const filteredPosts = postsData.filter(post => post.visible);
-        setPosts(filteredPosts);
-      }
-
-      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
-      setLastVisible(lastVisiblePost);
-      setLoading(false);
+      setPosts(postsData);
+      setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
       setHasMorePosts(querySnapshot.size === nbPostsToDisplay);
-    });
-
-    return unsubscribe;
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+    setLoading(false);
   };
 
   const loadMorePosts = async () => {
     if (!lastVisible || loading) return;
-
     setLoading(true);
 
     try {
@@ -91,72 +80,85 @@ const Posts: React.FC = () => {
         startAfter(lastVisible),
         limit(nbPostsToDisplay)
       );
-
       const querySnapshot = await getDocs(postsQuery);
       const postsData: Post[] = querySnapshot.docs.map((doc) => {
         const data = doc.data();
         return {
+          id: doc.id,
           title: data.title,
           content: data.content,
           createdAt: data.createdAt.toDate(),
-          id: doc.id,
-          visible: data.visible !== false
+          visible: data.visible !== false,
+          userName: data.userName
         } as Post;
       });
-
-      // Apply the same filtering logic for loaded posts
-      const filteredPosts = postsData.filter(post => post.visible || role === 'admin');
-      setPosts((prevPosts) => [...prevPosts, ...filteredPosts]);
+      setPosts((prev) => [...prev, ...postsData]);
       setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
       setHasMorePosts(querySnapshot.size === nbPostsToDisplay);
     } catch (error) {
-      console.error("Error getting more posts: ", error);
+      console.error("Error loading more posts:", error);
     }
-
     setLoading(false);
   };
 
-  const handleScroll = () => {
-    setShowScrollTop(window.scrollY > 300);
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  // 👀 Scroll to top
+  const handleScroll = () => setShowScrollTop(window.scrollY > 300);
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   useEffect(() => {
-    const unsubscribe = fetchPosts();
+    fetchInitialPosts();
     window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [user, role]);
 
-    return () => {
-      unsubscribe();
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [user, role]); // Add user and role as dependencies
+  // Filtrer les posts selon le rôle (memoized)
+  const visiblePosts = useMemo(() => {
+    return posts.filter(post => post.visible || role === 'admin');
+  }, [posts, role]);
 
   return (
     <div className="Posts">
       <ConfirmDialog />
       <section className="Posts_section">
-        {posts.map((post) => (
-          <Post 
-            key={post.id} 
-            postId={post.id} 
-            title={post.title} 
-            content={post.content} 
-            createdAt={formatDate(post.createdAt)}
-            visible={post.visible}
-            userName={post.userName}
-          />
+
+        {/* Skeleton UI si aucun post chargé */}
+        {loading && visiblePosts.length === 0 && (
+          Array.from({ length: nbPostsToDisplay }).map((_, i) => (
+            <div key={i} className="post-skeleton">
+              <div className="skeleton-title"></div>
+              <div className="skeleton-content"></div>
+            </div>
+          ))
+        )}
+
+        {/* Liste des posts */}
+        {visiblePosts.map((post) => (
+          <Suspense key={post.id} fallback={
+            <div className="post-skeleton">
+              <div className="skeleton-title"></div>
+              <div className="skeleton-content"></div>
+            </div>
+          }>
+            <PostComponent
+              postId={post.id}
+              title={post.title}
+              content={post.content}
+              createdAt={formatDate(post.createdAt)}
+              visible={post.visible}
+              userName={post.userName}
+            />
+          </Suspense>
         ))}
+
+        {/* Charger plus de posts */}
         <section className="LoadMore_section">
-          {loading ? (
+          {loading && visiblePosts.length > 0 ? (
             <div className="loading-spinner">
               <i className="pi pi-spinner"></i>
               <span>Chargement des posts...</span>
             </div>
           ) : hasMorePosts ? (
-            <Button 
+            <Button
               onClick={loadMorePosts}
               icon="pi pi-plus"
               label="Charger plus de posts"
@@ -171,11 +173,13 @@ const Posts: React.FC = () => {
         </section>
       </section>
 
+      {/* Ajouter un post */}
       <section className="AddPost_section">
         <AddPost />
       </section>
 
-      <button 
+      {/* Bouton scroll-top */}
+      <button
         className={`scroll-top-button ${showScrollTop ? 'visible' : ''}`}
         onClick={scrollToTop}
         aria-label="Retour en haut"
@@ -187,4 +191,3 @@ const Posts: React.FC = () => {
 };
 
 export default Posts;
-

@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import './Home.css';
 
 import Actualites from '../Actualites/Actualites';
-import Posts from '../Posts/Posts';
+const Posts = React.lazy(() => import('../Posts/Posts'));
 
 
 const Home: React.FC = () => {
   return (
     <div className="Home">
       <Actualites />
-      <Posts />
+      <Suspense fallback={<div className="posts-skeleton">Chargement des posts...</div>}>
+        <Posts />
+      </Suspense>
     </div>
   );
 };

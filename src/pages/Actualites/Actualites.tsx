@@ -65,6 +65,8 @@ const Actualites: React.FC = () => {
 				src={featuredRecette.images[0]}
 				alt={featuredRecette.title}
 				className="featured-img"
+				height={400}
+				width={600}
 			/>
 			)}
 			<div className="featured-content">
