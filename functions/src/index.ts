@@ -70,7 +70,9 @@ interface RecipeRequest {
 }
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+	host: "ssl0.ovh.net",
+	port: 465,
+	secure: true,
     auth: {
         user: process.env.EMAIL,
         pass: process.env.APP_PASSWORD,
@@ -88,7 +90,7 @@ export const sendEmailOnNewRecipeRequest = onDocumentUpdated('recipesRequest/{ob
     const name = newValue.title;
 
     const mailOptions = {
-        from: process.env.EMAIL,
+        from: 'a.sabatier@cuisine-artisanale.fr',
         to: "ssabatieraymeric@gmail.com",
         subject: "Nouvelle demande de recette",
         text: `Une nouvelle demande de recette a été ajoutée : ${name}`,
@@ -128,7 +130,7 @@ export const sendWeeklyRecipeEmail = async (email: string) => {
     const unsubscribeUrl = `https://www.aymeric-sabatier.fr/Cuisine-artisanale/unsubscribe?email=${encodeURIComponent(email)}`;
 
     const mailOptions = {
-		from: process.env.EMAIL,
+		from: 'a.sabatier@cuisine-artisanale.fr',
 		to: email,
 		subject: `🍰 Votre recette de la semaine : ${recipe.title}`,
 		html: `
