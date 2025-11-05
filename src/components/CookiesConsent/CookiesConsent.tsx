@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './CookiesConsent.css';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@firebaseModule';
+
+import { v4 as uuidv4 } from 'uuid';
+
+
 interface CookieChoice {
   functional: boolean;
   analytics: boolean;
@@ -9,18 +13,31 @@ interface CookieChoice {
 }
 
 const CookieConsent: React.FC = () => {
-  const [showBanner, setShowBanner] = useState(false);
-  const [choices, setChoices] = useState<CookieChoice>({
-    functional: true, // obligatoires
-    analytics: false,
-    ads: false,
-  });
-  const [expanded, setExpanded] = useState(false); // pour l’animation du détail
+	const [showBanner, setShowBanner] = useState(false);
+	const [choices, setChoices] = useState<CookieChoice>({
+		functional: true, // obligatoires
+		analytics: false,
+		ads: false,
+	});
+	const [expanded, setExpanded] = useState(false); // pour l’animation du détail
+  let annonId: string = "";
 
   useEffect(() => {
     const stored = localStorage.getItem('cookieConsent');
     if (!stored) setShowBanner(true);
   }, []);
+
+
+  useEffect(() => {
+  const storedAnonId = localStorage.getItem('anonId');
+  if (!storedAnonId) {
+    annonId = uuidv4();
+    localStorage.setItem('anonId', annonId);
+  } else {
+    annonId = storedAnonId;
+  }
+  }, []);
+
 
   const saveConsent = async (finalChoices: CookieChoice) => {
     localStorage.setItem('cookieConsent', JSON.stringify(finalChoices));
@@ -28,6 +45,7 @@ const CookieConsent: React.FC = () => {
 
 	try {
 		await addDoc(collection(db, 'cookieConsent'), {
+			annonId,
 			choices: finalChoices,
 			timestamp: serverTimestamp(),
 			userAgent: navigator.userAgent,

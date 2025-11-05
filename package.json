@@ -14,8 +14,7 @@
     "sitemap": "node generateSitemap.js",
     "sharePage": "node generateSharePage.js",
     "generate": "plop",
-	"deployAll": "npm run sharePage && npm run build && npm run deploy"
-
+    "deployAll": "npm run sharePage && npm run build && npm run deploy"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -43,6 +42,7 @@
     "@types/leaflet": "^1.9.16",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.19.0",
     "eslint-plugin-react-hooks": "^5.0.0",
