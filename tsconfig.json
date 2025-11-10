@@ -1,10 +1,4 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    }
-  ],
   "compilerOptions": {
     "target": "ES2017",
     "lib": [
@@ -49,7 +43,6 @@
     "src/app/**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "src/App.tsx"
+    "node_modules"
   ]
 }
