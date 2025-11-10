@@ -3,9 +3,14 @@ import React, { useState, useEffect, useMemo } from "react";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { useRouter } from 'next/navigation';
 import "./RecetteMap.css";
+import geojsonData from '@assets/departementsGeoJson.json';
+import departementsCoordinates from '@assets/departementsCoord.json';
 
 import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
 import L from "leaflet";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
 
 interface Recette {
   recetteId: string;
