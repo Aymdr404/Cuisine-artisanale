@@ -37,7 +37,7 @@
       "@services/*": ["src/services/*"],
       "@contexts/*": ["src/contexts/*"],
       "@assets/*": ["src/assets/*"],
-      "@firebaseModule": ["src/firebase/index"]
+      "@firebaseModule": ["src/firebase"]
     }
   },
   "include": [
