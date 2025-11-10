@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import './BurgerMenu.css';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import AuthButton from '../AuthButton/AuthButton';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import ButtonLinkNav from '../ButtonLinkNav/ButtonLinkNav';
 
 interface BurgerMenuProps {
@@ -37,12 +37,12 @@ const BurgerMenu: React.FC<BurgerMenuProps> = ({ className }) => {
           <ul>
             {user && (
               <li>
-                <Link to="/account" onClick={() => setOpen(false)} className="menu-item-link">account</Link>
+                <Link href="/account" onClick={() => setOpen(false)} className="menu-item-link">account</Link>
               </li>
             )}
             {user && role === 'admin' && (
               <li>
-                <Link to="/admin-panel" onClick={() => setOpen(false)} className="menu-item-link">admin</Link>
+                <Link href="/admin-panel" onClick={() => setOpen(false)} className="menu-item-link">admin</Link>
               </li>
             )}
             <li>

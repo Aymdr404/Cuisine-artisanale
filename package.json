@@ -40,34 +40,12 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@types/uuid": "^10.0.0",
-    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.19.0",
     "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
     "plop": "^4.0.1",
-    "react-snap": "^1.23.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.22.0",
-    "vite": "^6.1.0",
     "@types/node": "^22.9.0"
-  },
-  "reactSnap": {
-    "inlineCss": true,
-    "skipThirdPartyRequests": true,
-    "puppeteerArgs": [
-      "--no-sandbox",
-      "--disable-setuid-sandbox"
-    ],
-    "source": "dist",
-    "include": [
-      "/",
-      "/recettes",
-      "/about",
-      "/map",
-      "/account",
-      "/account/mes-recettes",
-      "/account/mes-favoris"
-    ]
   }
 }

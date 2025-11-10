@@ -8,7 +8,6 @@ import '@/styles/admin.css';
 import '@/styles/dialog.css';
 import '@/styles/toast.css';
 import '@/index.css';
-import '@/pages-legacy/Home/Home.css';
 import Navbar from '@/components/Navbar/Navbar';
 import LegalMention from '@/components/LegalMention/LegalMention';
 import { ToastContainer } from 'react-toastify';

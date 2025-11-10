@@ -118,3 +118,15 @@ button:focus-visible {
     margin-top: 4rem;
   }
 }
+
+/* Home page styles */
+.Home {
+  min-height: 85vh;
+  border-radius: 15px;
+}
+
+@media (max-width: 768px) {
+  .Home {
+    background-color: #00000000;
+  }
+}
