@@ -217,7 +217,7 @@ const RecetteMap: React.FC = () => {
                   className={`recipe-item ${hoveredRecette === recette.recetteId ? 'hovered' : ''}`}
                   onMouseEnter={() => setHoveredRecette(recette.recetteId)}
                   onMouseLeave={() => setHoveredRecette(null)}
-                  onClick={() => router.push(`/recettes/${recette.url}`)}
+                  onClick={() => router.push(`/recettes?id=${recette.recetteId}`)}
                 >
                   <div className="recipe-item-content">
                     {recette.images?.[0] && (
@@ -292,7 +292,7 @@ const RecetteMap: React.FC = () => {
                     <Button
                       icon="pi pi-eye"
                       label="Voir la recette"
-                      onClick={() => router.push(`/recettes/${recette.url}`)}
+                      onClick={() => router.push(`/recettes?id=${recette.recetteId}`)}
                     />
                   </div>
                 </Popup>

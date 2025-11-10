@@ -154,7 +154,7 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 					<div className="main-actions">
 						{!fromRequest && (
 							<div className='Post_admin_actions'>
-								<Link href={`/recettes/${slugify(title)}`} className="view-recipe">
+								<Link href={`/recettes?id=${recetteId}`} className="view-recipe">
 									<Button
 										label="Voir la recette"
 										icon="pi pi-eye"

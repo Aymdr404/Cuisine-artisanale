@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './RecetteDesc.css';
 import VideoEmbed from '@components/VideoEmbed/VideoEmbed';
 
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, getDoc, deleteDoc, onSnapshot, query, where, getDocs, collection, orderBy, serverTimestamp, addDoc } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import { Button } from 'primereact/button';
@@ -41,8 +41,8 @@ interface Ingredient {
 
 const RecetteDesc: React.FC = () => {
 	const [id, setId] = useState<string | null>(null);
-	const params = useParams();
-	const recipeName = typeof params?.recipeName === 'string' ? params.recipeName : Array.isArray(params?.recipeName) ? params.recipeName[0] : undefined;
+	const searchParams = useSearchParams();
+	const recipeId = searchParams?.get('id');
 	const router = useRouter();
 	const {role, user} = useAuth();
 	const { showToast } = useToast();
@@ -60,19 +60,18 @@ const RecetteDesc: React.FC = () => {
 	const [newRating, setNewRating] = useState<number | null>(null);
 
 
-	const getRecette = async (recipeName: string) => {
-		const recettesCollection = collection(db, "recipes");
-		const q = query(recettesCollection, where("url", "==", recipeName));
+	const getRecetteById = async (docId: string) => {
 		try {
-			const querySnapshot = await getDocs(q);
-			if (querySnapshot.empty) {
-				console.log("Pas de recette trouvée avec ce nom");
+			const recetteRef = doc(db, "recipes", docId);
+			const recetteSnap = await getDoc(recetteRef);
+
+			if (!recetteSnap.exists()) {
+				console.log("Pas de recette trouvée avec cet ID");
 				return;
 			}
 
-			const recetteDoc = querySnapshot.docs[0];
-			const recetteData = recetteDoc.data() as Recette;
-			setId(recetteDoc.id);
+			const recetteData = recetteSnap.data() as Recette;
+			setId(docId);
 
 			// Traitement des ingrédients pour chaque partie
 			const updatedRecipeParts = await Promise.all(
@@ -112,10 +111,10 @@ const RecetteDesc: React.FC = () => {
 	};
 
 	useEffect(() => {
-		if (recipeName){
-			getRecette(recipeName);
+		if (recipeId){
+			getRecetteById(recipeId);
 		}
-	}, [recipeName]);
+	}, [recipeId]);
 
 	useEffect(() => {
 		fetch("https://geo.api.gouv.fr/departements")
