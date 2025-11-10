@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import Providers from './providers';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-import 'leaflet/dist/leaflet.css';
 import '@/styles/theme.css';
 import '@/styles/admin.css';
 import '@/styles/dialog.css';
@@ -11,10 +11,19 @@ import '@/index.css';
 import '@/pages-legacy/Home/Home.css';
 import Navbar from '@/components/Navbar/Navbar';
 import LegalMention from '@/components/LegalMention/LegalMention';
-import NewsletterPopup from '@/components/NewsletterPopup/NewsletterPopup';
-import CookieConsent from '@/components/CookiesConsent/CookiesConsent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+// Lazy-load components that are not critical for FCP
+const NewsletterPopup = dynamic(
+	() => import('@/components/NewsletterPopup/NewsletterPopup'),
+	{ ssr: true, loading: () => null }
+);
+
+const CookieConsent = dynamic(
+	() => import('@/components/CookiesConsent/CookiesConsent'),
+	{ ssr: true, loading: () => null }
+);
 
 export const metadata = {
 	title: 'Cuisine artisanale',

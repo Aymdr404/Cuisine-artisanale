@@ -1,3 +1,4 @@
+import 'leaflet/dist/leaflet.css';
 import RecetteMapWrapper from './RecetteMapWrapper';
 
 export const metadata = {
