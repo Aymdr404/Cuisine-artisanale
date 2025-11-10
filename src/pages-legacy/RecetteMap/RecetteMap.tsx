@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { useRouter } from 'next/navigation';
 import "./RecetteMap.css";
 
 import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
