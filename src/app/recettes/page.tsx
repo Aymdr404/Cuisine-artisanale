@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import RecettesWrapper from "./RecettesWrapper";
 
 export const metadata = {
@@ -6,7 +7,11 @@ export const metadata = {
 };
 
 export default function Page() {
-	return <RecettesWrapper />;
+	return (
+		<Suspense fallback={<div style={{ padding: "2rem", textAlign: "center" }}>Chargement...</div>}>
+			<RecettesWrapper />
+		</Suspense>
+	);
 }
 
 
