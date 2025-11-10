@@ -8,7 +8,7 @@ import { doc, getDoc, deleteDoc, onSnapshot, query, where, getDocs, collection, 
 import { db } from '@firebaseModule';
 import { Button } from 'primereact/button';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
-import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
+import { toggleLikeRecipes, unlikeRecipes, countRecipeLikes, hasUserLikedRecipe } from '@/services/RecetteService/RecetteService';
 import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
 import { Rating } from 'primereact/rating';
@@ -46,10 +46,9 @@ const RecetteDesc: React.FC = () => {
 	const router = useRouter();
 	const {role, user} = useAuth();
 	const { showToast } = useToast();
-	const [likes, setLikes] = useState<string[]>([]);
+	const [likesCount, setLikesCount] = useState<number>(0);
+	const [hasLiked, setHasLiked] = useState<boolean>(false);
 	const userId = user?.uid;
-
-	const hasLiked = userId ? likes.includes(userId) : false;
 	const [recette, setRecette] = React.useState<Recette | null>(null);
 	const [departements, setDepartements] = useState<Map<string, string>>(new Map());
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -127,15 +126,26 @@ const RecetteDesc: React.FC = () => {
 
 
 	useEffect(() => {
-		if (id) {
-			const unsubscribe = onSnapshot(doc(db, "recipes", id), (docSnapshot) => {
-				if (docSnapshot.exists()) {
-					setLikes(docSnapshot.data().likes || []);
-				}
-			});
+		if (!id) return;
+
+		// Écouter les changements dans la collection likes pour cette recette
+		const likesRef = collection(db, "likes");
+		const q = query(likesRef, where("recetteId", "==", id));
+
+		const unsubscribe = onSnapshot(q, (snapshot) => {
+			setLikesCount(snapshot.size);
+
+			// Vérifier si l'utilisateur actuel a liké
+			if (userId) {
+				const userLiked = snapshot.docs.some(doc => doc.data().userId === userId);
+				setHasLiked(userLiked);
+			} else {
+				setHasLiked(false);
+			}
+		});
+
 		return () => unsubscribe();
-		}
-	}, [id]);
+	}, [id, userId]);
 
 	useEffect(() => {
 		if (recette?.images && recette.images.length > 1) {

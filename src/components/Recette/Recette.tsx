@@ -4,8 +4,8 @@ import './Recette.css';
 import { Button } from 'primereact/button';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
-import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
-import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot } from '@firebase/firestore';
+import { toggleLikeRecipes, unlikeRecipes, countRecipeLikes, hasUserLikedRecipe } from '@/services/RecetteService/RecetteService';
+import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, query, where } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
 
@@ -21,18 +21,29 @@ interface RecetteProps {
 export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromRequest = false, images = [], position = ''}) => {
 	const { user, role } = useAuth();
 	const { showToast } = useToast();
-	const [likes, setLikes] = useState<string[]>([]);
+	const [likesCount, setLikesCount] = useState<number>(0);
+	const [hasLiked, setHasLiked] = useState<boolean>(false);
 	const userId = user?.uid;
-	const hasLiked = userId ? likes.includes(userId) : false;
 
 	useEffect(() => {
-		const unsubscribe = onSnapshot(doc(db, "recipes", recetteId), (docSnapshot) => {
-			if (docSnapshot.exists()) {
-				setLikes(docSnapshot.data().likes || []);
+		// Écouter les changements dans la collection likes pour cette recette
+		const likesRef = collection(db, "likes");
+		const q = query(likesRef, where("recetteId", "==", recetteId));
+
+		const unsubscribe = onSnapshot(q, (snapshot) => {
+			setLikesCount(snapshot.size);
+
+			// Vérifier si l'utilisateur actuel a liké
+			if (userId) {
+				const userLiked = snapshot.docs.some(doc => doc.data().userId === userId);
+				setHasLiked(userLiked);
+			} else {
+				setHasLiked(false);
 			}
 		});
+
 		return () => unsubscribe();
-	}, [recetteId]);
+	}, [recetteId, userId]);
 
 	const handleLike = async () => {
 		if (!userId) {
@@ -167,7 +178,7 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 									onClick={handleLike}
 									severity={hasLiked ? "danger" : "secondary"}
 									icon={hasLiked ? "pi pi-heart-fill" : "pi pi-heart"}
-									label={likes.length.toString()}
+									label={likesCount.toString()}
 								/>
 							</div>
 						)}

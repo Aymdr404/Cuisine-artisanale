@@ -1,0 +1,147 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Fonction helper pour vérifier si un utilisateur est admin
+    function isAdmin(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid)) &&
+             get(/databases/$(database)/documents/users/$(uid)).data.role == "admin";
+    }
+
+    // === Utilisateurs ===
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (request.auth.uid == userId || isAdmin(request.auth.uid));
+    }
+
+    // === Likes (nouvelle collection) ===
+    match /likes/{likeId} {
+      // Permettre la lecture à tous les utilisateurs authentifiés
+      allow read: if request.auth != null;
+
+      // Permettre la création uniquement si:
+      // - L'utilisateur est authentifié
+      // - L'ID du document suit le format userId_recetteId
+      // - Le userId dans le document correspond à l'utilisateur authentifié
+      // - Le document contient tous les champs requis
+      allow create: if request.auth != null
+                    && likeId == request.auth.uid + '_' + request.resource.data.recetteId
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.keys().hasAll(['userId', 'userName', 'recetteId', 'createdAt']);
+
+      // Permettre la suppression uniquement si l'utilisateur est le propriétaire du like
+      allow delete: if request.auth != null
+                    && resource.data.userId == request.auth.uid;
+
+      // Interdire les mises à jour (un like ne doit pas être modifié, seulement créé ou supprimé)
+      allow update: if false;
+    }
+
+    // === Recettes ===
+    match /recipes/{recipeId} {
+      // Lecture publique
+      allow read: if true;
+
+      // Création uniquement pour les utilisateurs authentifiés
+      allow create: if request.auth != null;
+
+      // Mise à jour uniquement par l'utilisateur authentifié
+      allow update: if request.auth != null;
+
+      // Suppression uniquement par le créateur ou admin
+      allow delete: if request.auth != null &&
+                    (request.auth.uid == resource.data.createdBy || isAdmin(request.auth.uid));
+    }
+
+    // === Posts ===
+    match /posts/{postId} {
+      // Lecture publique
+      allow read: if true;
+
+      // Création uniquement pour les utilisateurs authentifiés
+      allow create: if request.auth != null;
+
+      // Mise à jour uniquement par les utilisateurs authentifiés
+      allow update: if request.auth != null;
+
+      // Suppression uniquement par le créateur ou admin
+      allow delete: if request.auth != null &&
+                    (request.auth.uid == resource.data.createdBy || isAdmin(request.auth.uid));
+    }
+
+    // === Reviews (commentaires/avis) ===
+    match /reviews/{reviewId} {
+      // Lecture publique
+      allow read: if true;
+
+      // Création uniquement pour les utilisateurs authentifiés
+      allow create: if request.auth != null;
+
+      // Mise à jour uniquement par les utilisateurs authentifiés
+      allow update: if request.auth != null;
+
+      // Suppression uniquement par le créateur ou admin
+      allow delete: if request.auth != null &&
+                    (request.auth.uid == resource.data.createdBy || isAdmin(request.auth.uid));
+    }
+
+    // === Ingredients ===
+    match /ingredients/{ingredientId} {
+      // Lecture publique
+      allow read: if true;
+
+      // Écriture uniquement pour les admins
+      allow create, update, delete: if isAdmin(request.auth.uid);
+    }
+
+    // === Units (unités de mesure) ===
+    match /units/{unitId} {
+      // Lecture publique
+      allow read: if true;
+
+      // Écriture uniquement pour les admins
+      allow create, update, delete: if isAdmin(request.auth.uid);
+    }
+
+    // === Abonnés newsletter ===
+    match /abonnes/{docId} {
+      // Permet à n'importe qui de s'abonner (formulaire public)
+      allow create: if true;
+
+      // Lecture/suppression uniquement pour les admins
+      allow read, delete: if isAdmin(request.auth.uid);
+    }
+
+    // === Consentement cookies ===
+    match /cookieConsent/{docId} {
+      // Permet à n'importe qui d'enregistrer son consentement
+      allow create: if true;
+
+      // Lecture uniquement pour les admins
+      allow read: if isAdmin(request.auth.uid);
+    }
+
+    // === Recette de la semaine ===
+    match /weeklyRecipe/{current} {
+      // Lecture publique
+      allow read: if true;
+
+      // Écriture uniquement pour les admins
+      allow write: if isAdmin(request.auth.uid);
+    }
+
+    // === Demandes de recettes ===
+    match /recipesRequest/{docId} {
+      // Lecture et suppression uniquement pour les admins
+      allow read, delete: if isAdmin(request.auth.uid);
+
+      // Création et mise à jour pour les utilisateurs authentifiés
+      allow create, update: if request.auth != null;
+    }
+
+    // === Bloquer tout accès par défaut aux autres collections ===
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
