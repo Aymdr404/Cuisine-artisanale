@@ -1,9 +1,10 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import './Filtre.css';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { InputText } from 'primereact/inputtext';
 
 interface Departement {
@@ -18,7 +19,7 @@ const Filtre: React.FC = () => {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const typeRecette = [
     { id: 1, name: 'Entrée' },
@@ -55,7 +56,7 @@ const Filtre: React.FC = () => {
     }
 
     const query = queryParams.toString();
-    navigate(query ? `/recettes?${query}` : '/recettes');
+    router.push(query ? `/recettes?${query}` : '/recettes');
     setIsLoading(false);
   };
 
@@ -63,7 +64,7 @@ const Filtre: React.FC = () => {
     setName('');
     setSelectedType(null);
     setPosition(null);
-    navigate('/recettes');
+    router.push('/recettes');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

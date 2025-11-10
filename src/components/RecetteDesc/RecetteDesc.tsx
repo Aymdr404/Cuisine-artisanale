@@ -1,8 +1,9 @@
+"use client";
 import React, { useEffect, useState, useRef } from 'react';
 import './RecetteDesc.css';
 import VideoEmbed from '@components/VideoEmbed/VideoEmbed';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { useRouter, useParams } from 'next/navigation';
 import { doc, getDoc, deleteDoc, onSnapshot, query, where, getDocs, collection, orderBy, serverTimestamp, addDoc } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import { Button } from 'primereact/button';
@@ -40,8 +41,9 @@ interface Ingredient {
 
 const RecetteDesc: React.FC = () => {
 	const [id, setId] = useState<string | null>(null);
-	const { recipeName } = useParams();
-	const navigate = useNavigate();
+	const params = useParams();
+	const recipeName = typeof params?.recipeName === 'string' ? params.recipeName : Array.isArray(params?.recipeName) ? params.recipeName[0] : undefined;
+	const router = useRouter();
 	const {role, user} = useAuth();
 	const { showToast } = useToast();
 	const [likes, setLikes] = useState<string[]>([]);
@@ -369,12 +371,12 @@ const RecetteDesc: React.FC = () => {
 				<div className="recette-desc-button-container-left">
 					<Button
 						icon="pi pi-arrow-left"
-						onClick={() => navigate(-1)}
+						onClick={() => router.back()}
 						className="p-button-text"
 					/>
 					<Button
 						icon="pi pi-home"
-						onClick={() => navigate("/")}
+						onClick={() => router.push("/")}
 						className="p-button-text"
 					/>
 					<Button
@@ -407,7 +409,7 @@ const RecetteDesc: React.FC = () => {
 				<div className="recette-desc-admin-buttons">
 					<Button
 						icon="pi pi-pencil"
-						onClick={() => navigate(`/recettes/${id}/edit`)}
+						onClick={() => router.push(`/recettes/${id}/edit`)}
 						className="p-button-text"
 					/>
 					<Button

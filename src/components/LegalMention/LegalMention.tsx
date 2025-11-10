@@ -1,21 +1,23 @@
+"use client";
 import React, { useEffect } from 'react';
 import './LegalMention.css';
 import LienUtiles from '@components/LienUtiles/LienUtiles';
-import { useLocation, Link } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const LegalMention: React.FC = () => {
   const [isAboutPage, setIsAboutPage] = React.useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
-    setIsAboutPage(location.pathname === '/about');
-  }, [location]);
+    setIsAboutPage(pathname === '/about');
+  }, [pathname]);
 
   return (
     <div className="LegalMention">
       <header className="legalMention-header">
-        <Link to="/legal-mentions">Mentions légales / ©Aymeric Sabatier</Link>
-        <Link to="/privacy-policy">Politique de confidentialité / ©Aymeric Sabatier</Link>
+        <Link href="/mentions-legales">Mentions légales / ©Aymeric Sabatier</Link>
+        <Link href="/politique-confidentialite">Politique de confidentialité / ©Aymeric Sabatier</Link>
         {!isAboutPage && <LienUtiles />}
       </header>
     </div>

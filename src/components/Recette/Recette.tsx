@@ -1,7 +1,8 @@
+"use client";
 import React, { useEffect, useState } from 'react';
 import './Recette.css';
 import { Button } from 'primereact/button';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toggleLikeRecipes, unlikeRecipes } from '@/services/RecetteService/RecetteService';
 import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot } from '@firebase/firestore';
@@ -153,7 +154,7 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 					<div className="main-actions">
 						{!fromRequest && (
 							<div className='Post_admin_actions'>
-								<Link to={`/recettes/${slugify(title)}`} className="view-recipe">
+								<Link href={`/recettes/${slugify(title)}`} className="view-recipe">
 									<Button
 										label="Voir la recette"
 										icon="pi pi-eye"

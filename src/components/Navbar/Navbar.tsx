@@ -1,3 +1,4 @@
+"use client";
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import './Navbar.css';
 
@@ -7,13 +8,13 @@ import { Avatar } from 'primereact/avatar';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { ThemeContext } from '@/contexts/ThemeContext/ThemeContext';
 import ButtonLinkNav from '@components/ButtonLinkNav/ButtonLinkNav';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 
 const Navbar: React.FC = () => {
   const { user, logout, signInWithGoogle, role } = useAuth();
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,28 +46,28 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
-  }, [location]);
+  }, [pathname]);
 
   const handleProfileClick = () => {
     overlayPanelRef.current?.hide();
-    navigate('/account');
+    router.push('/account');
   };
 
   const handleMyRecipesClick = () => {
     overlayPanelRef.current?.hide();
-    navigate('/account/mes-recettes');
+    router.push('/account/mes-recettes');
   };
 
   const handleAdminClick = () => {
     overlayPanelRef.current?.hide();
-    navigate('/admin-panel');
+    router.push('/admin-panel');
   };
 
   const handleLogout = async () => {
     try {
       overlayPanelRef.current?.hide();
       await logout();
-      navigate('/');
+      router.push('/');
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     }
@@ -134,7 +135,7 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="navbar-actions">
-            <Button 
+            <Button
               icon={theme === "dark" ? "pi pi-sun" : "pi pi-moon"}
               className="theme-toggle"
               onClick={toggleTheme}
@@ -151,8 +152,8 @@ const Navbar: React.FC = () => {
                   {user.photoURL ? (
                     <Avatar image={user.photoURL} shape="circle" />
                   ) : (
-                    <Avatar 
-                      label={user.displayName?.charAt(0) || "U"} 
+                    <Avatar
+                      label={user.displayName?.charAt(0) || "U"}
                       shape="circle"
                       style={{ backgroundColor: 'var(--primary-color)' }}
                     />
@@ -163,7 +164,7 @@ const Navbar: React.FC = () => {
                   )}
                   <i className="pi pi-chevron-down" />
                 </Button>
-                <OverlayPanel 
+                <OverlayPanel
                   ref={overlayPanelRef}
                   className="user-menu-panel"
                   showCloseIcon={false}
@@ -189,8 +190,8 @@ const Navbar: React.FC = () => {
               </div>
             ) : (
               <div className="auth-buttons">
-                <Button 
-                  label="Se connecter avec Google" 
+                <Button
+                  label="Se connecter avec Google"
                   icon="pi pi-google"
                   className="p-button-outlined google-auth-btn"
                   onClick={handleLogin}
@@ -237,8 +238,8 @@ const Navbar: React.FC = () => {
             </div>
           ) : (
             <div className="mobile-auth-buttons">
-              <Button 
-                label="Se connecter avec Google" 
+              <Button
+                label="Se connecter avec Google"
                 icon="pi pi-google"
                 className="p-button-outlined google-auth-btn"
                 onClick={handleLogin}

@@ -8,17 +8,18 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.LegalMention a {
+.LegalMention Link {
   color: var(--link-color);
   text-decoration: underline;
   transition: color 0.3s ease;
 }
 
-.LegalMention a:hover {
+.LegalMention Link:hover {
   color: var(--link-color-hover);
 }
 
 .legalMention-header {
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 }

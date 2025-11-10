@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";

@@ -1,16 +1,17 @@
+"use client";
 import React from 'react';
 import './AddRecette.css';
 import { Button } from 'primereact/button';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@contexts/AuthContext/AuthContext';
 
 const AddRecette: React.FC = () => {
   const {user } = useAuth();
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleClick = () => {
-    navigate("/recettes/add-recipe");
+    router.push("/recettes/add-recipe");
   };
 
   return (

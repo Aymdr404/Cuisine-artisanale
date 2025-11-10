@@ -1,0 +1,22 @@
+import React, { Suspense } from 'react';
+import Actualites from '@/pages-legacy/Actualites/Actualites';
+
+const Posts = React.lazy(() => import('@/pages-legacy/Posts/Posts'));
+
+export const metadata = {
+	title: 'Accueil | Cuisine artisanale',
+	description: 'Actualités et derniers posts sur la cuisine artisanale.',
+};
+
+export default function Page() {
+	return (
+		<div className="Home">
+			<Actualites />
+			<Suspense fallback={<div className="posts-skeleton">Chargement des posts...</div>}>
+				<Posts />
+			</Suspense>
+		</div>
+	);
+}
+
+

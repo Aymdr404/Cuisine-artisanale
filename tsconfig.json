@@ -1,7 +1,55 @@
 {
   "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    {
+      "path": "./tsconfig.app.json"
+    }
   ],
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages-legacy/*"],
+      "@services/*": ["src/services/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@assets/*": ["src/assets/*"],
+      "@firebaseModule": ["src/firebase/index"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    ".next/types/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/App.tsx"
+  ]
 }
