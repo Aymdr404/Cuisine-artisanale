@@ -20,6 +20,7 @@ const Navbar: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
   const overlayPanelRef = useRef<OverlayPanel>(null);
 
   useEffect(() => {
@@ -47,6 +48,10 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleProfileClick = () => {
     overlayPanelRef.current?.hide();
@@ -118,10 +123,10 @@ const Navbar: React.FC = () => {
 
           <div className="navbar-actions">
             <Button
-              icon={theme === "dark" ? "pi pi-sun" : "pi pi-moon"}
+              icon={isMounted ? (theme === "dark" ? "pi pi-sun" : "pi pi-moon") : "pi pi-moon"}
               className="theme-toggle"
               onClick={toggleTheme}
-              tooltip={theme === "dark" ? "Mode clair" : "Mode sombre"}
+              tooltip={isMounted ? (theme === "dark" ? "Mode clair" : "Mode sombre") : "Mode sombre"}
               tooltipOptions={{ position: 'bottom' }}
             />
 
