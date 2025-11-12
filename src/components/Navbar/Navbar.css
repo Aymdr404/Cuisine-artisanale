@@ -84,6 +84,13 @@
   transform: translateY(0);
 }
 
+.theme-toggle .p-button-icon {
+  margin: 0 !important;
+}
+.theme-toggle .p-button-label {
+  display: none !important;
+}
+
 /* User Menu */
 .user-menu {
   position: relative;

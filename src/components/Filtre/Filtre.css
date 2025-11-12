@@ -25,6 +25,7 @@
   flex-direction: column;
   gap: 2rem;
   margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 .filtre_input > div {
@@ -75,9 +76,9 @@
 }
 
 .filtre_buttons .p-button.p-button-secondary {
-  background: var(--surface-section) !important;
-  color: var(--text-color) !important;
-  border: 1px solid var(--surface-border) !important;
+	background: var(--surface-section) !important;
+	color: var(--text-color) !important;
+	border: 1px solid var(--surface-border) !important;
 }
 
 .filtre_buttons .p-button.p-button-secondary:hover {

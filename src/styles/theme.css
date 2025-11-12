@@ -172,6 +172,10 @@
 
     /* Global Input Styles */
 
+	.p-button {
+		gap: 1rem !important;
+	}
+
 	/* --- FIX p-input-icon-left overlapping issue --- */
 	.p-input-icon-left {
 		position: relative !important;
@@ -183,7 +187,6 @@
 		position: absolute !important;
 		left: 0.75rem !important;
 		top: 50% !important;
-		transform: translateY(-50%) !important;
 		pointer-events: none !important;
 		z-index: 1 !important;
 		color: var(--text-color-secondary);
