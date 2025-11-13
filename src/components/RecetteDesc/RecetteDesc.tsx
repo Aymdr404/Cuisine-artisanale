@@ -250,7 +250,7 @@ const RecetteDesc: React.FC = () => {
 				summary: 'Succès',
 				detail: 'Recette supprimée avec succès'
 			});
-			navigate('/recettes');
+			router.push('/recettes');
 		} catch (error) {
 			console.error("Erreur lors de la suppression de la recette :", error);
 			showToast({
@@ -401,7 +401,7 @@ const RecetteDesc: React.FC = () => {
 							navigator.share({
 								title: recette?.title,
 								text: `Découvrez la recette ${recette?.title} sur Cuisine Artisanale`,
-								url: `https://www.aymeric-sabatier.fr/Cuisine-artisanale/share/${recipeName}`
+								url: `https://www.aymeric-sabatier.fr/Cuisine-artisanale/share/${recette?.title}`
 							});
 							} else {
 							navigator.clipboard.writeText(window.location.href);
@@ -431,6 +431,19 @@ const RecetteDesc: React.FC = () => {
 			</div>
 
 			<h1 className="recette-desc-title">{recette?.title}</h1>
+
+			{/* Affichage de la note moyenne en haut */}
+			<div className="recette-overall-rating">
+				{averageRating && (
+					<div className="recette-average-rating-display">
+						<Rating value={parseFloat(averageRating)} readOnly cancel={false} />
+						<span className="rating-text">{averageRating} / 5 ({reviews.length} avis)</span>
+					</div>
+				)}
+				{!averageRating && (
+					<p className="no-rating-text">Aucun avis pour le moment</p>
+				)}
+			</div>
 
 			<div className="recette-desc-description">
 				<div className="recette-desc-info">
@@ -523,58 +536,70 @@ const RecetteDesc: React.FC = () => {
 				))}
 			</div>
 			<div className="recette-reviews-section">
-				<section className="recette-reviews-header">
-					<h2>Notes et avis</h2>
-					{averageRating && (
-					<div className="recette-average-rating">
-						<Rating value={parseFloat(averageRating)} readOnly cancel={false} />
-						<span>{averageRating} / 5 ({reviews.length} avis)</span>
-					</div>
-					)}
+				<h2>Avis et commentaires</h2>
+
+				<div className="recette-reviews-container">
+					{/* Formulaire d'avis */}
 					<div className="recette-review-form">
-						<h3>Laisser un avis</h3>
-						<Rating value={newRating ?? undefined} onChange={(e) => setNewRating(e.value ?? null)} cancel={false} />
+						<h3>Partager votre avis</h3>
+
+						<div className="form-group">
+							<label>Votre note</label>
+							<Rating value={newRating ?? undefined} onChange={(e) => setNewRating(e.value ?? null)} cancel={false} />
+						</div>
+
 						<InputTextarea
 							value={newReview}
 							onChange={(e) => setNewReview(e.target.value)}
 							rows={4}
-							cols={40}
-							placeholder="Votre message..."
+							placeholder="Partagez votre expérience..."
+							className="review-textarea"
 						/>
+
 						<Button
-							label="Envoyer"
+							label="Envoyer mon avis"
 							icon="pi pi-send"
 							onClick={handleAddReview}
-							className="mt-2"
 							disabled={!user}
+							className="submit-button"
 						/>
-						{!user && (<h3>Connectez vous pour laisser un avis</h3>)}
-					</div>
-				</section>
 
-				{reviews.length === 0 && <p>Aucun avis pour le moment.</p>}
-				<ul className="recette-reviews-list">
-					{reviews.map((r) => (
-						<li key={r.id} className="recette-review">
-							<div className="recette-review-header">
-								<strong>{r.userName}</strong>
-								<Rating value={r.rating} readOnly cancel={false} />
-								{user && role == "admin" && (
-									<div>
-										<Button
-											icon="pi pi-trash"
-											onClick={() => deleteReview(r.id!)}
-											className="p-button-danger p-button-rounded"
-											tooltip="Supprimer l'avis"
-										/>
-									</div>
-								)}
-							</div>
-							<p>{r.message}</p>
-							<small>{r.createdAt?.toDate?.().toLocaleString?.() || ''}</small>
-						</li>
-					))}
-				</ul>
+						{!user && (
+							<p className="login-required">Connectez-vous pour laisser un avis</p>
+						)}
+					</div>
+
+					{/* Liste des avis */}
+					<div className="recette-reviews-list-container">
+						{reviews.length === 0 ? (
+							<p className="no-reviews">Soyez le premier à laisser un avis !</p>
+						) : (
+							<ul className="recette-reviews-list">
+								{reviews.map((r) => (
+									<li key={r.id} className="recette-review">
+										<div className="recette-review-header">
+											<div className="review-user-info">
+												<strong>{r.userName}</strong>
+												<Rating value={r.rating} readOnly cancel={false} />
+											</div>
+											{user && role == "admin" && (
+												<Button
+													icon="pi pi-trash"
+													onClick={() => deleteReview(r.id!)}
+													className="p-button-danger p-button-rounded p-button-sm"
+													tooltip="Supprimer l'avis"
+													tooltipOptions={{ position: 'bottom' }}
+												/>
+											)}
+										</div>
+										<p className="review-message">{r.message}</p>
+										<small className="review-date">{r.createdAt?.toDate?.().toLocaleString?.() || ''}</small>
+									</li>
+								))}
+							</ul>
+						)}
+					</div>
+				</div>
 			</div>
 		</div>
 	</>

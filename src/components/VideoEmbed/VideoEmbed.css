@@ -3,8 +3,6 @@
   margin: 2em auto;
   border-radius: var(--border-radius);
   overflow: hidden;
-  box-shadow: var(--card-shadow);
-  background: var(--surface-card);
   transition: box-shadow 0.2s;
 }
 
@@ -19,9 +17,7 @@
   justify-content: center;
   margin: 2em 0;
   padding: 2em 1em;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--surface-card) 100%);
   border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
 }
 
 .video-embed-tiktok-link {

@@ -243,7 +243,6 @@
 .recette-desc-video {
   margin-top: 2rem;
   padding: 1.5rem;
-  background-color: var(--surface-section);
   border-radius: var(--border-radius);
   text-align: center;
 }
@@ -518,352 +517,370 @@
 }
 
 /* === SECTION AVIS / COMMENTAIRES === */
-.recette-reviews-section {
+
+/* Note moyenne en haut */
+.recette-overall-rating {
+  margin: 2rem 0 3rem 0;
+  padding: 1.5rem;
+  background: var(--surface-section);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.recette-average-rating-display {
   display: flex;
-  gap: 2rem;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.recette-average-rating-display .rating-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.no-rating-text {
+  font-size: 1.1rem;
+  color: var(--text-color-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
+/* Section principale des avis */
+.recette-reviews-section {
   margin-top: 3rem;
   background-color: var(--surface-card);
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: var(--border-radius);
   box-shadow: var(--card-shadow);
 }
 
-.recette-reviews-header{
-	display: flex;
-	flex-direction: column;
-	gap: 2rem;
+.recette-reviews-section > h2 {
+  font-size: 1.8rem;
+  color: var(--text-color);
+  margin: 0 0 2rem 0;
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 1rem;
 }
 
-/* 📋 Zone d’ajout d’un commentaire */
+/* Container flex pour formulaire + liste côte à côte */
+.recette-reviews-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* 📋 Zone d'ajout d'un commentaire */
 .recette-review-form {
-  flex: 1;
   background-color: var(--surface-section);
   padding: 1.5rem;
   border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
+  box-shadow: inset 0 0 0 1px var(--surface-border);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
 }
 
 .recette-review-form h3 {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--text-color);
-  margin-bottom: 0.5rem;
+  margin: 0;
+  font-weight: 600;
 }
 
-.recette-review-form textarea {
+/* Form group pour les labels */
+.recette-review-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.recette-review-form .form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.recette-review-form .review-textarea {
   resize: vertical;
   border: 1px solid var(--surface-border);
   border-radius: var(--border-radius);
   padding: 0.8rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-color);
   background-color: var(--surface-ground);
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  font-family: inherit;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.recette-review-form textarea:focus {
+.recette-review-form .review-textarea:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* ✅ Bouton d'envoi */
-.recette-review-form button {
-	padding: 0.6rem 1.2rem;
-	border-radius: var(--border-radius);
-	background-color: var(--primary-color);
-	color: var(--text-color-inverted);
-	border: none;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
+.recette-review-form .submit-button {
+  width: 100%;
+  padding: 0.8rem !important;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
-.recette-review-form .p-button:disabled {
-	background-color: #cccccc !important;
-	color: #888888 !important;
-	cursor: not-allowed !important;
-	opacity: 0.7;
-	border: 1px solid #bbbbbb !important;
+.recette-review-form .login-required {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+  background-color: var(--surface-ground);
+  padding: 0.75rem;
+  border-radius: var(--border-radius);
+  border-left: 3px solid var(--primary-color);
+  margin: 0;
 }
 
-.recette-review-form button:hover {
-  	background-color: var(--primary-dark);
+/* Container pour la liste */
+.recette-reviews-list-container {
+  min-height: 300px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.75rem;
+  border-radius: var(--border-radius);
+}
+
+/* Scrollbar personnalisée */
+.recette-reviews-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.recette-reviews-list-container::-webkit-scrollbar-track {
+  background: var(--surface-ground);
+  border-radius: 4px;
+}
+
+.recette-reviews-list-container::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.recette-reviews-list-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Firefox */
+.recette-reviews-list-container {
+  scrollbar-color: var(--primary-color) var(--surface-ground);
+  scrollbar-width: thin;
 }
 
 /* 💬 Liste des avis */
 .recette-reviews-list {
-	flex: 2;
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-	max-height: 600px;
-	overflow-y: auto;
-	padding-right: 1rem;
-	list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
+.no-reviews {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-color-secondary);
+  font-style: italic;
+  font-size: 1rem;
+}
+
+/* Chaque avis */
 .recette-review {
-  background-color: var(--surface-section);
-  padding: 1rem 1.5rem;
+  background-color: var(--surface-ground);
+  padding: 1.25rem;
   border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--surface-border);
+  transition: all 0.3s ease;
 }
 
 .recette-review:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 10px rgba(0,0,0,0.08);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Header : nom + note */
+/* Header : utilisateur + note + supprimer */
 .recette-review-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.review-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
 }
 
 .recette-review-header strong {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-color);
+  display: block;
 }
 
-.recette-review p {
-  margin: 0.5rem 0;
-  font-size: 1rem;
-  line-height: 1.5;
+/* Centrer les icônes des boutons sans label */
+.recette-review-header .p-button-label, .recette-desc-button-container .p-button-label {
+  display: none !important;
+}
+
+
+/* Message et date */
+.review-message {
+  margin: 0.75rem 0 0.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
   color: var(--text-color-secondary);
 }
 
-.recette-review small {
-  font-size: 0.85rem;
+.review-date {
+  font-size: 0.8rem;
   color: var(--text-color-light);
 }
 
-/* ⭐ Note moyenne */
-.recette-average-rating {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--surface-section);
-  padding: 0.75rem 1rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
-  margin-top: 1rem;
-  font-weight: 500;
+/* === Responsive === */
+
+/* Tablettes (max 1024px) */
+@media (max-width: 1024px) {
+	.recette-reviews-container {
+		grid-template-columns: 1fr;
+	}
+
+	.recette-review-form {
+		position: static;
+	}
 }
 
-/* === Responsive === */
-@media (max-width: 900px) {
-
-	.recette-reviews-header{
-		align-items: center;
-	}
-
-	.recette-reviews-list{
-		padding: 0;
-	}
-
+/* Tablettes petites (max 768px) */
+@media (max-width: 768px) {
 	.recette-reviews-section {
+		padding: 1.5rem;
+	}
+
+	.recette-reviews-section > h2 {
+		font-size: 1.4rem;
+	}
+
+	.recette-review-form {
+		padding: 1.25rem;
+	}
+
+	.recette-reviews-list-container {
+		max-height: 400px;
+		min-height: 250px;
+	}
+
+	.recette-overall-rating {
+		padding: 1rem;
+		margin: 1.5rem 0 2rem 0;
+	}
+
+	.recette-average-rating-display {
+		gap: 1rem;
+	}
+
+	.recette-average-rating-display .rating-text {
+		font-size: 1rem;
+	}
+}
+
+/* Mobiles (max 600px) */
+@media (max-width: 600px) {
+	.recette-reviews-section {
+		padding: 1rem;
+		margin-top: 2rem;
+	}
+
+	.recette-reviews-section > h2 {
+		font-size: 1.2rem;
+		padding-bottom: 0.75rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.recette-reviews-container {
+		gap: 1.5rem;
+	}
+
+	.recette-review-form {
+		padding: 1rem;
+		gap: 1rem;
+	}
+
+	.recette-review-form h3 {
+		font-size: 1rem;
+	}
+
+	.recette-review-form .form-group label {
+		font-size: 0.8rem;
+	}
+
+	.recette-review-form .review-textarea {
+		font-size: 0.9rem;
+		padding: 0.7rem;
+	}
+
+	.recette-reviews-list-container {
+		max-height: 300px;
+		min-height: 200px;
+	}
+
+	.recette-review {
+		padding: 1rem;
+	}
+
+	.recette-review-header {
+		gap: 0.75rem;
 		flex-direction: column;
 	}
 
-	.recette-review-form,
-	.recette-reviews-list {
+	.review-user-info {
 		width: 100%;
+	}
+
+	.review-message {
+		margin: 0.5rem 0 0.5rem 0;
+		font-size: 0.9rem;
+	}
+
+	.recette-overall-rating {
+		padding: 0.75rem;
+		margin: 1.5rem 0;
+	}
+
+	.recette-average-rating-display {
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.recette-average-rating-display .rating-text {
+		font-size: 0.95rem;
+	}
+
+	.no-rating-text {
+		font-size: 0.95rem;
 	}
 }
 
-@media screen and (max-width: 768px) {
-  .RecetteDesc {
-    padding: 1rem;
-  }
-
-  .recette-title {
-    font-size: 2rem;
-  }
-
-  .button-container {
-    background: var(--surface-card);
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    margin: 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-  }
-
-  .button-container-left {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
-
-  .button-container-right {
-    margin-left: 0.5rem;
-  }
-
-  .button-container button {
-    padding: 0.5rem;
-    min-width: 36px;
-    min-height: 36px;
-    font-size: 0.9rem;
-  }
-
-  .recette-description {
-    flex-direction: column;
-    padding: 0;
-    width: 100%;
-  }
-
-  .recette-info {
-    padding: 1rem;
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box;
-    background: var(--surface-card);
-    border-bottom: 1px solid var(--surface-border);
-  }
-
-  .recette-info > div {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 1rem;
-  }
-
-  .recette-position {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 1rem;
-  }
-
-  .recette-images {
-    width: 100%;
-    box-sizing: border-box;
-    margin: 1rem 0;
-  }
-
-  .recette-images img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 0;
-  }
-
-  .recette-ingredients {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 1rem;
-    margin: 0;
-    background: var(--surface-card);
-    border-bottom: 1px solid var(--surface-border);
-  }
-
-  .recette-steps {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 1rem;
-    margin: 0;
-    background: var(--surface-card);
-  }
-
-  .recette_timing {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background: var(--surface-ground);
-    border-radius: var(--border-radius);
-  }
-
-  .recette_timing p {
-    font-size: 0.9rem;
-    margin: 0;
-  }
-
-  .recette-steps h2 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--primary-color);
-  }
-
-  .recette-steps li {
-    padding: 1rem;
-    margin-bottom: 0.75rem;
-    background: var(--surface-ground);
-    border-radius: var(--border-radius);
-  }
-
-  .recette-steps h3 {
-    font-size: 0.9rem;
-    padding: 0.35rem 0.5rem;
-    margin-bottom: 0.5rem;
-    background: var(--primary-color);
-    color: white;
-    border-radius: var(--border-radius);
-    display: inline-block;
-  }
-
-  .recette-steps p {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    margin: 0;
-  }
-
-  .recette-video {
-    margin: 0;
-    padding: 1rem;
-    background: var(--surface-card);
-    border-top: 1px solid var(--surface-border);
-  }
-
-  .recette-video h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .recette-video a {
-    width: 100%;
-    text-align: center;
-    padding: 0.75rem;
-    font-size: 0.9rem;
-    display: block;
-    background: var(--primary-color);
-    color: white;
-    border-radius: var(--border-radius);
-    text-decoration: none;
-  }
-
-  /* Improve admin buttons layout */
-  .admin-buttons {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .admin-buttons button {
-    flex: 1;
-    min-width: 80px;
-    font-size: 0.9rem;
-  }
-
-  /* Adjust info text */
-  .recette-info p {
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .recette-info strong {
-    font-size: 0.9rem;
-  }
-}
+/* Styles orphelins - À supprimer si non utilisés par d'autres sections */
+/* (Garder seulement si utilisé ailleurs dans RecetteDesc) */
 
 .recette-desc-gallery {
   width: 100%;
