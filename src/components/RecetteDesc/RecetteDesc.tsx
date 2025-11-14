@@ -13,6 +13,7 @@ import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
 import { Rating } from 'primereact/rating';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { shareRecipe } from '@/services/ShareService/ShareService';
 
 interface RecipePart {
   title: string;
@@ -304,6 +305,39 @@ const RecetteDesc: React.FC = () => {
 		}
 	};
 
+	const handleShare = async () => {
+		if (!recette?.title || !id) {
+			showToast({
+				severity: 'warn',
+				summary: 'Erreur',
+				detail: 'Impossible de partager cette recette'
+			});
+			return;
+		}
+
+		try {
+			await shareRecipe({
+				title: recette.title,
+				description: `Découvrez la recette ${recette.title} sur Cuisine Artisanale`,
+				recipeId: id,
+				imageUrl: recette.images?.[0],
+			});
+
+			showToast({
+				severity: 'success',
+				summary: 'Succès',
+				detail: 'Recette partagée ou lien copié !'
+			});
+		} catch (error) {
+			console.error("Erreur lors du partage:", error);
+			showToast({
+				severity: 'error',
+				summary: 'Erreur',
+				detail: 'Impossible de partager la recette'
+			});
+		}
+	};
+
   	const handleAddReview = async () => {
 		if (!userId) {
 			showToast({
@@ -396,22 +430,9 @@ const RecetteDesc: React.FC = () => {
 					/>
 					<Button
 						icon="pi pi-share-alt"
-						onClick={() => {
-							if (navigator.share) {
-							navigator.share({
-								title: recette?.title,
-								text: `Découvrez la recette ${recette?.title} sur Cuisine Artisanale`,
-								url: `https://www.aymeric-sabatier.fr/Cuisine-artisanale/share/${recette?.title}`
-							});
-							} else {
-							navigator.clipboard.writeText(window.location.href);
-							showToast({
-								severity: 'info',
-								summary: 'Lien copié',
-								detail: 'Lien de la recette copié dans le presse-papiers',
-							});
-							}
-						}}
+						onClick={handleShare}
+						className="p-button-text"
+						tooltip="Partager cette recette"
 					/>
 					</div>
 				{role === 'admin' && (
