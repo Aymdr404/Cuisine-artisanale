@@ -179,8 +179,8 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 				<h2 className="recipe-title">{title}</h2>
 
 				<div className="recipe-tags">
-				<span className="recipe-type">{type}</span>
-				{position && <span className="recipe-location">📍 {position}</span>}
+					<span className="recipe-type">{type}</span>
+					{position && <span className="recipe-location">📍 {position}</span>}
 				</div>
 
 				{/* Rating Section */}
