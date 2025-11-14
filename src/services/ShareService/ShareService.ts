@@ -1,6 +1,6 @@
 /**
  * Service de partage de recettes
- * Gère le partage natif et la génération des URLs avec métadonnées
+ * Gère le partage natif avec Web Share API et fallback clipboard
  */
 
 export interface ShareOptions {
@@ -11,19 +11,12 @@ export interface ShareOptions {
 }
 
 /**
- * Génère l'URL de partage avec métadonnées
- */
-export const generateShareUrl = (recipeId: string): string => {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.aymeric-sabatier.fr";
-  return `${baseUrl}/recettes/share/${recipeId}`;
-};
-
-/**
  * Partage la recette via l'API Web Share (natif sur mobile/certains navigateurs)
+ * Fallback : copie l'URL actuelle dans le presse-papiers
  */
 export const shareRecipe = async (options: ShareOptions): Promise<void> => {
-  const { title, description, recipeId } = options;
-  const shareUrl = generateShareUrl(recipeId);
+  const { title, description } = options;
+  const shareUrl = window.location.href;
 
   // Vérifier si l'API Web Share est disponible
   if (navigator.share) {
@@ -35,48 +28,18 @@ export const shareRecipe = async (options: ShareOptions): Promise<void> => {
       });
       return;
     } catch (error: any) {
-      // L'utilisateur a annulé le partage ou une erreur est survenue
+      // L'utilisateur a annulé le partage
       if (error.name !== "AbortError") {
         console.error("Erreur lors du partage:", error);
       }
     }
   }
 
-  // Fallback : copier dans le presse-papiers
-  await copyShareLink(shareUrl);
-};
-
-/**
- * Copie le lien de partage dans le presse-papiers
- */
-export const copyShareLink = async (url: string): Promise<void> => {
+  // Fallback : copier le lien actuel dans le presse-papiers
   try {
-    await navigator.clipboard.writeText(url);
-    return;
+    await navigator.clipboard.writeText(shareUrl);
   } catch (error) {
     console.error("Erreur lors de la copie du lien:", error);
-    throw new Error("Impossible de copier le lien");
+    throw new Error("Impossible de partager la recette");
   }
-};
-
-/**
- * Génère une URL de partage pour les réseaux sociaux
- */
-export const generateSocialShareUrls = (
-  recipeId: string,
-  title: string,
-  description: string
-) => {
-  const shareUrl = generateShareUrl(recipeId);
-  const encodedUrl = encodeURIComponent(shareUrl);
-  const encodedTitle = encodeURIComponent(title);
-  const encodedDescription = encodeURIComponent(description);
-
-  return {
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-    twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
-    whatsapp: `https://wa.me/?text=${encodedDescription}%20${encodedUrl}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-    pinterest: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedDescription}`,
-  };
 };
