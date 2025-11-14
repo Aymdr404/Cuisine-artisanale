@@ -1,7 +1,7 @@
 "use server";
 
 import { Metadata } from "next";
-import { doc, getDoc } from "@firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "@firebase/firestore";
 import { db } from "@firebaseModule";
 import { redirect } from "next/navigation";
 
@@ -17,6 +17,22 @@ interface Recette {
   description?: string;
   preparationTime?: number;
   cookingTime?: number;
+}
+
+// Générer les params statiques pour toutes les recettes
+export async function generateStaticParams() {
+  try {
+    const recipesRef = collection(db, "recipes");
+    const snapshot = await getDocs(recipesRef);
+
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+    }));
+  } catch (error) {
+    console.error("Erreur lors de la génération des params statiques:", error);
+    // Retourner un tableau vide en cas d'erreur pour ne pas bloquer le build
+    return [];
+  }
 }
 
 // Générer les métadonnées dynamiquement
