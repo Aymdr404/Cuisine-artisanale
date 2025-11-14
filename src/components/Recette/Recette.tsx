@@ -5,9 +5,10 @@ import { Button } from 'primereact/button';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toggleLikeRecipes, unlikeRecipes, countRecipeLikes, hasUserLikedRecipe } from '@/services/RecetteService/RecetteService';
-import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, query, where } from '@firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, query, where, orderBy } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
+import { Rating } from 'primereact/rating';
 
 interface RecetteProps {
 	recetteId: string;
@@ -23,6 +24,8 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 	const { showToast } = useToast();
 	const [likesCount, setLikesCount] = useState<number>(0);
 	const [hasLiked, setHasLiked] = useState<boolean>(false);
+	const [averageRating, setAverageRating] = useState<number | null>(null);
+	const [reviewsCount, setReviewsCount] = useState<number>(0);
 	const userId = user?.uid;
 
 	useEffect(() => {
@@ -44,6 +47,26 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 
 		return () => unsubscribe();
 	}, [recetteId, userId]);
+
+	// Récupérer les reviews et calculer la note moyenne
+	useEffect(() => {
+		const reviewsRef = collection(db, "reviews");
+		const q = query(reviewsRef, where("recipeId", "==", recetteId), orderBy("createdAt", "desc"));
+
+		const unsubscribe = onSnapshot(q, (snapshot) => {
+			const reviews = snapshot.docs.map(doc => doc.data());
+			setReviewsCount(reviews.length);
+
+			if (reviews.length > 0) {
+				const avgRating = reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length;
+				setAverageRating(parseFloat(avgRating.toFixed(1)));
+			} else {
+				setAverageRating(null);
+			}
+		});
+
+		return () => unsubscribe();
+	}, [recetteId]);
 
 	const handleLike = async () => {
 		if (!userId) {
@@ -159,6 +182,14 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 				<span className="recipe-type">{type}</span>
 				{position && <span className="recipe-location">📍 {position}</span>}
 				</div>
+
+				{/* Rating Section */}
+				{averageRating !== null && (
+					<div className="recipe-rating">
+						<Rating value={averageRating} readOnly cancel={false} />
+						<span className="rating-info">({reviewsCount} avis)</span>
+					</div>
+				)}
 
 				<div className="recipe-actions">
 				{renderAdminButtons()}

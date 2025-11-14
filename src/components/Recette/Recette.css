@@ -93,6 +93,7 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .recipe-type {
@@ -112,6 +113,29 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+/* Rating Section */
+.recipe-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.recipe-rating .p-rating {
+  gap: 0.25rem;
+}
+
+.recipe-rating .p-icon {
+  font-size: 1rem;
+}
+
+.rating-info {
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* Actions Section */
