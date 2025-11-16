@@ -221,6 +221,10 @@
   background: var(--surface-hover) !important;
 }
 
+.mobile-menu-toggle .p-button-label{
+  display: none;
+}
+
 /* Mobile Menu Overlay */
 .mobile-menu-overlay {
   position: fixed;
