@@ -1,0 +1,416 @@
+/**
+ * ================================================
+ * MOBILE OPTIMIZATIONS - PWA Ready
+ * ================================================
+ *
+ * Ce fichier contient toutes les optimisations CSS
+ * pour mobile et préparation PWA
+ *
+ * Standards appliqués :
+ * - Touch targets minimum 44px × 44px (Apple/Google guidelines)
+ * - Font-size minimum 16px pour éviter le zoom iOS
+ * - @media (hover: hover) pour séparer tactile/souris
+ * - Active states pour feedback tactile
+ * - Bottom sheets pour dialogs mobile
+ */
+
+/* ================================================
+   TOUCH TARGETS GLOBAUX
+   ================================================ */
+
+/* Tous les boutons doivent avoir minimum 44px × 44px */
+@media (max-width: 768px) {
+  button,
+  .p-button,
+  a.button,
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Touch feedback - États actifs */
+  button:active,
+  .p-button:active,
+  a.button:active {
+    transform: scale(0.98) !important;
+    opacity: 0.9 !important;
+    transition: transform 0.1s ease, opacity 0.1s ease !important;
+  }
+
+  /* Links et zones cliquables */
+  a,
+  [role="button"],
+  [onclick] {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  /* Icônes cliquables */
+  i.clickable,
+  .pi.clickable,
+  button > i,
+  a > i {
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ================================================
+   HOVER VS TOUCH - Séparation desktop/mobile
+   ================================================ */
+
+/* Desktop uniquement - Hover effects */
+@media (hover: hover) and (pointer: fine) {
+  /* Hover cards */
+  .recipe-card:hover,
+  .Post:hover,
+  .recette-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Hover images */
+  .recipe-image-container:hover .recipe-image,
+  .recette-desc-images img:hover {
+    transform: scale(1.08);
+  }
+
+  /* Hover buttons */
+  button:hover:not(:active),
+  .p-button:hover:not(:active) {
+    filter: brightness(1.05);
+  }
+}
+
+/* Mobile - Désactiver les hover, garder uniquement active */
+@media (hover: none) and (pointer: coarse) {
+  /* Désactiver tous les hover transformations */
+  *:hover {
+    transform: none !important;
+  }
+
+  /* Touch feedback uniquement sur :active */
+  button:active,
+  .p-button:active,
+  .recipe-card:active,
+  a:active {
+    transform: scale(0.98) !important;
+    opacity: 0.95 !important;
+  }
+}
+
+/* ================================================
+   INPUTS & FORMS - iOS Safari Optimization
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Font-size minimum 16px pour éviter le zoom iOS */
+  input,
+  textarea,
+  select,
+  .p-inputtext,
+  .p-dropdown,
+  .p-multiselect {
+    font-size: 16px !important;
+    min-height: 44px !important;
+    padding: 0.75rem !important;
+  }
+
+  /* Textarea doit être assez grand pour touch */
+  textarea,
+  .p-textarea {
+    min-height: 120px !important;
+    padding: 1rem !important;
+  }
+
+  /* Checkboxes et radio buttons */
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-width: 24px !important;
+    min-height: 24px !important;
+    transform: scale(1.3);
+    margin: 0.5rem;
+  }
+
+  /* Labels cliquables */
+  label {
+    padding: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+/* ================================================
+   DIALOGS - Bottom Sheets Mobile
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Dialog transformé en bottom sheet */
+  .p-dialog.mobile-bottom-sheet {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 1rem 1rem 0 0 !important;
+    max-height: 90vh !important;
+    animation: slideUp 0.3s ease-out !important;
+  }
+
+  .p-dialog.mobile-bottom-sheet .p-dialog-content {
+    max-height: 70vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Handle de drag (indicateur visuel) */
+  .p-dialog.mobile-bottom-sheet::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 4px;
+    background: var(--surface-border);
+    border-radius: 2px;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ================================================
+   NAVBAR - Mobile Optimizations
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Navbar toujours visible (pas d'auto-hide frustrant) */
+  .navbar {
+    position: sticky !important;
+    top: 0 !important;
+    transform: translateY(0) !important;
+  }
+
+  /* Enlever l'animation auto-hide */
+  .navbar-hidden {
+    transform: translateY(0) !important;
+  }
+
+  /* Menu items plus grands pour touch */
+  .navbar-navigation a,
+  .mobile-menu a,
+  .burger-menu a {
+    min-height: 48px !important;
+    padding: 1rem !important;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ================================================
+   FILTRES - Bottom Sheet Mobile
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Filtre en bottom sheet sur mobile */
+  .Filtre.mobile-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 80vh;
+    border-radius: 1rem 1rem 0 0;
+    margin: 0;
+    z-index: 1000;
+    animation: slideUp 0.3s ease-out;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Checkbox groups plus espacés */
+  .Filtre_type > div {
+    padding: 1rem !important;
+    min-height: 48px;
+  }
+
+  .Filtre_type input[type="checkbox"] {
+    min-width: 24px !important;
+    min-height: 24px !important;
+  }
+}
+
+/* ================================================
+   CARDS - Touch Optimizations
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Recipe cards spacing */
+  .recipe-card,
+  .Post,
+  .recette-card {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Action buttons dans les cards */
+  .recipe-actions,
+  .Post_admin_actions {
+    gap: 1rem !important;
+  }
+
+  .recipe-actions button,
+  .Post_admin_actions button {
+    flex: 1;
+    min-height: 44px !important;
+  }
+
+  /* Rating stars plus grandes */
+  .recipe-rating .p-rating .p-icon {
+    font-size: 1.25rem !important;
+    padding: 0.25rem;
+  }
+}
+
+/* ================================================
+   TABLES - Mobile Scroll
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Tables scroll horizontalement */
+  .p-datatable-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Table cells plus grandes */
+  .p-datatable tbody td,
+  .p-datatable thead th {
+    padding: 1rem !important;
+    min-height: 48px;
+  }
+}
+
+/* ================================================
+   TOAST - Mobile Position
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Toast en haut sur mobile (plus accessible) */
+  .p-toast {
+    top: 1rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    width: auto !important;
+  }
+
+  .p-toast-message {
+    margin: 0 0 0.5rem 0 !important;
+  }
+}
+
+/* ================================================
+   SAFE AREA - iPhone Notch Support
+   ================================================ */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .navbar,
+  .mobile-menu,
+  .p-dialog.mobile-bottom-sheet {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 1rem) !important;
+  }
+
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ================================================
+   PERFORMANCE - GPU Acceleration
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Accélération GPU pour animations fluides */
+  .recipe-card,
+  .Post,
+  button,
+  .p-button,
+  .p-dialog {
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY - Focus Visible
+   ================================================ */
+
+/* Focus visible pour navigation clavier (a11y) */
+:focus-visible {
+  outline: 3px solid var(--primary-color) !important;
+  outline-offset: 2px !important;
+}
+
+/* Mais pas sur touch/click */
+:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+/* ================================================
+   SCROLL - Smooth & Touch Friendly
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Scroll smooth natif */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Scrollbars plus fines sur mobile */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 2px;
+  }
+}
+
+/* ================================================
+   PULL TO REFRESH - Désactiver sur PWA
+   ================================================ */
+
+@media (max-width: 768px) {
+  /* Éviter le pull-to-refresh du navigateur */
+  body {
+    overscroll-behavior-y: contain;
+  }
+}

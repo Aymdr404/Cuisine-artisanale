@@ -7,9 +7,11 @@ import '@/styles/theme.css';
 import '@/styles/admin.css';
 import '@/styles/dialog.css';
 import '@/styles/toast.css';
+import '@/styles/mobile.css';
 import '@/index.css';
 import Navbar from '@/components/Navbar/Navbar';
 import LegalMention from '@/components/LegalMention/LegalMention';
+import PWAProvider from '@/components/PWAProvider/PWAProvider';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -27,6 +29,34 @@ const CookieConsent = dynamic(
 export const metadata = {
 	title: 'Cuisine artisanale',
 	description: 'Recettes, actualités et cartes pour la cuisine artisanale.',
+	manifest: '/Cuisine-artisanale/manifest.json',
+	appleWebApp: {
+		capable: true,
+		statusBarStyle: 'default',
+		title: 'Cuisine Artisanale',
+	},
+	applicationName: 'Cuisine Artisanale',
+	formatDetection: {
+		telephone: false,
+	},
+	themeColor: '#8B4513',
+	viewport: {
+		width: 'device-width',
+		initialScale: 1,
+		maximumScale: 5,
+		userScalable: true,
+		viewportFit: 'cover',
+	},
+	icons: {
+		icon: [
+			{ url: '/Cuisine-artisanale/favicon.ico' },
+			{ url: '/Cuisine-artisanale/icon-192.png', sizes: '192x192', type: 'image/png' },
+			{ url: '/Cuisine-artisanale/icon-512.png', sizes: '512x512', type: 'image/png' },
+		],
+		apple: [
+			{ url: '/Cuisine-artisanale/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+		],
+	},
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -34,6 +64,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		<html lang="fr">
 			<body>
 				<Providers>
+					<PWAProvider />
 					<Navbar />
 					<div className="wrapper">
 						{children}

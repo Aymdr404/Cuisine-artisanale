@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "serve out -p 3000",
+    "preview": "npm run build && node scripts/prepare-preview.js && serve temp-serve -p 3000",
     "lint": "eslint .",
     "sitemap": "node generateSitemap.js",
     "sharePage": "node generateSharePage.js",

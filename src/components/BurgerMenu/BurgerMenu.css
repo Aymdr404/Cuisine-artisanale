@@ -9,20 +9,23 @@
   margin: 0;
 }
 
-/* Bouton burger */
+/* Bouton burger - Optimisé pour touch (min 44px) */
 .burger {
-  width: 30px;
-  height: 25px;
+  width: 44px;
+  height: 44px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
   cursor: pointer;
-  padding: 0;
+  padding: 8px;
+  position: relative;
 }
 
 .burger span {
   display: block;
-  width: 100%;
+  width: 24px;
   height: 3px;
   background-color: var(--text-color);
   border-radius: 4px;
@@ -30,15 +33,16 @@
 }
 
 .burger.open {
-  height: 25px;
+  gap: 0;
 }
 
 .burger.open span {
   background-color: var(--text-color);
+  position: absolute;
 }
 
 .burger.open span:nth-child(1) {
-  transform: translateY(11px) rotate(45deg);
+  transform: rotate(45deg);
 }
 
 .burger.open span:nth-child(2) {
@@ -47,7 +51,7 @@
 }
 
 .burger.open span:nth-child(3) {
-  transform: translateY(-11px) rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 /* Dropdown menu */

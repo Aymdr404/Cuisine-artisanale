@@ -67,8 +67,8 @@
 
 /* Theme Toggle */
 .theme-toggle {
-  width: 2.5rem !important;
-  height: 2.5rem !important;
+  width: 2.75rem !important;
+  height: 2.75rem !important;
   border-radius: 50% !important;
   background: transparent !important;
   border: 1px solid var(--surface-border) !important;
@@ -200,8 +200,8 @@
   }
 
   .theme-toggle {
-    width: 2rem !important;
-    height: 2rem !important;
+    width: 2.75rem !important;
+    height: 2.75rem !important;
   }
 }
 
@@ -512,17 +512,21 @@
   margin: 0.5rem 0;
 }
 
-.navbar-hidden {
+/* Auto-hide désactivé sur mobile (frustrant pour UX) */
+/* .navbar-hidden {
   transform: translateY(-100%) !important;
-}
+} */
 
 @media screen and (max-width: 768px) {
   .navbar {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                background-color 0.3s ease,
+    /* Navbar toujours visible - pas d'auto-hide */
+    position: sticky !important;
+    transform: translateY(0) !important;
+    transition: background-color 0.3s ease,
                 box-shadow 0.3s ease;
   }
 
+  /* Auto-hide désactivé pour mobile
   .navbar:not(.navbar-hidden) {
     animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -530,8 +534,10 @@
   .navbar-hidden {
     transform: translateY(-100%) !important;
   }
+  */
 }
 
+/* Animation slideDown conservée pour autres usages */
 @keyframes slideDown {
   from {
     transform: translateY(-100%);
