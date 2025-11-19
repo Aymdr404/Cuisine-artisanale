@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import RecettesWrapper from "./RecettesWrapper";
+import "./recettes-page.css";
 
 export const metadata = {
 	title: "Recettes | Cuisine artisanale",

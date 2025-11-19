@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import './Filtre.css';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Button } from 'primereact/button';

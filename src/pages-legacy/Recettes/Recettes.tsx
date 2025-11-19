@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import './Recettes.css';
 import Filtre from '@components/Filtre/Filtre';
 import Recette from '@components/Recette/Recette';
 import AddRecette from '@components/AddRecette/AddRecette';
