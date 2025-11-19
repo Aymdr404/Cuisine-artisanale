@@ -8,7 +8,7 @@ import { doc, getDoc, deleteDoc, onSnapshot, query, where, getDocs, collection, 
 import { db } from '@firebaseModule';
 import { Button } from 'primereact/button';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
-import { toggleLikeRecipes, unlikeRecipes, countRecipeLikes, hasUserLikedRecipe } from '@/services/RecetteService/RecetteService';
+import { toggleLikeRecipes, unlikeRecipes, countRecipeLikes, hasUserLikedRecipe, getSimilarRecipes } from '@/services/RecetteService/RecetteService';
 import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
 import { Rating } from 'primereact/rating';
@@ -58,6 +58,8 @@ const RecetteDesc: React.FC = () => {
 	const [reviews, setReviews] = useState<any[]>([]);
 	const [newReview, setNewReview] = useState('');
 	const [newRating, setNewRating] = useState<number | null>(null);
+	const [similarRecipes, setSimilarRecipes] = useState<any[]>([]);
+	const [loadingSimilar, setLoadingSimilar] = useState(false);
 
 
 	const getRecetteById = async (docId: string) => {
@@ -232,6 +234,25 @@ const RecetteDesc: React.FC = () => {
 		});
 
 		return () => unsubscribe();
+	}, [id]);
+
+	// Charger les recettes similaires
+	useEffect(() => {
+		const loadSimilarRecipes = async () => {
+			if (!id) return;
+			setLoadingSimilar(true);
+			try {
+				const similar = await getSimilarRecipes(id, 3);
+				setSimilarRecipes(similar);
+			} catch (error) {
+				console.error("Erreur lors du chargement des recettes similaires:", error);
+				setSimilarRecipes([]);
+			} finally {
+				setLoadingSimilar(false);
+			}
+		};
+
+		loadSimilarRecipes();
 	}, [id]);
 
 
@@ -621,6 +642,48 @@ const RecetteDesc: React.FC = () => {
 						)}
 					</div>
 				</div>
+			</div>
+
+			{/* Section Recettes similaires */}
+			<div className="recette-similar-section">
+				<h2>Recettes similaires</h2>
+				{loadingSimilar ? (
+					<p className="loading">Chargement des recettes similaires...</p>
+				) : similarRecipes.length === 0 ? (
+					<p className="no-similar">Pas d'autres recettes similaires disponibles</p>
+				) : (
+					<div className="similar-recipes-grid">
+						{similarRecipes.map((recipe) => (
+							<div
+								key={recipe.id}
+								className="similar-recipe-card"
+								onClick={() => {
+									setId(recipe.id);
+									router.push(`/recettes?id=${recipe.id}`);
+									window.scrollTo(0, 0);
+								}}
+								style={{ cursor: 'pointer' }}
+							>
+								{recipe.images && recipe.images.length > 0 && (
+									<img
+										src={recipe.images[0]}
+										alt={recipe.title}
+										className="similar-recipe-image"
+									/>
+								)}
+								<div className="similar-recipe-content">
+									<h3>{recipe.title}</h3>
+									<p className="recipe-type">{recipe.type}</p>
+									{recipe.cookingTime && (
+										<p className="recipe-time">
+											<i className="pi pi-clock"></i> {recipe.cookingTime} min
+										</p>
+									)}
+								</div>
+							</div>
+						))}
+					</div>
+				)}
 			</div>
 		</div>
 	</>

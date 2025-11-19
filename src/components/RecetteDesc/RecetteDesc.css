@@ -1124,3 +1124,171 @@
     font-size: 0.95rem;
   }
 }
+
+/* === SECTION RECETTES SIMILAIRES === */
+
+.recette-similar-section {
+  margin-top: 3rem;
+  background-color: var(--surface-card);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.recette-similar-section > h2 {
+  font-size: 1.8rem;
+  color: var(--text-color);
+  margin: 0 0 2rem 0;
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 1rem;
+}
+
+.similar-recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.similar-recipe-card {
+  background-color: var(--surface-section);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 0 1px var(--surface-border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.similar-recipe-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.similar-recipe-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.similar-recipe-content {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.similar-recipe-content h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.2rem;
+  color: var(--text-color);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.similar-recipe-content .recipe-type {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.similar-recipe-content .recipe-time {
+  margin: 0.75rem 0 0 0;
+  font-size: 0.95rem;
+  color: var(--text-color-light);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.similar-recipe-content .recipe-time i {
+  font-size: 0.9rem;
+}
+
+.loading,
+.no-similar {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color-secondary);
+  font-style: italic;
+  font-size: 1rem;
+}
+
+/* Responsive pour similaires */
+@media (max-width: 1024px) {
+  .similar-recipes-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .recette-similar-section {
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .recette-similar-section > h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .similar-recipes-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .similar-recipe-content {
+    padding: 1rem;
+  }
+
+  .similar-recipe-content h3 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .recette-similar-section {
+    padding: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .recette-similar-section > h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .similar-recipes-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .similar-recipe-card {
+    flex-direction: row;
+  }
+
+  .similar-recipe-image {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+  }
+
+  .similar-recipe-content {
+    padding: 1rem;
+  }
+
+  .similar-recipe-content h3 {
+    font-size: 0.95rem;
+  }
+
+  .similar-recipe-content .recipe-type {
+    font-size: 0.8rem;
+  }
+}

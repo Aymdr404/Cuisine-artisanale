@@ -4,6 +4,7 @@ import './Recettes.css';
 import Filtre from '@components/Filtre/Filtre';
 import Recette from '@components/Recette/Recette';
 import AddRecette from '@components/AddRecette/AddRecette';
+import TrendingRecipes from '@components/TrendingRecipes/TrendingRecipes';
 
 import { db } from '@firebaseModule';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -199,6 +200,9 @@ const Recettes: React.FC = () => {
 			<Filtre />
 			<AddRecette />
 		</section>
+		{!searchParams.get("type") && !searchParams.get("position") && !searchParams.get("search") && (
+			<TrendingRecipes />
+		)}
 		<section className='recettes_section'>
 			{recettes.length === 0 && !recettes && (
 				Array.from({ length: 5 }).map((_, i) => (
