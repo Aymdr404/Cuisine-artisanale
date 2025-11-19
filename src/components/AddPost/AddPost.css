@@ -67,6 +67,10 @@
 @media screen and (max-width: 768px) {
   .mobile-floating-button {
     display: block;
+
+	.p-button-label{
+		display: none;
+	}
   }
 
   .desktop-post {

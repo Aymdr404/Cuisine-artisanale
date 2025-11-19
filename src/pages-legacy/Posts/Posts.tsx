@@ -180,13 +180,13 @@ const Posts: React.FC = () => {
       </section>
 
       {/* Bouton scroll-top */}
-      <button
+      <Button
         className={`scroll-top-button ${showScrollTop ? 'visible' : ''}`}
         onClick={scrollToTop}
         aria-label="Retour en haut"
       >
         <i className="pi pi-angle-up" style={{ fontSize: '1.5rem' }}></i>
-      </button>
+      </Button>
     </div>
   );
 };
