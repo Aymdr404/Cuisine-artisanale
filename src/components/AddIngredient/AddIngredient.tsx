@@ -7,19 +7,19 @@ const AddIngredient: React.FC = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
 
   return (
-    <div className="add-ingredient">
-      <Button
-        label="Ajouter un ingrédient"
-        icon="pi pi-plus"
-        className="p-button-success"
-        onClick={() => setDialogVisible(true)}
-      />
+	<div className="add-ingredient">
+	  <Button
+		label="Ajouter un ingrédient"
+		icon="pi pi-plus"
+		className="p-button-success"
+		onClick={() => setDialogVisible(true)}
+	  />
 
-      <AddIngredientForm
-        visible={dialogVisible}
-        onHide={() => setDialogVisible(false)}
-      />
-    </div>
+	  <AddIngredientForm
+		visible={dialogVisible}
+		onHide={() => setDialogVisible(false)}
+	  />
+	</div>
   );
 };
 

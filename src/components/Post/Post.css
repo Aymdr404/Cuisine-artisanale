@@ -101,21 +101,21 @@
 
 @media screen and (max-width: 768px) {
   .Post {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .Section_buttons {
-    flex-direction: column;
-    align-items: stretch;
+	flex-direction: column;
+	align-items: stretch;
   }
 
   .Post_admin_actions {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
+	flex-direction: column;
+	align-items: stretch;
+	text-align: center;
   }
 
   .Post_request_actions {
-    flex-direction: column;
+	flex-direction: column;
   }
 }

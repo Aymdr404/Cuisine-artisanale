@@ -32,13 +32,13 @@ async function generateSharePages() {
 	console.log(`Nombre de recettes trouvées : ${recettesSnapshot.size}`);
 
   recettesSnapshot.forEach(doc => {
-    const recette = doc.data();
-    const url = recette.url;
-    const title = recette.title;
-    const description = `Découvrez la recette ${title}, un délicieux plat ${recette.type || ''}.`;
-    const image = recette.images?.[0] || '';
+	const recette = doc.data();
+	const url = recette.url;
+	const title = recette.title;
+	const description = `Découvrez la recette ${title}, un délicieux plat ${recette.type || ''}.`;
+	const image = recette.images?.[0] || '';
 
-    const html = `
+	const html = `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -56,14 +56,14 @@ async function generateSharePages() {
 </head>
 <body>
   <script>
-    window.location.href = "https://www.aymeric-sabatier.fr/Cuisine-artisanale/recettes/${url}";
+	window.location.href = "https://www.aymeric-sabatier.fr/Cuisine-artisanale/recettes/${url}";
   </script>
 </body>
 </html>
-    `;
+	`;
 
-    fs.writeFileSync(path.join(shareDir, `${url}.html`), html);
-    console.log(`Page générée : ${url}.html`);
+	fs.writeFileSync(path.join(shareDir, `${url}.html`), html);
+	console.log(`Page générée : ${url}.html`);
   });
 
   console.log('Toutes les pages de partage ont été générées !');

@@ -20,81 +20,81 @@ const PersonalizedRecommendations: React.FC = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    const loadRecommendations = async () => {
-      if (!user?.uid) {
-        setLoading(false);
-        return;
-      }
+	const loadRecommendations = async () => {
+	  if (!user?.uid) {
+		setLoading(false);
+		return;
+	  }
 
-      try {
-        setLoading(true);
-        const recommended = await getPersonalizedRecommendations(user.uid, 6);
-        setRecipes(recommended as RecommendedRecipe[]);
-      } catch (error) {
-        console.error("Erreur lors du chargement des recommandations personnalisées:", error);
-        setRecipes([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+	  try {
+		setLoading(true);
+		const recommended = await getPersonalizedRecommendations(user.uid, 6);
+		setRecipes(recommended as RecommendedRecipe[]);
+	  } catch (error) {
+		console.error("Erreur lors du chargement des recommandations personnalisées:", error);
+		setRecipes([]);
+	  } finally {
+		setLoading(false);
+	  }
+	};
 
-    loadRecommendations();
+	loadRecommendations();
   }, [user?.uid]);
 
   if (!user) {
-    return null;
+	return null;
   }
 
   if (loading) {
-    return (
-      <div className="personalized-recommendations-section">
-        <h3>Recommandé pour vous</h3>
-        <div className="loading-message">Chargement de vos recommandations personnalisées...</div>
-      </div>
-    );
+	return (
+	  <div className="personalized-recommendations-section">
+		<h3>Recommandé pour vous</h3>
+		<div className="loading-message">Chargement de vos recommandations personnalisées...</div>
+	  </div>
+	);
   }
 
   if (recipes.length === 0) {
-    return (
-      <div className="personalized-recommendations-section">
-        <h3>Recommandé pour vous</h3>
-        <p className="no-recommendations">
-          Likez des recettes pour obtenir des recommandations personnalisées!
-        </p>
-      </div>
-    );
+	return (
+	  <div className="personalized-recommendations-section">
+		<h3>Recommandé pour vous</h3>
+		<p className="no-recommendations">
+		  Likez des recettes pour obtenir des recommandations personnalisées!
+		</p>
+	  </div>
+	);
   }
 
   return (
-    <div className="personalized-recommendations-section">
-      <h3>Recommandé pour vous</h3>
-      <div className="personalized-recipes-grid">
-        {recipes.map((recipe) => (
-          <div
-            key={recipe.id}
-            className="personalized-recipe-card"
-            onClick={() => router.push(`/recettes?id=${recipe.id}`)}
-          >
-            {recipe.images && recipe.images.length > 0 && (
-              <img
-                src={recipe.images[0]}
-                alt={recipe.title}
-                className="personalized-recipe-image"
-              />
-            )}
-            <div className="personalized-recipe-content">
-              <h4>{recipe.title}</h4>
-              <p className="recipe-type">{recipe.type}</p>
-              {recipe.cookingTime && (
-                <p className="recipe-time">
-                  <i className="pi pi-clock"></i> {recipe.cookingTime} min
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+	<div className="personalized-recommendations-section">
+	  <h3>Recommandé pour vous</h3>
+	  <div className="personalized-recipes-grid">
+		{recipes.map((recipe) => (
+		  <div
+			key={recipe.id}
+			className="personalized-recipe-card"
+			onClick={() => router.push(`/recettes?id=${recipe.id}`)}
+		  >
+			{recipe.images && recipe.images.length > 0 && (
+			  <img
+				src={recipe.images[0]}
+				alt={recipe.title}
+				className="personalized-recipe-image"
+			  />
+			)}
+			<div className="personalized-recipe-content">
+			  <h4>{recipe.title}</h4>
+			  <p className="recipe-type">{recipe.type}</p>
+			  {recipe.cookingTime && (
+				<p className="recipe-time">
+				  <i className="pi pi-clock"></i> {recipe.cookingTime} min
+				</p>
+			  )}
+			</div>
+		  </div>
+		))}
+	  </div>
+	</div>
   );
 };
 

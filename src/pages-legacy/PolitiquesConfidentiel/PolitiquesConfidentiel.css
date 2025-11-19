@@ -73,15 +73,15 @@
 /* Responsive */
 @media (max-width: 600px) {
   .PolitiquesConfidentiel-container .container {
-    padding: 1rem;
-    margin: 1rem;
+	padding: 1rem;
+	margin: 1rem;
   }
 
   .PolitiquesConfidentiel-container h1 {
-    font-size: 1.8rem;
+	font-size: 1.8rem;
   }
 
   .PolitiquesConfidentiel-container h2 {
-    font-size: 1.3rem;
+	font-size: 1.3rem;
   }
 }

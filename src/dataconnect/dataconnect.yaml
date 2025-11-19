@@ -4,9 +4,9 @@ location: "us-central1"
 schema:
   source: "./schema"
   datasource:
-    postgresql:
-      database: "fdcdb"
-      cloudSql:
-        instanceId: "src-fdc"
-      # schemaValidation: "COMPATIBLE"
+	postgresql:
+	  database: "fdcdb"
+	  cloudSql:
+		instanceId: "src-fdc"
+	  # schemaValidation: "COMPATIBLE"
 connectorDirs: ["./connector"]

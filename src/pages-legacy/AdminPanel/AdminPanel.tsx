@@ -33,62 +33,62 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (role && role !== "admin") {
-      router.replace("/");
-    }
+	if (role && role !== "admin") {
+	  router.replace("/");
+	}
   }, [role, router]);
 
   const breadcrumbItems = useMemo(() => {
-    const segments = pathname.split("/").filter(Boolean);
-    const adminIndex = segments.indexOf("admin-panel");
-    if (adminIndex === -1) return [];
+	const segments = pathname.split("/").filter(Boolean);
+	const adminIndex = segments.indexOf("admin-panel");
+	if (adminIndex === -1) return [];
 
-    const relevantSegments = segments.slice(adminIndex);
+	const relevantSegments = segments.slice(adminIndex);
 
-    return relevantSegments.map((segment, index) => {
-      const url = "/" + segments.slice(0, adminIndex + index + 1).join("/");
-      const label =
-        ROUTE_LABELS[segment] ??
-        segment.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
-      return { label, url };
-    });
+	return relevantSegments.map((segment, index) => {
+	  const url = "/" + segments.slice(0, adminIndex + index + 1).join("/");
+	  const label =
+		ROUTE_LABELS[segment] ??
+		segment.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+	  return { label, url };
+	});
   }, [pathname]);
 
   const home = { icon: "pi pi-home", url: "/" };
 
   if (role && role !== "admin") {
-    return (
-      <div className="access-denied">
-        <Message
-          severity="error"
-          text="Accès refusé. Cette page est réservée aux administrateurs."
-        />
-      </div>
-    );
+	return (
+	  <div className="access-denied">
+		<Message
+		  severity="error"
+		  text="Accès refusé. Cette page est réservée aux administrateurs."
+		/>
+	  </div>
+	);
   }
 
   return (
-    <div className="admin-panel">
-      <Sidebar />
+	<div className="admin-panel">
+	  <Sidebar />
 
-      <div className="admin-main">
-        <div className="admin-header">
-          <BreadCrumb
-            model={breadcrumbItems}
-            home={home}
-            className="admin-breadcrumb"
-          />
+	  <div className="admin-main">
+		<div className="admin-header">
+		  <BreadCrumb
+			model={breadcrumbItems}
+			home={home}
+			className="admin-breadcrumb"
+		  />
 
-          <div className="admin-user-info">
-            <span className="welcome-text">
-              Bienvenue, {user?.displayName || "Administrateur"}
-            </span>
-          </div>
-        </div>
+		  <div className="admin-user-info">
+			<span className="welcome-text">
+			  Bienvenue, {user?.displayName || "Administrateur"}
+			</span>
+		  </div>
+		</div>
 
-        <Card className="admin-content">{children}</Card>
-      </div>
-    </div>
+		<Card className="admin-content">{children}</Card>
+	  </div>
+	</div>
   );
 };
 

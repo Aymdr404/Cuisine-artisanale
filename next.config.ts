@@ -5,21 +5,21 @@ const nextConfig: NextConfig = {
   output: 'export', // Enable static export for GitHub Pages
   basePath: '/Cuisine-artisanale', // GitHub Pages subdirectory
   images: {
-    unoptimized: true, // Required for static export
-    remotePatterns: [],
+	unoptimized: true, // Required for static export
+	remotePatterns: [],
   },
   trailingSlash: true, // Help with routing on static hosting
   eslint: {
-    ignoreDuringBuilds: true, // Skip ESLint during build - we'll fix these later
+	ignoreDuringBuilds: true, // Skip ESLint during build - we'll fix these later
   },
   typescript: {
-    ignoreBuildErrors: true, // Skip TypeScript errors during build - we'll fix these later
+	ignoreBuildErrors: true, // Skip TypeScript errors during build - we'll fix these later
   },
   webpack: (config, { isServer }) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-    };
-    return config;
+	config.resolve.fallback = {
+	  ...config.resolve.fallback,
+	};
+	return config;
   },
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
 };

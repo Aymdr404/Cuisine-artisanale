@@ -23,9 +23,9 @@ Une application web moderne pour partager et découvrir des recettes artisanales
 
 - **Backend** :
   - Firebase
-    - Authentication
-    - Firestore
-    - Storage
+	- Authentication
+	- Firestore
+	- Storage
 
 ## 🚀 Installation
 
@@ -60,12 +60,12 @@ npm run dev
 
 ```
 src/
-├── components/         # Composants réutilisables
-├── contexts/          # Contextes React (Auth, etc.)
-├── pages/            # Pages de l'application
-├── services/         # Services (Firebase, etc.)
-├── styles/           # Styles globaux
-└── types/            # Types TypeScript
+├── components/		 # Composants réutilisables
+├── contexts/		  # Contextes React (Auth, etc.)
+├── pages/			# Pages de l'application
+├── services/		 # Services (Firebase, etc.)
+├── styles/		   # Styles globaux
+└── types/			# Types TypeScript
 ```
 
 ## 🔑 Fonctionnalités Principales

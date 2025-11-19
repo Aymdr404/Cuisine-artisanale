@@ -19,72 +19,70 @@ const TrendingRecipes: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const loadTrendingRecipes = async () => {
-      try {
-        setLoading(true);
-        const trendingRecipes = await getTrendingRecipes(6);
-        setRecipes(trendingRecipes as TrendingRecipe[]);
-      } catch (error) {
-        console.error("Erreur lors du chargement des recettes tendances:", error);
-        setRecipes([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+	const loadTrendingRecipes = async () => {
+	  try {
+		setLoading(true);
+		const trendingRecipes = await getTrendingRecipes(4);
+		setRecipes(trendingRecipes as TrendingRecipe[]);
+	  } catch (error) {
+		console.error("Erreur lors du chargement des recettes tendances:", error);
+		setRecipes([]);
+	  } finally {
+		setLoading(false);
+	  }
+	};
 
-    loadTrendingRecipes();
+	loadTrendingRecipes();
   }, []);
 
   if (loading) {
-    return (
-      <div className="trending-recipes-section">
-        <h2>Recettes populaires cette semaine</h2>
-        <div className="loading-message">Chargement des recettes populaires...</div>
-      </div>
-    );
+	return (
+	  <div className="trending-recipes-section">
+		<h2>Recettes populaires cette semaine</h2>
+		<div className="loading-message">Chargement des recettes populaires...</div>
+	  </div>
+	);
   }
 
   if (recipes.length === 0) {
-    return null;
+	return null;
   }
 
   return (
-    <div className="trending-recipes-section">
-      <h2>Recettes populaires cette semaine</h2>
-      <div className="trending-recipes-grid">
-        {recipes.map((recipe) => (
-          <div
-            key={recipe.id}
-            className="trending-recipe-card"
-            onClick={() => router.push(`/recettes?id=${recipe.id}`)}
-          >
-            {recipe.images && recipe.images.length > 0 && (
-              <div className="trending-recipe-image-wrapper">
-                <img
-                  src={recipe.images[0]}
-                  alt={recipe.title}
-                  className="trending-recipe-image"
-                />
-                {recipe.likesCount && recipe.likesCount > 0 && (
-                  <div className="trending-badge">
-                    <i className="pi pi-heart-fill"></i> {recipe.likesCount}
-                  </div>
-                )}
-              </div>
-            )}
-            <div className="trending-recipe-content">
-              <h3>{recipe.title}</h3>
-              <p className="recipe-type">{recipe.type}</p>
-              {recipe.cookingTime && (
-                <p className="recipe-time">
-                  <i className="pi pi-clock"></i> {recipe.cookingTime} min
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+	<div className="trending-recipes-section">
+	  <h2>Recettes populaires cette semaine</h2>
+	  <div className="trending-recipes-grid">
+		{recipes.map((recipe) => (
+		  <div
+			key={recipe.id}
+			className="trending-recipe-card"
+			onClick={() => router.push(`/recettes?id=${recipe.id}`)}
+		  >
+			{recipe.images && recipe.images.length > 0 && (
+			  	<div className="trending-recipe-image-wrapper">
+					<img
+						src={recipe.images[0]}
+						alt={recipe.title}
+						className="trending-recipe-image"
+					/>
+					<div className="trending-badge">
+						<i className="pi pi-heart-fill"></i> {recipe.likesCount}
+					</div>
+				</div>
+			)}
+			<div className="trending-recipe-content">
+			  <h3>{recipe.title}</h3>
+			  <p className="recipe-type">{recipe.type}</p>
+			  {recipe.cookingTime && (
+				<p className="recipe-time">
+				  <i className="pi pi-clock"></i> {recipe.cookingTime} min
+				</p>
+			  )}
+			</div>
+		  </div>
+		))}
+	  </div>
+	</div>
   );
 };
 

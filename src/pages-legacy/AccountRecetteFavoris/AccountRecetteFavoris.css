@@ -77,21 +77,21 @@
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .account-favorites {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .favorites-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+	flex-direction: column;
+	gap: 1rem;
+	text-align: center;
   }
 
   .favorites-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+	grid-template-columns: 1fr;
+	gap: 1rem;
   }
 
   .empty-state {
-    padding: 2rem 1rem;
+	padding: 2rem 1rem;
   }
 }

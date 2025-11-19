@@ -24,219 +24,219 @@ const Navbar: React.FC = () => {
   const overlayPanelRef = useRef<OverlayPanel>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const isMobile = window.innerWidth <= 768;
+	const handleScroll = () => {
+	  const currentScrollY = window.scrollY;
+	  const isMobile = window.innerWidth <= 768;
 
-      if (isMobile) {
-        // Hide navbar when scrolling down, show when scrolling up
-        if (currentScrollY > lastScrollY && currentScrollY > 100) {
-          setIsNavbarVisible(false);
-        } else {
-          setIsNavbarVisible(true);
-        }
-      }
+	  if (isMobile) {
+		// Hide navbar when scrolling down, show when scrolling up
+		if (currentScrollY > lastScrollY && currentScrollY > 100) {
+		  setIsNavbarVisible(false);
+		} else {
+		  setIsNavbarVisible(true);
+		}
+	  }
 
-      setIsScrolled(currentScrollY > 20);
-      setLastScrollY(currentScrollY);
-    };
+	  setIsScrolled(currentScrollY > 20);
+	  setLastScrollY(currentScrollY);
+	};
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+	window.addEventListener('scroll', handleScroll);
+	return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+	setIsMobileMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    setIsMounted(true);
+	setIsMounted(true);
   }, []);
 
   const handleProfileClick = () => {
-    overlayPanelRef.current?.hide();
-    router.push('/account');
+	overlayPanelRef.current?.hide();
+	router.push('/account');
   };
 
   const handleMyRecipesClick = () => {
-    overlayPanelRef.current?.hide();
-    router.push('/account/mes-recettes');
+	overlayPanelRef.current?.hide();
+	router.push('/account/mes-recettes');
   };
 
   const handleAdminClick = () => {
-    overlayPanelRef.current?.hide();
-    router.push('/admin-panel');
+	overlayPanelRef.current?.hide();
+	router.push('/admin-panel');
   };
 
   const handleLogout = async () => {
-    try {
-      overlayPanelRef.current?.hide();
-      await logout();
-      router.push('/');
-    } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
-    }
+	try {
+	  overlayPanelRef.current?.hide();
+	  await logout();
+	  router.push('/');
+	} catch (error) {
+	  console.error('Erreur lors de la déconnexion:', error);
+	}
   };
 
   const menuItems = [
-    { label: 'Mon Profil', icon: 'pi pi-user', onClick: handleProfileClick },
-    { label: 'Mes Recettes', icon: 'pi pi-book', onClick: handleMyRecipesClick },
-    ...(role === 'admin' ? [
-      { label: 'Administration', icon: 'pi pi-cog', onClick: handleAdminClick }
-    ] : []),
-    { type: 'separator' },
-    { label: 'Déconnexion', icon: 'pi pi-power-off', onClick: handleLogout }
+	{ label: 'Mon Profil', icon: 'pi pi-user', onClick: handleProfileClick },
+	{ label: 'Mes Recettes', icon: 'pi pi-book', onClick: handleMyRecipesClick },
+	...(role === 'admin' ? [
+	  { label: 'Administration', icon: 'pi pi-cog', onClick: handleAdminClick }
+	] : []),
+	{ type: 'separator' },
+	{ label: 'Déconnexion', icon: 'pi pi-power-off', onClick: handleLogout }
   ];
 
   const handleLogin = async () => {
-    try {
-      setIsLoading(true);
-      await signInWithGoogle();
-      // No need to navigate, AuthContext will handle the state change
-    } catch (error) {
-      console.error('Login error:', error);
-      // You might want to show a toast message here
-    } finally {
-      setIsLoading(false);
-    }
+	try {
+	  setIsLoading(true);
+	  await signInWithGoogle();
+	  // No need to navigate, AuthContext will handle the state change
+	} catch (error) {
+	  console.error('Login error:', error);
+	  // You might want to show a toast message here
+	} finally {
+	  setIsLoading(false);
+	}
   };
 
   const handleMobileMenuToggle = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+	setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const handleMobileMenuClose = () => {
-    setIsMobileMenuOpen(false);
+	setIsMobileMenuOpen(false);
   };
 
   return (
-    <>
-      <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''} ${!isNavbarVisible ? 'navbar-hidden' : ''}`}>
-        <div className="navbar-container">
-          <div className="navbar-brand">
-            <h1 className="site-title">Cuisine Artisanale</h1>
-          </div>
+	<>
+	  <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''} ${!isNavbarVisible ? 'navbar-hidden' : ''}`}>
+		<div className="navbar-container">
+		  <div className="navbar-brand">
+			<h1 className="site-title">Cuisine Artisanale</h1>
+		  </div>
 
-          <div className="navbar-navigation">
-            <ButtonLinkNav />
-          </div>
+		  <div className="navbar-navigation">
+			<ButtonLinkNav />
+		  </div>
 
-          <div className="navbar-actions">
-            <Button
-              icon={isMounted ? (theme === "dark" ? "pi pi-sun" : "pi pi-moon") : "pi pi-moon"}
-              className="theme-toggle"
-              onClick={toggleTheme}
-              tooltip={isMounted ? (theme === "dark" ? "Mode clair" : "Mode sombre") : "Mode sombre"}
-              tooltipOptions={{ position: 'bottom' }}
-            />
+		  <div className="navbar-actions">
+			<Button
+			  icon={isMounted ? (theme === "dark" ? "pi pi-sun" : "pi pi-moon") : "pi pi-moon"}
+			  className="theme-toggle"
+			  onClick={toggleTheme}
+			  tooltip={isMounted ? (theme === "dark" ? "Mode clair" : "Mode sombre") : "Mode sombre"}
+			  tooltipOptions={{ position: 'bottom' }}
+			/>
 
-            {user ? (
-              <div className="user-menu">
-                <Button
-                  className="user-menu-trigger"
-                  onClick={(e) => overlayPanelRef.current?.toggle(e)}
-                >
-                  {user.photoURL ? (
-                    <Avatar image={user.photoURL} shape="circle" />
-                  ) : (
-                    <Avatar
-                      label={user.displayName?.charAt(0) || "U"}
-                      shape="circle"
-                      style={{ backgroundColor: 'var(--primary-color)' }}
-                    />
-                  )}
-                  <span className="user-name">{user.displayName || "Utilisateur"}</span>
-                  {role === 'admin' && (
-                    <span className="user-role">Admin</span>
-                  )}
-                  <i className="pi pi-chevron-down" />
-                </Button>
-                <OverlayPanel
-                  ref={overlayPanelRef}
-                  className="user-menu-panel"
-                  showCloseIcon={false}
-                  dismissable
-                >
-                  <div className="user-menu-content">
-                    {menuItems.map((item, index) => (
-                      item.type === 'separator' ? (
-                        <div key={index} className="menu-separator" />
-                      ) : (
-                        <Button
-                          key={index}
-                          className="menu-item"
-                          onClick={item.onClick}
-                        >
-                          <i className={item.icon} />
-                          <span>{item.label}</span>
-                        </Button>
-                      )
-                    ))}
-                  </div>
-                </OverlayPanel>
-              </div>
-            ) : (
-              <div className="auth-buttons">
-                <Button
-                  label="Se connecter avec Google"
-                  icon="pi pi-google"
-                  className="p-button-outlined google-auth-btn"
-                  onClick={handleLogin}
-                  loading={isLoading}
-                />
-              </div>
-            )}
+			{user ? (
+			  <div className="user-menu">
+				<Button
+				  className="user-menu-trigger"
+				  onClick={(e) => overlayPanelRef.current?.toggle(e)}
+				>
+				  {user.photoURL ? (
+					<Avatar image={user.photoURL} shape="circle" />
+				  ) : (
+					<Avatar
+					  label={user.displayName?.charAt(0) || "U"}
+					  shape="circle"
+					  style={{ backgroundColor: 'var(--primary-color)' }}
+					/>
+				  )}
+				  <span className="user-name">{user.displayName || "Utilisateur"}</span>
+				  {role === 'admin' && (
+					<span className="user-role">Admin</span>
+				  )}
+				  <i className="pi pi-chevron-down" />
+				</Button>
+				<OverlayPanel
+				  ref={overlayPanelRef}
+				  className="user-menu-panel"
+				  showCloseIcon={false}
+				  dismissable
+				>
+				  <div className="user-menu-content">
+					{menuItems.map((item, index) => (
+					  item.type === 'separator' ? (
+						<div key={index} className="menu-separator" />
+					  ) : (
+						<Button
+						  key={index}
+						  className="menu-item"
+						  onClick={item.onClick}
+						>
+						  <i className={item.icon} />
+						  <span>{item.label}</span>
+						</Button>
+					  )
+					))}
+				  </div>
+				</OverlayPanel>
+			  </div>
+			) : (
+			  <div className="auth-buttons">
+				<Button
+				  label="Se connecter avec Google"
+				  icon="pi pi-google"
+				  className="p-button-outlined google-auth-btn"
+				  onClick={handleLogin}
+				  loading={isLoading}
+				/>
+			  </div>
+			)}
 
-            <Button
-              icon={isMobileMenuOpen ? "pi pi-times" : "pi pi-bars"}
-              className="mobile-menu-toggle"
-              onClick={handleMobileMenuToggle}
-              aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-            />
-          </div>
-        </div>
-      </nav>
+			<Button
+			  icon={isMobileMenuOpen ? "pi pi-times" : "pi pi-bars"}
+			  className="mobile-menu-toggle"
+			  onClick={handleMobileMenuToggle}
+			  aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+			/>
+		  </div>
+		</div>
+	  </nav>
 
-      {/* Mobile Menu Overlay */}
-      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'show' : ''}`}>
-        <div className="mobile-menu-content">
-          <ButtonLinkNav isMobile onClick={handleMobileMenuClose} />
-          {user ? (
-            <div className="mobile-user-menu">
-              {menuItems.map((item, index) => (
-                item.type === 'separator' ? (
-                  <div key={index} className="menu-separator" />
-                ) : (
-                  <Button
-                    key={index}
-                    className="menu-item"
-                    onClick={() => {
-                      if (item.onClick) {
-                        item.onClick();
-                        handleMobileMenuClose();
-                      }
-                    }}
-                  >
-                    <i className={item.icon} />
-                    <span>{item.label}</span>
-                  </Button>
-                )
-              ))}
-            </div>
-          ) : (
-            <div className="mobile-auth-buttons">
-              <Button
-                label="Se connecter avec Google"
-                icon="pi pi-google"
-                className="p-button-outlined google-auth-btn"
-                onClick={handleLogin}
-                loading={isLoading}
-              />
-            </div>
-          )}
-        </div>
-      </div>
-    </>
+	  {/* Mobile Menu Overlay */}
+	  <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'show' : ''}`}>
+		<div className="mobile-menu-content">
+		  <ButtonLinkNav isMobile onClick={handleMobileMenuClose} />
+		  {user ? (
+			<div className="mobile-user-menu">
+			  {menuItems.map((item, index) => (
+				item.type === 'separator' ? (
+				  <div key={index} className="menu-separator" />
+				) : (
+				  <Button
+					key={index}
+					className="menu-item"
+					onClick={() => {
+					  if (item.onClick) {
+						item.onClick();
+						handleMobileMenuClose();
+					  }
+					}}
+				  >
+					<i className={item.icon} />
+					<span>{item.label}</span>
+				  </Button>
+				)
+			  ))}
+			</div>
+		  ) : (
+			<div className="mobile-auth-buttons">
+			  <Button
+				label="Se connecter avec Google"
+				icon="pi pi-google"
+				className="p-button-outlined google-auth-btn"
+				onClick={handleLogin}
+				loading={isLoading}
+			  />
+			</div>
+		  )}
+		</div>
+	  </div>
+	</>
   );
 };
 

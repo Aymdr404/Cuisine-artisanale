@@ -12,18 +12,18 @@ const AuthButton: React.FC<AuthButtonProps> = ({ onClick }) => {
   const { user, logout } = useAuth(); // Utilisation du contexte
 
   const handleLogin = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Error during login: ", error);
-    }
+	try {
+	  const provider = new GoogleAuthProvider();
+	  await signInWithPopup(auth, provider);
+	} catch (error) {
+	  console.error("Error during login: ", error);
+	}
   };
 
   return user ? (
-    <Button label={`Logout`} onClick={() => { logout(); if (onClick) onClick(); }}  />
+	<Button label={`Logout`} onClick={() => { logout(); if (onClick) onClick(); }}  />
   ) : (
-    <Button label="Login with Google" onClick={() => { handleLogin(); if (onClick) onClick(); }}  />
+	<Button label="Login with Google" onClick={() => { handleLogin(); if (onClick) onClick(); }}  />
   );
 };
 

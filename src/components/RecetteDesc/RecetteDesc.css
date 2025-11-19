@@ -207,7 +207,7 @@
   margin-bottom: 2rem;
   position: relative;
   padding-left: 1rem;
-  list-style: none; 
+  list-style: none;
 }
 
 .recette-desc-part-steps li::before {
@@ -271,24 +271,24 @@
 
 @media (max-width: 768px) {
   .RecetteDesc {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .recette-desc-title {
-    font-size: 2rem;
+	font-size: 2rem;
   }
 
   .recette-desc-part {
-    padding: 1.5rem;
+	padding: 1.5rem;
   }
 
   .recette-desc-part-ingredients ul {
-    flex-direction: column;
+	flex-direction: column;
   }
 
   .recette-desc-timing {
-    flex-direction: column;
-    align-items: flex-start;
+	flex-direction: column;
+	align-items: flex-start;
   }
 }
 
@@ -963,165 +963,165 @@
 /* Tablettes (jusqu'à 1024px) */
 @media (max-width: 1024px) {
   .RecetteDesc {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .recette-desc-title {
-    font-size: 2.2rem;
+	font-size: 2.2rem;
   }
 
   .recette-desc-info {
-    flex-direction: column;
+	flex-direction: column;
   }
 
   .recette-desc-info-left,
   .recette-desc-info-right {
-    flex: 1 1 100%;
-    padding: 1rem;
+	flex: 1 1 100%;
+	padding: 1rem;
   }
 
   .recette-desc-part section {
-    flex-direction: column;
+	flex-direction: column;
   }
 
   .recette-desc-part-ingredients,
   .recette-desc-part-steps {
-    max-width: 100%;
+	max-width: 100%;
   }
 
   .recette-desc-images {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
   .recette-desc-part h2 {
-    font-size: 1.6rem;
+	font-size: 1.6rem;
   }
 
   .recette-desc-part-steps p {
-    font-size: 1rem;
+	font-size: 1rem;
   }
 
   .recette-desc-button-container {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.75rem;
+	padding: 0.75rem;
   }
 
   .recette-desc-button-container-left,
   .recette-desc-admin-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.75rem;
   }
 }
 
 /* Téléphones (jusqu'à 600px) */
 @media (max-width: 600px) {
   .RecetteDesc {
-    padding: 0.75rem;
+	padding: 0.75rem;
   }
 
   .recette-desc-title {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+	font-size: 1.8rem;
+	margin-bottom: 1.5rem;
   }
 
   .recette-desc-button-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.75rem;
   }
 
   .recette-desc-button-container-left,
   .recette-desc-admin-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    width: 100%;
+	display: flex;
+	justify-content: center;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	width: 100%;
   }
 
   .recette-desc-button-container button {
-    flex: 1 1 auto;
-    min-width: 48px;
-    max-width: 120px;
-    text-align: center;
+	flex: 1 1 auto;
+	min-width: 48px;
+	max-width: 120px;
+	text-align: center;
   }
 
   .recette-desc-info {
-    padding: 1rem;
-    gap: 0.75rem;
+	padding: 1rem;
+	gap: 0.75rem;
   }
 
   .recette-desc-info-left,
   .recette-desc-info-right {
-    padding: 0.75rem;
+	padding: 0.75rem;
   }
 
   .recette-desc-images {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+	grid-template-columns: 1fr;
+	gap: 0.75rem;
   }
 
   .recette-desc-images img {
-    height: 200px;
+	height: 200px;
   }
 
   .recette-desc-part {
-    padding: 1rem;
-    margin: 1rem 0;
+	padding: 1rem;
+	margin: 1rem 0;
   }
 
   .recette-desc-part-ingredients ul {
-    flex-direction: column;
+	flex-direction: column;
   }
 
   .recette-desc-part-steps li {
-    padding: 1rem 0.75rem;
+	padding: 1rem 0.75rem;
   }
 
   .recette-desc-part-steps h4 {
-    font-size: 1rem;
+	font-size: 1rem;
   }
 
   .recette-desc-video {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .recette-desc-video h3 {
-    font-size: 1.1rem;
+	font-size: 1.1rem;
   }
 
   .recette-desc-video a {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 0.75rem;
-    font-size: 0.9rem;
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding: 0.75rem;
+	font-size: 0.9rem;
   }
 
   .recette-desc-gallery {
-    margin: 1rem 0;
+	margin: 1rem 0;
   }
 
   .recette-desc-main-image {
-    height: 220px;
+	height: 220px;
   }
 
   .recette-desc-thumbnails {
-    gap: 0.4rem;
+	gap: 0.4rem;
   }
 
   .recette-desc-thumbnail {
-    flex: 0 0 55px;
-    height: 55px;
+	flex: 0 0 55px;
+	height: 55px;
   }
 
   .recette-desc-info p {
-    font-size: 0.95rem;
+	font-size: 0.95rem;
   }
 }
 
@@ -1223,72 +1223,72 @@
 /* Responsive pour similaires */
 @media (max-width: 1024px) {
   .similar-recipes-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .recette-similar-section {
-    padding: 1.5rem;
-    margin-top: 2rem;
+	padding: 1.5rem;
+	margin-top: 2rem;
   }
 
   .recette-similar-section > h2 {
-    font-size: 1.4rem;
-    margin-bottom: 1.5rem;
+	font-size: 1.4rem;
+	margin-bottom: 1.5rem;
   }
 
   .similar-recipes-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 1rem;
   }
 
   .similar-recipe-content {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .similar-recipe-content h3 {
-    font-size: 1rem;
+	font-size: 1rem;
   }
 }
 
 @media (max-width: 600px) {
   .recette-similar-section {
-    padding: 1rem;
-    margin-top: 1.5rem;
+	padding: 1rem;
+	margin-top: 1.5rem;
   }
 
   .recette-similar-section > h2 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+	padding-bottom: 0.75rem;
   }
 
   .similar-recipes-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+	grid-template-columns: 1fr;
+	gap: 1rem;
   }
 
   .similar-recipe-card {
-    flex-direction: row;
+	flex-direction: row;
   }
 
   .similar-recipe-image {
-    width: 120px;
-    height: 120px;
-    flex-shrink: 0;
+	width: 120px;
+	height: 120px;
+	flex-shrink: 0;
   }
 
   .similar-recipe-content {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .similar-recipe-content h3 {
-    font-size: 0.95rem;
+	font-size: 0.95rem;
   }
 
   .similar-recipe-content .recipe-type {
-    font-size: 0.8rem;
+	font-size: 0.8rem;
   }
 }

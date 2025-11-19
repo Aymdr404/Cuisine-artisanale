@@ -17,23 +17,23 @@ const Sidebar: React.FC = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="sidebar">
-      <ul>
-        {NAV_ITEMS.map((item) => {
-          const isActive = item.exact
-            ? pathname === item.href
-            : pathname.startsWith(item.href);
+	<nav className="sidebar">
+	  <ul>
+		{NAV_ITEMS.map((item) => {
+		  const isActive = item.exact
+			? pathname === item.href
+			: pathname.startsWith(item.href);
 
-          return (
-            <li key={item.href}>
-              <Link href={item.href} className={`sidebar-link ${isActive ? "active" : ""}`}>
-                {item.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+		  return (
+			<li key={item.href}>
+			  <Link href={item.href} className={`sidebar-link ${isActive ? "active" : ""}`}>
+				{item.label}
+			  </Link>
+			</li>
+		  );
+		})}
+	  </ul>
+	</nav>
   );
 };
 

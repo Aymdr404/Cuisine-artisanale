@@ -7,19 +7,19 @@ const AddUnit: React.FC = () => {
   const [dialogVisible, setDialogVisible] = useState(false);
 
   return (
-    <div className="add-unit">
-      <Button
-        label="Ajouter une unité"
-        icon="pi pi-plus"
-        className="p-button-success"
-        onClick={() => setDialogVisible(true)}
-      />
+	<div className="add-unit">
+	  <Button
+		label="Ajouter une unité"
+		icon="pi pi-plus"
+		className="p-button-success"
+		onClick={() => setDialogVisible(true)}
+	  />
 
-      <AddUnitForm
-        visible={dialogVisible}
-        onHide={() => setDialogVisible(false)}
-      />
-    </div>
+	  <AddUnitForm
+		visible={dialogVisible}
+		onHide={() => setDialogVisible(false)}
+	  />
+	</div>
   );
 };
 

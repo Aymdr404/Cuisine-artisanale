@@ -5,16 +5,16 @@ export default function Unsubscribe() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const email = params.get("email");
+	const params = new URLSearchParams(window.location.search);
+	const email = params.get("email");
 
-    if (!email) {
-      setStatus("error");
-      return;
-    }
+	if (!email) {
+	  setStatus("error");
+	  return;
+	}
 
-    // Appel à ta fonction Cloud HTTPS
-    fetch(`https://us-central1-recettes-cuisine-a1bf2.cloudfunctions.net/unsubscribe?email=${encodeURIComponent(email)}`)
+	// Appel à ta fonction Cloud HTTPS
+	fetch(`https://us-central1-recettes-cuisine-a1bf2.cloudfunctions.net/unsubscribe?email=${encodeURIComponent(email)}`)
 		.then(res => res.json())
 		.then(data => {
 			if (data.success) setStatus("success");
@@ -24,7 +24,7 @@ export default function Unsubscribe() {
   }, []);
 
   return (
-    <div className="unsubscribe-container">
+	<div className="unsubscribe-container">
 		<div className="unsubscribe-card">
 			{status === "loading" && (
 			<div className="loading status-content">

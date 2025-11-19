@@ -117,91 +117,91 @@
 /* Responsive */
 @media (max-width: 1024px) {
   .trending-recipes-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .trending-recipes-section {
-    padding: 1.5rem;
-    margin: 2rem 0;
+	padding: 1.5rem;
+	margin: 2rem 0;
   }
 
   .trending-recipes-section h2 {
-    font-size: 1.4rem;
-    margin-bottom: 1.5rem;
+	font-size: 1.4rem;
+	margin-bottom: 1.5rem;
   }
 
   .trending-recipes-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 1rem;
   }
 
   .trending-recipe-image {
-    height: 150px;
+	height: 150px;
   }
 
   .trending-recipe-content {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .trending-recipe-content h3 {
-    font-size: 1rem;
+	font-size: 1rem;
   }
 
   .trending-recipe-content .recipe-type {
-    font-size: 0.8rem;
+	font-size: 0.8rem;
   }
 }
 
 @media (max-width: 600px) {
   .trending-recipes-section {
-    padding: 1rem;
-    margin: 1.5rem 0;
+	padding: 1rem;
+	margin: 1.5rem 0;
   }
 
   .trending-recipes-section h2 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+	padding-bottom: 0.75rem;
   }
 
   .trending-recipes-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+	grid-template-columns: 1fr;
+	gap: 1rem;
   }
 
   .trending-recipe-card {
-    flex-direction: row;
+	flex-direction: row;
   }
 
   .trending-recipe-image {
-    width: 120px;
-    height: 120px;
-    flex-shrink: 0;
+	width: 120px;
+	height: 120px;
+	flex-shrink: 0;
   }
 
   .trending-badge {
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
+	top: 0.5rem;
+	right: 0.5rem;
+	padding: 0.4rem 0.8rem;
+	font-size: 0.8rem;
   }
 
   .trending-recipe-content {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .trending-recipe-content h3 {
-    font-size: 0.95rem;
+	font-size: 0.95rem;
   }
 
   .trending-recipe-content .recipe-type {
-    font-size: 0.75rem;
+	font-size: 0.75rem;
   }
 
   .trending-recipe-content .recipe-time {
-    font-size: 0.85rem;
+	font-size: 0.85rem;
   }
 }

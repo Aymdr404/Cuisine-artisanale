@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "recettes-cuisine-a1bf2",
-    "recette": "recettes-cuisine-a1bf2"
+	"default": "recettes-cuisine-a1bf2",
+	"recette": "recettes-cuisine-a1bf2"
   },
   "targets": {},
   "etags": {}

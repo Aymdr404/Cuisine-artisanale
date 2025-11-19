@@ -41,9 +41,9 @@
 }
 
 .formUnits input[type="text"]:focus, .formUnits textarea:focus {
-  border-color: #4CAF50; 
+  border-color: #4CAF50;
   outline: none;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); 
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
 }
 
 .formUnits button {
@@ -146,19 +146,19 @@
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .add-unit-form {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .form-container {
-    gap: 1rem;
+	gap: 1rem;
   }
 
   .form-actions {
-    flex-direction: column;
+	flex-direction: column;
   }
 
   .form-actions .p-button {
-    width: 100%;
+	width: 100%;
   }
 }
 
@@ -216,15 +216,15 @@
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .add-unit-dialog {
-    width: 90vw;
+	width: 90vw;
   }
 
   .form-actions {
-    flex-direction: column-reverse;
+	flex-direction: column-reverse;
   }
 
   .form-actions .p-button {
-    width: 100%;
+	width: 100%;
   }
 }
 

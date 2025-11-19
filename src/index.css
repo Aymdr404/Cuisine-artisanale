@@ -92,30 +92,30 @@ button:focus-visible {
 /* Pour les très grands écrans (PC) */
 @media (min-width: 1200px) {
   :root{
-    --container-width: 1200px;
+	--container-width: 1200px;
   }
   .wrapper {
-    padding: 1rem 2rem;
+	padding: 1rem 2rem;
   }
 }
 
 /* Pour les tablettes et petits écrans */
 @media (min-width: 768px) and (max-width: 1199px) {
   :root{
-    --container-width: 768px;
+	--container-width: 768px;
   }
   .wrapper {
-    padding: 1rem 1.5rem;
+	padding: 1rem 1.5rem;
   }
 }
 
 @media (max-width: 767px) {
   :root{
-    --container-width: 100%;
+	--container-width: 100%;
   }
   .wrapper {
-    padding: 0;
-    margin-top: 4rem;
+	padding: 0;
+	margin-top: 4rem;
   }
 }
 
@@ -127,6 +127,6 @@ button:focus-visible {
 
 @media (max-width: 768px) {
   .Home {
-    background-color: #00000000;
+	background-color: #00000000;
   }
 }

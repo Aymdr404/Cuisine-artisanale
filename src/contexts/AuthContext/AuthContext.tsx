@@ -21,90 +21,90 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<string | null>(null);
 
   const fetchUserRole = async (userId: string) => {
-    const db = getFirestore();
-    const userRef = doc(db, "users", userId);
-    const userDoc = await getDoc(userRef);
-    if (userDoc.exists()) {
-      return userDoc.data().role;
-    }
-    return null;
+	const db = getFirestore();
+	const userRef = doc(db, "users", userId);
+	const userDoc = await getDoc(userRef);
+	if (userDoc.exists()) {
+	  return userDoc.data().role;
+	}
+	return null;
   };
 
   const createUserInFirestore = async (userId: string, email: string) => {
-    const db = getFirestore();
-    const userRef = doc(db, "users", userId);
-    await setDoc(userRef, {
-      email: email,
-      role: "user",
-      createdAt: new Date(),
-    });
+	const db = getFirestore();
+	const userRef = doc(db, "users", userId);
+	await setDoc(userRef, {
+	  email: email,
+	  role: "user",
+	  createdAt: new Date(),
+	});
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      try {
-        if (currentUser) {
-          setUser(currentUser);
+	const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+	  try {
+		if (currentUser) {
+		  setUser(currentUser);
 
-          const userRole = await fetchUserRole(currentUser.uid);
+		  const userRole = await fetchUserRole(currentUser.uid);
 
-          if (!userRole) {
-            await createUserInFirestore(currentUser.uid, currentUser.email || "");
-            setRole("user");
-          } else {
-            setRole(userRole);
-          }
-        } else {
-          setUser(null);
-          setRole(null);
-        }
-      } catch (err) {
-        console.error("Error in auth state change:", err);
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    });
+		  if (!userRole) {
+			await createUserInFirestore(currentUser.uid, currentUser.email || "");
+			setRole("user");
+		  } else {
+			setRole(userRole);
+		  }
+		} else {
+		  setUser(null);
+		  setRole(null);
+		}
+	  } catch (err) {
+		console.error("Error in auth state change:", err);
+		setError(err instanceof Error ? err.message : "An error occurred");
+	  } finally {
+		setLoading(false);
+	  }
+	});
 
-    return () => unsubscribe();
+	return () => unsubscribe();
   }, []);
 
   const logout = async () => {
-    try {
-      setError(null);
-      await signOut(auth);
-      setRole(null);
-      window.location.href = "/Cuisine-artisanale/";
-    } catch (err) {
-      console.error("Error signing out:", err);
-      setError(err instanceof Error ? err.message : "Error signing out");
-    }
+	try {
+	  setError(null);
+	  await signOut(auth);
+	  setRole(null);
+	  window.location.href = "/Cuisine-artisanale/";
+	} catch (err) {
+	  console.error("Error signing out:", err);
+	  setError(err instanceof Error ? err.message : "Error signing out");
+	}
   };
 
   const signInWithGoogle = async () => {
-    try {
-      setError(null);
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
+	try {
+	  setError(null);
+	  const provider = new GoogleAuthProvider();
+	  const result = await signInWithPopup(auth, provider);
 
-      if (result.user) {
-        const userRole = await fetchUserRole(result.user.uid);
-        if (!userRole) {
-          await createUserInFirestore(result.user.uid, result.user.email || "");
-          setRole("user");
-        }
-      }
-    } catch (err) {
-      console.error("Error signing in with Google:", err);
-      setError(err instanceof Error ? err.message : "Error signing in with Google");
-      throw err;
-    }
+	  if (result.user) {
+		const userRole = await fetchUserRole(result.user.uid);
+		if (!userRole) {
+		  await createUserInFirestore(result.user.uid, result.user.email || "");
+		  setRole("user");
+		}
+	  }
+	} catch (err) {
+	  console.error("Error signing in with Google:", err);
+	  setError(err instanceof Error ? err.message : "Error signing in with Google");
+	  throw err;
+	}
   };
 
   return (
-    <AuthContext.Provider value={{ user, role, logout, signInWithGoogle, loading, error }}>
-      {children}
-    </AuthContext.Provider>
+	<AuthContext.Provider value={{ user, role, logout, signInWithGoogle, loading, error }}>
+	  {children}
+	</AuthContext.Provider>
   );
 };
 

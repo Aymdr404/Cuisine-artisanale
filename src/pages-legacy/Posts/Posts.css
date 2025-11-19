@@ -96,36 +96,36 @@
 
 @keyframes spin {
   100% {
-    transform: rotate(360deg);
+	transform: rotate(360deg);
   }
 }
 
 @media screen and (max-width: 1024px) {
   .Posts {
-    padding: 1.5rem;
-    gap: 1.5rem;
+	padding: 1.5rem;
+	gap: 1.5rem;
   }
 }
 
 @media screen and (max-width: 768px) {
   .Posts {
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem;
+	flex-direction: column;
+	padding: 1rem;
+	gap: 1rem;
   }
 
   .AddPost_section {
-    position: static;
+	position: static;
   }
 
   .LoadMore_section {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .scroll-top-button {
-    bottom: 5.5rem;
-    right: 1rem;
-    width: 2.5rem;
-    height: 2.5rem;
+	bottom: 5.5rem;
+	right: 1rem;
+	width: 2.5rem;
+	height: 2.5rem;
   }
 }

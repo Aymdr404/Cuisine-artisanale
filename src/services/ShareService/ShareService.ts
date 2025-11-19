@@ -20,26 +20,26 @@ export const shareRecipe = async (options: ShareOptions): Promise<void> => {
 
   // Vérifier si l'API Web Share est disponible
   if (navigator.share) {
-    try {
-      await navigator.share({
-        title,
-        text: description,
-        url: shareUrl,
-      });
-      return;
-    } catch (error: any) {
-      // L'utilisateur a annulé le partage
-      if (error.name !== "AbortError") {
-        console.error("Erreur lors du partage:", error);
-      }
-    }
+	try {
+	  await navigator.share({
+		title,
+		text: description,
+		url: shareUrl,
+	  });
+	  return;
+	} catch (error: any) {
+	  // L'utilisateur a annulé le partage
+	  if (error.name !== "AbortError") {
+		console.error("Erreur lors du partage:", error);
+	  }
+	}
   }
 
   // Fallback : copier le lien actuel dans le presse-papiers
   try {
-    await navigator.clipboard.writeText(shareUrl);
+	await navigator.clipboard.writeText(shareUrl);
   } catch (error) {
-    console.error("Erreur lors de la copie du lien:", error);
-    throw new Error("Impossible de partager la recette");
+	console.error("Erreur lors de la copie du lien:", error);
+	throw new Error("Impossible de partager la recette");
   }
 };

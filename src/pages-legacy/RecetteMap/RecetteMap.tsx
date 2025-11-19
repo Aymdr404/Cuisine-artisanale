@@ -24,11 +24,11 @@ interface Recette {
 
 interface DepartementFeature {
   properties: {
-    nom: string;
-    code: string;
+	nom: string;
+	code: string;
   };
   geometry: {
-    coordinates: number[][][];
+	coordinates: number[][][];
   };
 }
 
@@ -43,41 +43,41 @@ const RecetteMap: React.FC = () => {
   const router = useRouter();
 
   const recetteTypes = useMemo(() => [
-    { label: 'Tous les types', value: null },
-    { label: 'Entrée', value: 'Entrée' },
-    { label: 'Plat', value: 'Plat' },
-    { label: 'Dessert', value: 'Dessert' },
-    { label: 'Boisson', value: 'Boisson' },
+	{ label: 'Tous les types', value: null },
+	{ label: 'Entrée', value: 'Entrée' },
+	{ label: 'Plat', value: 'Plat' },
+	{ label: 'Dessert', value: 'Dessert' },
+	{ label: 'Boisson', value: 'Boisson' },
   ], []);
 
   const departements = useMemo(() => {
-    const depts = geojsonData.features.map(feature => ({
-      label: feature.properties.nom,
-      value: feature.properties.code
-    }));
-    return [{ label: 'Tous les départements', value: null }, ...depts];
+	const depts = geojsonData.features.map(feature => ({
+	  label: feature.properties.nom,
+	  value: feature.properties.code
+	}));
+	return [{ label: 'Tous les départements', value: null }, ...depts];
   }, []);
 
   useEffect(() => {
-    fetchRecettes();
+	fetchRecettes();
   }, []);
 
   const fetchRecettes = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "recipes"));
-      const recettesData: Recette[] = querySnapshot.docs.map((doc) => ({
-        title: doc.data().title,
-        description: doc.data().description,
-        position: doc.data().position,
-        recetteId: doc.id,
-        type: doc.data().type,
-        images: doc.data().images ?? [],
-        url: doc.data().url,
-      }));
-      setRecettes(recettesData);
-    } catch (error) {
-      console.error("Error getting recettes:", error);
-    }
+	try {
+	  const querySnapshot = await getDocs(collection(db, "recipes"));
+	  const recettesData: Recette[] = querySnapshot.docs.map((doc) => ({
+		title: doc.data().title,
+		description: doc.data().description,
+		position: doc.data().position,
+		recetteId: doc.id,
+		type: doc.data().type,
+		images: doc.data().images ?? [],
+		url: doc.data().url,
+	  }));
+	  setRecettes(recettesData);
+	} catch (error) {
+	  console.error("Error getting recettes:", error);
+	}
   };
 
 	function levenshtein(a: string, b: string): number {
@@ -92,8 +92,8 @@ const RecetteMap: React.FC = () => {
 			} else {
 				matrix[i][j] = Math.min(
 				matrix[i - 1][j - 1] + 1, // substitution
-				matrix[i][j - 1] + 1,     // insertion
-				matrix[i - 1][j] + 1      // suppression
+				matrix[i][j - 1] + 1,	 // insertion
+				matrix[i - 1][j] + 1	  // suppression
 				);
 			}
 			}
@@ -154,159 +154,159 @@ const RecetteMap: React.FC = () => {
 
 
   const getDepartementPolygon = (departementName: string): [number, number][] => {
-    const departement = geojsonData.features.find(
-      (feature) => feature.properties.nom === departementName
-    ) as DepartementFeature | undefined;
+	const departement = geojsonData.features.find(
+	  (feature) => feature.properties.nom === departementName
+	) as DepartementFeature | undefined;
 
-    return departement
-      ? departement.geometry.coordinates[0].map((coord) => [coord[1], coord[0]])
-      : [];
+	return departement
+	  ? departement.geometry.coordinates[0].map((coord) => [coord[1], coord[0]])
+	  : [];
   };
 
   const createMarkerIcon = (isHovered: boolean) => {
-    const radius = isHovered ? 20 : 8;
-    return L.divIcon({
-      html: `
-        <div class="custom-marker ${isHovered ? 'hovered' : ''}"
-             style="width: ${radius * 2}px; height: ${radius * 2}px;">
-        </div>
-      `,
-      className: '',
-      iconSize: [radius * 2, radius * 2],
-      iconAnchor: [radius, radius],
-    });
+	const radius = isHovered ? 20 : 8;
+	return L.divIcon({
+	  html: `
+		<div class="custom-marker ${isHovered ? 'hovered' : ''}"
+			 style="width: ${radius * 2}px; height: ${radius * 2}px;">
+		</div>
+	  `,
+	  className: '',
+	  iconSize: [radius * 2, radius * 2],
+	  iconAnchor: [radius, radius],
+	});
   };
 
   return (
-    <div className="recipe-map-container">
-      <aside className="recipe-sidebar">
-        <header className="sidebar-header">
-          <h2>Découvrez nos recettes</h2>
-          <div className="search-filters">
-            <span className="p-input-icon-left">
-              <i className="pi pi-search" />
-              <InputText
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Rechercher une recette..."
-              />
-            </span>
-            <Dropdown
-              value={selectedType}
-              options={recetteTypes}
-              onChange={(e) => setSelectedType(e.value)}
-              placeholder="Type de plat"
-              className="filter-dropdown"
-            />
-            <Dropdown
-              value={selectedDepartement}
-              options={departements}
-              onChange={(e) => setSelectedDepartement(e.value)}
-              placeholder="Département"
-              className="filter-dropdown"
-            />
-          </div>
-        </header>
+	<div className="recipe-map-container">
+	  <aside className="recipe-sidebar">
+		<header className="sidebar-header">
+		  <h2>Découvrez nos recettes</h2>
+		  <div className="search-filters">
+			<span className="p-input-icon-left">
+			  <i className="pi pi-search" />
+			  <InputText
+				value={searchTerm}
+				onChange={(e) => setSearchTerm(e.target.value)}
+				placeholder="Rechercher une recette..."
+			  />
+			</span>
+			<Dropdown
+			  value={selectedType}
+			  options={recetteTypes}
+			  onChange={(e) => setSelectedType(e.value)}
+			  placeholder="Type de plat"
+			  className="filter-dropdown"
+			/>
+			<Dropdown
+			  value={selectedDepartement}
+			  options={departements}
+			  onChange={(e) => setSelectedDepartement(e.value)}
+			  placeholder="Département"
+			  className="filter-dropdown"
+			/>
+		  </div>
+		</header>
 
-        <div className="recipe-list">
-          {filteredRecettes.length === 0 ? (
-            <div className="no-results">
-              <i className="pi pi-info-circle" />
-              <p>Aucune recette ne correspond à votre recherche</p>
-            </div>
-          ) : (
-            <ul>
-              {filteredRecettes.map((recette) => (
-                <li
-                  key={recette.recetteId}
-                  className={`recipe-item ${hoveredRecette === recette.recetteId ? 'hovered' : ''}`}
-                  onMouseEnter={() => setHoveredRecette(recette.recetteId)}
-                  onMouseLeave={() => setHoveredRecette(null)}
-                  onClick={() => router.push(`/recettes?id=${recette.recetteId}`)}
-                >
-                  <div className="recipe-item-content">
-                    {recette.images?.[0] && (
-                      <div className="recipe-thumbnail">
-                        <img src={recette.images[0]} alt={recette.title} />
-                      </div>
-                    )}
-                    <div className="recipe-info">
-                      <h3>{recette.title}</h3>
-                      <span className="recipe-type">{recette.type}</span>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </aside>
+		<div className="recipe-list">
+		  {filteredRecettes.length === 0 ? (
+			<div className="no-results">
+			  <i className="pi pi-info-circle" />
+			  <p>Aucune recette ne correspond à votre recherche</p>
+			</div>
+		  ) : (
+			<ul>
+			  {filteredRecettes.map((recette) => (
+				<li
+				  key={recette.recetteId}
+				  className={`recipe-item ${hoveredRecette === recette.recetteId ? 'hovered' : ''}`}
+				  onMouseEnter={() => setHoveredRecette(recette.recetteId)}
+				  onMouseLeave={() => setHoveredRecette(null)}
+				  onClick={() => router.push(`/recettes?id=${recette.recetteId}`)}
+				>
+				  <div className="recipe-item-content">
+					{recette.images?.[0] && (
+					  <div className="recipe-thumbnail">
+						<img src={recette.images[0]} alt={recette.title} />
+					  </div>
+					)}
+					<div className="recipe-info">
+					  <h3>{recette.title}</h3>
+					  <span className="recipe-type">{recette.type}</span>
+					</div>
+				  </div>
+				</li>
+			  ))}
+			</ul>
+		  )}
+		</div>
+	  </aside>
 
-      <main className="map-section">
-        <MapContainer
-          center={[46.603354, 1.888334]}
-          zoom={6}
-          scrollWheelZoom={false}
-          className="map-container"
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+	  <main className="map-section">
+		<MapContainer
+		  center={[46.603354, 1.888334]}
+		  zoom={6}
+		  scrollWheelZoom={false}
+		  className="map-container"
+		>
+		  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {geojsonData.features.map((departement, index) => (
-            <Polygon
-              key={index}
-              positions={getDepartementPolygon(departement.properties.nom)}
-              pathOptions={{
-                color: selectedDepartement === departement.properties.code ? '#ff7800' : '#3388ff',
-                weight: selectedDepartement === departement.properties.code ? 2 : 1,
-                fillOpacity: 0.2
-              }}
-            >
-              <Popup>{departement.properties.nom}</Popup>
-            </Polygon>
-          ))}
+		  {geojsonData.features.map((departement, index) => (
+			<Polygon
+			  key={index}
+			  positions={getDepartementPolygon(departement.properties.nom)}
+			  pathOptions={{
+				color: selectedDepartement === departement.properties.code ? '#ff7800' : '#3388ff',
+				weight: selectedDepartement === departement.properties.code ? 2 : 1,
+				fillOpacity: 0.2
+			  }}
+			>
+			  <Popup>{departement.properties.nom}</Popup>
+			</Polygon>
+		  ))}
 
-          {filteredRecettes.map((recette) => {
-            const coordEntry = Object.entries(departementsCoordinates).find(
-              ([code]) => code === recette.position
-            );
-            if (!coordEntry) return null;
+		  {filteredRecettes.map((recette) => {
+			const coordEntry = Object.entries(departementsCoordinates).find(
+			  ([code]) => code === recette.position
+			);
+			if (!coordEntry) return null;
 
-            const coord = coordEntry[1] as [number, number];
-            if (!Array.isArray(coord) || coord.length !== 2) return null;
+			const coord = coordEntry[1] as [number, number];
+			if (!Array.isArray(coord) || coord.length !== 2) return null;
 
-            return (
-              <Marker
-                key={recette.recetteId}
-                position={coord}
-                icon={createMarkerIcon(hoveredRecette === recette.recetteId)}
-                eventHandlers={{
-                  mouseover: () => setHoveredRecette(recette.recetteId),
-                  mouseout: () => setHoveredRecette(null),
-                }}
-              >
-                <Popup>
-                  <div className="recipe-popup">
-                    {recette.images?.[0] && (
-                      <img src={recette.images[0]} alt={recette.title} />
-                    )}
-                    <h3>{recette.title}</h3>
-                    <p className="recipe-type">{recette.type}</p>
-                    {recette.description && (
-                      <p className="recipe-description">{recette.description}</p>
-                    )}
-                    <Button
-                      icon="pi pi-eye"
-                      label="Voir la recette"
-                      onClick={() => router.push(`/recettes?id=${recette.recetteId}`)}
-                    />
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          })}
-        </MapContainer>
-      </main>
-    </div>
+			return (
+			  <Marker
+				key={recette.recetteId}
+				position={coord}
+				icon={createMarkerIcon(hoveredRecette === recette.recetteId)}
+				eventHandlers={{
+				  mouseover: () => setHoveredRecette(recette.recetteId),
+				  mouseout: () => setHoveredRecette(null),
+				}}
+			  >
+				<Popup>
+				  <div className="recipe-popup">
+					{recette.images?.[0] && (
+					  <img src={recette.images[0]} alt={recette.title} />
+					)}
+					<h3>{recette.title}</h3>
+					<p className="recipe-type">{recette.type}</p>
+					{recette.description && (
+					  <p className="recipe-description">{recette.description}</p>
+					)}
+					<Button
+					  icon="pi pi-eye"
+					  label="Voir la recette"
+					  onClick={() => router.push(`/recettes?id=${recette.recetteId}`)}
+					/>
+				  </div>
+				</Popup>
+			  </Marker>
+			);
+		  })}
+		</MapContainer>
+	  </main>
+	</div>
   );
 };
 

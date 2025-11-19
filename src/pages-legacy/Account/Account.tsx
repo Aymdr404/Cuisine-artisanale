@@ -17,21 +17,21 @@ const Account: React.FC<AccountProps> = ({ children }) => {
   const pathname = usePathname();
 
   const navigationItems = [
-    {
-      href: '/account',
-      label: 'Mon Profil',
-      icon: 'pi pi-user'
-    },
-    {
-      href: '/account/mes-recettes',
-      label: 'Mes Recettes',
-      icon: 'pi pi-book'
-    },
-    {
-      href: '/account/mes-favoris',
-      label: 'Mes Favoris',
-      icon: 'pi pi-heart'
-    }
+	{
+	  href: '/account',
+	  label: 'Mon Profil',
+	  icon: 'pi pi-user'
+	},
+	{
+	  href: '/account/mes-recettes',
+	  label: 'Mes Recettes',
+	  icon: 'pi pi-book'
+	},
+	{
+	  href: '/account/mes-favoris',
+	  label: 'Mes Favoris',
+	  icon: 'pi pi-heart'
+	}
   ];
 
 	if (!user) {

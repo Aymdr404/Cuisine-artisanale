@@ -10,17 +10,17 @@ const LegalMention: React.FC = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    setIsAboutPage(pathname === '/about');
+	setIsAboutPage(pathname === '/about');
   }, [pathname]);
 
   return (
-    <div className="LegalMention">
-      <header className="legalMention-header">
-        <Link href="/mentions-legales">Mentions légales / ©Aymeric Sabatier</Link>
-        <Link href="/politique-confidentialite">Politique de confidentialité / ©Aymeric Sabatier</Link>
-        {!isAboutPage && <LienUtiles />}
-      </header>
-    </div>
+	<div className="LegalMention">
+	  <header className="legalMention-header">
+		<Link href="/mentions-legales">Mentions légales / ©Aymeric Sabatier</Link>
+		<Link href="/politique-confidentialite">Politique de confidentialité / ©Aymeric Sabatier</Link>
+		{!isAboutPage && <LienUtiles />}
+	  </header>
+	</div>
   );
 };
 

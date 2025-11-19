@@ -68,7 +68,7 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
 			return;
 		}
 
-    	setLoading(true);
+		setLoading(true);
 
 		try {
 			const docRef = await addDoc(collection(db, 'ingredients'), {
@@ -115,24 +115,24 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ visible, onHide, 
   };
 
   const fetchUnits = async () => {
-    try {
-      const unitsQuery = query(collection(db, 'units'));
-      const querySnapshot = await getDocs(unitsQuery);
-      const unitsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Unit[];
+	try {
+	  const unitsQuery = query(collection(db, 'units'));
+	  const querySnapshot = await getDocs(unitsQuery);
+	  const unitsData = querySnapshot.docs.map((doc) => ({
+		id: doc.id,
+		...doc.data()
+	  })) as Unit[];
 
-      setUnits(unitsData);
-    } catch (error) {
-      console.error('Error fetching units:', error);
-      showToast({
-        severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible de charger les unités',
-        life: 3000
-      });
-    }
+	  setUnits(unitsData);
+	} catch (error) {
+	  console.error('Error fetching units:', error);
+	  showToast({
+		severity: 'error',
+		summary: 'Erreur',
+		detail: 'Impossible de charger les unités',
+		life: 3000
+	  });
+	}
   };
 
 	useEffect(() => {

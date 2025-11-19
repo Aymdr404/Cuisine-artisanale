@@ -4,10 +4,10 @@ import { showToast } from '@/utils/toast';
 
 interface ToastContextType {
   showToast: (options: {
-    severity: 'success' | 'info' | 'warn' | 'error';
-    summary: string;
-    detail: string;
-    life?: number;
+	severity: 'success' | 'info' | 'warn' | 'error';
+	summary: string;
+	detail: string;
+	life?: number;
   }) => void;
 }
 
@@ -17,26 +17,26 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const toast = useRef<Toast>(null);
 
   const showGlobalToast = (options: {
-    severity: 'success' | 'info' | 'warn' | 'error';
-    summary: string;
-    detail: string;
-    life?: number;
+	severity: 'success' | 'info' | 'warn' | 'error';
+	summary: string;
+	detail: string;
+	life?: number;
   }) => {
-    showToast(toast, options);
+	showToast(toast, options);
   };
 
   return (
-    <ToastContext.Provider value={{ showToast: showGlobalToast }}>
-      {children}
-      <Toast ref={toast} />
-    </ToastContext.Provider>
+	<ToastContext.Provider value={{ showToast: showGlobalToast }}>
+	  {children}
+	  <Toast ref={toast} />
+	</ToastContext.Provider>
   );
 };
 
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (context === undefined) {
-    throw new Error('useToast must be used within a ToastProvider');
+	throw new Error('useToast must be used within a ToastProvider');
   }
   return context;
-}; 
+};

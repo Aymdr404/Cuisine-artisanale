@@ -15,8 +15,8 @@ console.log('📦 Préparation du preview local...\n');
 try {
   // Supprimer le dossier temp s'il existe
   if (existsSync(TEMP_DIR)) {
-    console.log('🗑️  Nettoyage du dossier temporaire...');
-    rmSync(TEMP_DIR, { recursive: true, force: true });
+	console.log('🗑️  Nettoyage du dossier temporaire...');
+	rmSync(TEMP_DIR, { recursive: true, force: true });
   }
 
   // Créer la structure temp-serve/Cuisine-artisanale

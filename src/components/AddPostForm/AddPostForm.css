@@ -68,53 +68,53 @@
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
+	opacity: 0;
   }
   to {
-    opacity: 1;
+	opacity: 1;
   }
 }
 
 @media screen and (max-width: 768px) {
   .AddPostForm {
-    padding: 0;
-    align-items: flex-end;
+	padding: 0;
+	align-items: flex-end;
   }
 
   .formPost {
-    max-width: 100%;
-    margin: 0;
-    border-radius: 1.5rem 1.5rem 0 0;
-    padding: 1.25rem;
-    animation: slideUp 0.2s ease;
+	max-width: 100%;
+	margin: 0;
+	border-radius: 1.5rem 1.5rem 0 0;
+	padding: 1.25rem;
+	animation: slideUp 0.2s ease;
   }
 
   .formPost h3 {
-    font-size: 1.125rem;
-    margin-bottom: 0.75rem;
+	font-size: 1.125rem;
+	margin-bottom: 0.75rem;
   }
 
   .formPost > div {
-    margin-bottom: 0.75rem;
+	margin-bottom: 0.75rem;
   }
 
   .formPost .p-inputtextarea {
-    min-height: 80px;
+	min-height: 80px;
   }
 
   .buttons-form {
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-    padding-top: 0.75rem;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-top: 1.25rem;
+	padding-top: 0.75rem;
   }
 
   @keyframes slideUp {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
+	from {
+	  transform: translateY(100%);
+	}
+	to {
+	  transform: translateY(0);
+	}
   }
 }

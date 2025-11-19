@@ -27,8 +27,8 @@ if (!fs.existsSync(indexPath)) {
 // Copier index.html en 404.html
 fs.copyFile(indexPath, notFoundPath, (err) => {
   if (err) {
-    console.error("❌ Erreur lors de la copie de index.html -> 404.html :", err);
+	console.error("❌ Erreur lors de la copie de index.html -> 404.html :", err);
   } else {
-    console.log(`✅ 404.html créé avec succès dans ${distDir}`);
+	console.log(`✅ 404.html créé avec succès dans ${distDir}`);
   }
 });

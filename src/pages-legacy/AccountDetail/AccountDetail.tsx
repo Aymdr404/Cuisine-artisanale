@@ -10,12 +10,12 @@ const AccountDetail: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <div className="AccountDetail">
-      <h2>Bienvenue {user?.displayName}</h2>
-      <p>Vous pouvez modifier vos informations personnelles ici</p>
+	<div className="AccountDetail">
+	  <h2>Bienvenue {user?.displayName}</h2>
+	  <p>Vous pouvez modifier vos informations personnelles ici</p>
 
-      <PersonalizedRecommendations />
-    </div>
+	  <PersonalizedRecommendations />
+	</div>
   );
 };
 

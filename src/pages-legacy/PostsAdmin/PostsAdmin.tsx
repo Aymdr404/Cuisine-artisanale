@@ -32,281 +32,281 @@ const PostsAdmin: React.FC = () => {
   const { showToast } = useToast();
 
   const sortOptions = [
-    { label: 'Plus récent', value: 'createdAt:desc' },
-    { label: 'Plus ancien', value: 'createdAt:asc' },
-    { label: 'Titre A-Z', value: 'title:asc' },
-    { label: 'Titre Z-A', value: 'title:desc' }
+	{ label: 'Plus récent', value: 'createdAt:desc' },
+	{ label: 'Plus ancien', value: 'createdAt:asc' },
+	{ label: 'Titre A-Z', value: 'title:asc' },
+	{ label: 'Titre Z-A', value: 'title:desc' }
   ];
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString("fr-FR", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+	return date.toLocaleDateString("fr-FR", {
+	  weekday: "long",
+	  year: "numeric",
+	  month: "long",
+	  day: "numeric",
+	  hour: "2-digit",
+	  minute: "2-digit"
+	});
   };
 
   const handleFetchPosts = () => {
-    try {
-      setLoading(true);
-      const postsQuery = query(
-        collection(db, "postsRequest"),
-        orderBy("createdAt", "desc")
-      );
+	try {
+	  setLoading(true);
+	  const postsQuery = query(
+		collection(db, "postsRequest"),
+		orderBy("createdAt", "desc")
+	  );
 
-      const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
-        const postsData: Post[] = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title,
-            content: data.content,
-            createdAt: data.createdAt?.toDate(),
-            author: data.author,
-            status: data.status
-          } as Post;
-        });
+	  const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+		const postsData: Post[] = querySnapshot.docs.map((doc) => {
+		  const data = doc.data();
+		  return {
+			id: doc.id,
+			title: data.title,
+			content: data.content,
+			createdAt: data.createdAt?.toDate(),
+			author: data.author,
+			status: data.status
+		  } as Post;
+		});
 
-        setPosts(postsData);
-        setLoading(false);
-      }, (error) => {
-        console.error("Error getting posts:", error);
-        showToast({
-          severity: 'error',
-          summary: toastMessages.error.default,
-          detail: 'Impossible de charger les posts'
-        });
-        setLoading(false);
-      });
+		setPosts(postsData);
+		setLoading(false);
+	  }, (error) => {
+		console.error("Error getting posts:", error);
+		showToast({
+		  severity: 'error',
+		  summary: toastMessages.error.default,
+		  detail: 'Impossible de charger les posts'
+		});
+		setLoading(false);
+	  });
 
-      return unsubscribe;
-    } catch (error) {
-      console.error("Error in handleFetchPosts:", error);
-      setLoading(false);
-      return () => {};
-    }
+	  return unsubscribe;
+	} catch (error) {
+	  console.error("Error in handleFetchPosts:", error);
+	  setLoading(false);
+	  return () => {};
+	}
   };
 
   useEffect(() => {
-    const unsubscribe = handleFetchPosts();
-    return () => unsubscribe();
+	const unsubscribe = handleFetchPosts();
+	return () => unsubscribe();
   }, []);
 
   const handleAcceptPost = async (post: Post) => {
-    try {
-      // Add to posts collection
-      await addDoc(collection(db, 'posts'), {
-        title: post.title,
-        content: post.content,
-        createdAt: new Date(),
-        likes: []
-      });
+	try {
+	  // Add to posts collection
+	  await addDoc(collection(db, 'posts'), {
+		title: post.title,
+		content: post.content,
+		createdAt: new Date(),
+		likes: []
+	  });
 
-      // Delete from postsRequest
-      await deleteDoc(doc(db, 'postsRequest', post.id));
+	  // Delete from postsRequest
+	  await deleteDoc(doc(db, 'postsRequest', post.id));
 
-      showToast({
-        severity: 'success',
-        summary: toastMessages.success.default,
-        detail: toastMessages.success.accept
-      });
-    } catch (error) {
-      console.error('Error accepting post:', error);
-      showToast({
-        severity: 'error',
-        summary: toastMessages.error.default,
-        detail: toastMessages.error.accept
-      });
-    }
+	  showToast({
+		severity: 'success',
+		summary: toastMessages.success.default,
+		detail: toastMessages.success.accept
+	  });
+	} catch (error) {
+	  console.error('Error accepting post:', error);
+	  showToast({
+		severity: 'error',
+		summary: toastMessages.error.default,
+		detail: toastMessages.error.accept
+	  });
+	}
   };
 
   const handleRejectPost = async (postId: string) => {
-    try {
-      await deleteDoc(doc(db, 'postsRequest', postId));
-      showToast({
-        severity: 'info',
-        summary: toastMessages.info.default,
-        detail: toastMessages.info.reject
-      });
-    } catch (error) {
-      console.error('Error rejecting post:', error);
-      showToast({
-        severity: 'error',
-        summary: toastMessages.error.default,
-        detail: toastMessages.error.reject
-      });
-    }
+	try {
+	  await deleteDoc(doc(db, 'postsRequest', postId));
+	  showToast({
+		severity: 'info',
+		summary: toastMessages.info.default,
+		detail: toastMessages.info.reject
+	  });
+	} catch (error) {
+	  console.error('Error rejecting post:', error);
+	  showToast({
+		severity: 'error',
+		summary: toastMessages.error.default,
+		detail: toastMessages.error.reject
+	  });
+	}
   };
 
   const confirmReject = (post: Post) => {
-    confirmDialog({
-      message: `Êtes-vous sûr de vouloir rejeter le post "${post.title}" ?`,
-      header: 'Confirmation de rejet',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Oui',
-      rejectLabel: 'Non',
-      accept: () => handleRejectPost(post.id)
-    });
+	confirmDialog({
+	  message: `Êtes-vous sûr de vouloir rejeter le post "${post.title}" ?`,
+	  header: 'Confirmation de rejet',
+	  icon: 'pi pi-exclamation-triangle',
+	  acceptLabel: 'Oui',
+	  rejectLabel: 'Non',
+	  accept: () => handleRejectPost(post.id)
+	});
   };
 
   const confirmAccept = (post: Post) => {
-    confirmDialog({
-      message: `Êtes-vous sûr de vouloir accepter et publier le post "${post.title}" ?`,
-      header: 'Confirmation de publication',
-      icon: 'pi pi-check-circle',
-      acceptLabel: 'Oui',
-      rejectLabel: 'Non',
-      accept: () => handleAcceptPost(post)
-    });
+	confirmDialog({
+	  message: `Êtes-vous sûr de vouloir accepter et publier le post "${post.title}" ?`,
+	  header: 'Confirmation de publication',
+	  icon: 'pi pi-check-circle',
+	  acceptLabel: 'Oui',
+	  rejectLabel: 'Non',
+	  accept: () => handleAcceptPost(post)
+	});
   };
 
   const confirmDelete = (postId: string, title: string) => {
-    confirmDialog({
-      message: `Êtes-vous sûr de vouloir supprimer le post "${title}" ?`,
-      header: 'Confirmation de suppression',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Oui',
-      rejectLabel: 'Non',
-      accept: () => handleDelete(postId)
-    });
+	confirmDialog({
+	  message: `Êtes-vous sûr de vouloir supprimer le post "${title}" ?`,
+	  header: 'Confirmation de suppression',
+	  icon: 'pi pi-exclamation-triangle',
+	  acceptLabel: 'Oui',
+	  rejectLabel: 'Non',
+	  accept: () => handleDelete(postId)
+	});
   };
 
   const handleDelete = async (postId: string) => {
-    try {
-      await deleteDoc(doc(db, 'posts', postId));
-      showToast({
-        severity: 'success',
-        summary: toastMessages.success.default,
-        detail: toastMessages.success.delete
-      });
-    } catch (error) {
-      console.error('Erreur de suppression:', error);
-      showToast({
-        severity: 'error',
-        summary: toastMessages.error.default,
-        detail: toastMessages.error.delete
-      });
-    }
+	try {
+	  await deleteDoc(doc(db, 'posts', postId));
+	  showToast({
+		severity: 'success',
+		summary: toastMessages.success.default,
+		detail: toastMessages.success.delete
+	  });
+	} catch (error) {
+	  console.error('Erreur de suppression:', error);
+	  showToast({
+		severity: 'error',
+		summary: toastMessages.error.default,
+		detail: toastMessages.error.delete
+	  });
+	}
   };
 
   const handleSortChange = (e: { value: string }) => {
-    const [field, order] = e.value.split(':');
-    setSortField(field);
-    setSortOrder(order as 'asc' | 'desc');
+	const [field, order] = e.value.split(':');
+	setSortField(field);
+	setSortOrder(order as 'asc' | 'desc');
   };
 
   const header = () => {
-    return (
-      <div className="posts-header">
-        <h2>Gestion des Posts</h2>
-        <div className="posts-header-actions">
-          <span className="p-input-icon-left">
-            <i className="pi pi-search" />
-            <InputText
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Rechercher..."
-            />
-          </span>
-          <Dropdown
-            value={`${sortField}:${sortOrder}`}
-            options={sortOptions}
-            onChange={handleSortChange}
-            className="sort-dropdown"
-          />
-        </div>
-      </div>
-    );
+	return (
+	  <div className="posts-header">
+		<h2>Gestion des Posts</h2>
+		<div className="posts-header-actions">
+		  <span className="p-input-icon-left">
+			<i className="pi pi-search" />
+			<InputText
+			  value={globalFilter}
+			  onChange={(e) => setGlobalFilter(e.target.value)}
+			  placeholder="Rechercher..."
+			/>
+		  </span>
+		  <Dropdown
+			value={`${sortField}:${sortOrder}`}
+			options={sortOptions}
+			onChange={handleSortChange}
+			className="sort-dropdown"
+		  />
+		</div>
+	  </div>
+	);
   };
 
 
   const itemTemplate = (post: Post) => {
-    const statusColors = {
-      pending: 'var(--warning-color)',
-      approved: 'var(--success-color)',
-      rejected: 'var(--danger-color)'
-    };
+	const statusColors = {
+	  pending: 'var(--warning-color)',
+	  approved: 'var(--success-color)',
+	  rejected: 'var(--danger-color)'
+	};
 
-    return (
-      <div className="post-card">
-        <div className="post-card-header">
-          <h3>{post.title}</h3>
-          <span
-            className="post-status"
-            style={{ backgroundColor: statusColors[post.status || 'pending'] }}
-          >
-            {post.status === 'pending' ? 'En attente' :
-             post.status === 'approved' ? 'Approuvé' : 'Rejeté'}
-          </span>
-        </div>
-        <div className="post-card-content">
-          <p>{post.content}</p>
-        </div>
-        <div className="post-card-footer">
-          <div className="post-info">
-            <span className="post-author">
-              <i className="pi pi-user" /> {post.author}
-            </span>
-            <span className="post-date">
-              <i className="pi pi-calendar" /> {formatDate(post.createdAt)}
-            </span>
-          </div>
-          <div className="post-actions">
-            <Button
-              icon="pi pi-check"
-              className="p-button-rounded p-button-success p-button-text"
-              onClick={() => confirmAccept(post)}
-              tooltip="Approuver"
-            />
-            <Button
-              icon="pi pi-times"
-              className="p-button-rounded p-button-warning p-button-text"
-              onClick={() => confirmReject(post)}
-              tooltip="Rejeter"
-            />
-            <Button
-              icon="pi pi-trash"
-              className="p-button-rounded p-button-danger p-button-text"
-              onClick={() => confirmDelete(post.id, post.title)}
-              tooltip="Supprimer"
-            />
-          </div>
-        </div>
-      </div>
-    );
+	return (
+	  <div className="post-card">
+		<div className="post-card-header">
+		  <h3>{post.title}</h3>
+		  <span
+			className="post-status"
+			style={{ backgroundColor: statusColors[post.status || 'pending'] }}
+		  >
+			{post.status === 'pending' ? 'En attente' :
+			 post.status === 'approved' ? 'Approuvé' : 'Rejeté'}
+		  </span>
+		</div>
+		<div className="post-card-content">
+		  <p>{post.content}</p>
+		</div>
+		<div className="post-card-footer">
+		  <div className="post-info">
+			<span className="post-author">
+			  <i className="pi pi-user" /> {post.author}
+			</span>
+			<span className="post-date">
+			  <i className="pi pi-calendar" /> {formatDate(post.createdAt)}
+			</span>
+		  </div>
+		  <div className="post-actions">
+			<Button
+			  icon="pi pi-check"
+			  className="p-button-rounded p-button-success p-button-text"
+			  onClick={() => confirmAccept(post)}
+			  tooltip="Approuver"
+			/>
+			<Button
+			  icon="pi pi-times"
+			  className="p-button-rounded p-button-warning p-button-text"
+			  onClick={() => confirmReject(post)}
+			  tooltip="Rejeter"
+			/>
+			<Button
+			  icon="pi pi-trash"
+			  className="p-button-rounded p-button-danger p-button-text"
+			  onClick={() => confirmDelete(post.id, post.title)}
+			  tooltip="Supprimer"
+			/>
+		  </div>
+		</div>
+	  </div>
+	);
   };
 
   if (loading) {
-    return (
-      <div className="loading-container">
-        <ProgressSpinner />
-        <p>Chargement des posts...</p>
-      </div>
-    );
+	return (
+	  <div className="loading-container">
+		<ProgressSpinner />
+		<p>Chargement des posts...</p>
+	  </div>
+	);
   }
 
   return (
-    <div className="posts-admin">
-      <Toast ref={toast} />
-      <ConfirmDialog />
+	<div className="posts-admin">
+	  <Toast ref={toast} />
+	  <ConfirmDialog />
 
-      <DataView
-        value={posts.filter(post =>
-          post.title.toLowerCase().includes(globalFilter.toLowerCase()) ||
-          post.content.toLowerCase().includes(globalFilter.toLowerCase()) ||
-          post.author?.toLowerCase().includes(globalFilter.toLowerCase())
-        )}
-        layout="grid"
-        header={header()}
-        itemTemplate={itemTemplate}
-        paginator
-        rows={9}
-        emptyMessage="Aucun post trouvé"
-      />
-    </div>
+	  <DataView
+		value={posts.filter(post =>
+		  post.title.toLowerCase().includes(globalFilter.toLowerCase()) ||
+		  post.content.toLowerCase().includes(globalFilter.toLowerCase()) ||
+		  post.author?.toLowerCase().includes(globalFilter.toLowerCase())
+		)}
+		layout="grid"
+		header={header()}
+		itemTemplate={itemTemplate}
+		paginator
+		rows={9}
+		emptyMessage="Aucun post trouvé"
+	  />
+	</div>
   );
 };
 

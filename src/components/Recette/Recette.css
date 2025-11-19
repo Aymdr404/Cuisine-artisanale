@@ -238,118 +238,118 @@
 /* Tablettes (max 1024px) */
 @media (max-width: 1024px) {
   .recipe-card {
-    min-height: 460px;
+	min-height: 460px;
   }
 
   .recipe-content {
-    padding: 1rem;
-    gap: 0.6rem;
+	padding: 1rem;
+	gap: 0.6rem;
   }
 
   .recipe-title {
-    font-size: 1.15rem;
+	font-size: 1.15rem;
   }
 }
 
 /* Petites tablettes et mobiles (max 768px) */
 @media (max-width: 768px) {
   .recipe-card {
-    min-height: 440px;
+	min-height: 440px;
   }
 
   .recipe-image-container {
-    height: 160px;
+	height: 160px;
   }
 
   .recipe-content {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .recipe-title {
-    font-size: 1.1rem;
+	font-size: 1.1rem;
   }
 
   .recipe-actions {
-    flex-direction: row;
-    gap: 0.5rem;
+	flex-direction: row;
+	gap: 0.5rem;
   }
 
   .Post_admin_actions {
-    flex: 1;
-    gap: 0.5rem;
+	flex: 1;
+	gap: 0.5rem;
   }
 
   .view-button.p-button,
   .Post_likeButton.p-button {
-    padding: 0.6rem 0.8rem !important;
-    font-size: 0.85rem;
+	padding: 0.6rem 0.8rem !important;
+	font-size: 0.85rem;
   }
 
   .admin-actions .p-button {
-    padding: 0.5rem 0.6rem !important;
-    font-size: 0.8rem;
+	padding: 0.5rem 0.6rem !important;
+	font-size: 0.8rem;
   }
 
   .rating-info {
-    font-size: 0.75rem;
+	font-size: 0.75rem;
   }
 }
 
 /* Mobiles (max 600px) */
 @media (max-width: 600px) {
   .recipe-card {
-    min-height: auto;
+	min-height: auto;
   }
 
   .recipe-image-container {
-    height: 140px;
+	height: 140px;
   }
 
   .recipe-content {
-    padding: 0.75rem;
-    gap: 0.5rem;
+	padding: 0.75rem;
+	gap: 0.5rem;
   }
 
   .recipe-title {
-    font-size: 1rem;
+	font-size: 1rem;
   }
 
   .recipe-tags {
-    gap: 0.3rem;
+	gap: 0.3rem;
   }
 
   .recipe-type,
   .recipe-location {
-    padding: 0.2rem 0.6rem;
-    font-size: 0.8rem;
+	padding: 0.2rem 0.6rem;
+	font-size: 0.8rem;
   }
 
   .recipe-rating {
-    padding: 0.4rem 0.6rem;
-    gap: 0.5rem;
+	padding: 0.4rem 0.6rem;
+	gap: 0.5rem;
   }
 
   .recipe-actions {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding-top: 0.75rem;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding-top: 0.75rem;
   }
 
   .Post_admin_actions,
   .view-button.p-button,
   .Post_likeButton.p-button {
-    width: 100%;
+	width: 100%;
   }
 
   .admin-actions {
-    width: 100%;
-    flex-direction: row;
+	width: 100%;
+	flex-direction: row;
   }
 
   .admin-actions .p-button {
-    flex: 1;
-    padding: 0.5rem !important;
-    font-size: 0.75rem;
+	flex: 1;
+	padding: 0.5rem !important;
+	font-size: 0.75rem;
   }
 }
 

@@ -131,19 +131,19 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .about-hero h1 {
-    font-size: 2rem;
+	font-size: 2rem;
   }
 
   .about-hero .subtitle {
-    font-size: 1rem;
+	font-size: 1rem;
   }
 
   .features-grid {
-    grid-template-columns: 1fr;
+	grid-template-columns: 1fr;
   }
 
   .feature-card {
-    padding: 1.5rem;
+	padding: 1.5rem;
   }
 }
 

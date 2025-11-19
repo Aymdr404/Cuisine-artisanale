@@ -30,8 +30,8 @@ const CookieConsent: React.FC = () => {
 
 
   const saveConsent = async (finalChoices: CookieChoice) => {
-    localStorage.setItem('cookieConsent', JSON.stringify(finalChoices));
-    setShowBanner(false);
+	localStorage.setItem('cookieConsent', JSON.stringify(finalChoices));
+	setShowBanner(false);
 
 	const storedAnonId = localStorage.getItem('anonId');
 	if (!storedAnonId) {
@@ -56,49 +56,49 @@ const CookieConsent: React.FC = () => {
   };
 
   const handleAcceptAll = () => {
-    saveConsent({ functional: true, analytics: true, ads: true });
+	saveConsent({ functional: true, analytics: true, ads: true });
   };
 
   const handleDeclineAll = () => {
-    saveConsent({ functional: true, analytics: false, ads: false });
+	saveConsent({ functional: true, analytics: false, ads: false });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setChoices(prev => ({ ...prev, [name]: checked }));
+	const { name, checked } = e.target;
+	setChoices(prev => ({ ...prev, [name]: checked }));
   };
 
   if (!showBanner) return null;
 
   return (
-    <div className={`cookie-banner banner-show ${expanded ? 'expanded' : ''}`}>
-      <p>
-        Nous utilisons des cookies pour améliorer votre expérience et analyser la navigation.
-      </p>
+	<div className={`cookie-banner banner-show ${expanded ? 'expanded' : ''}`}>
+	  <p>
+		Nous utilisons des cookies pour améliorer votre expérience et analyser la navigation.
+	  </p>
 
-      <div className="cookie-buttons">
-        <button onClick={handleAcceptAll} className="accept">Tout accepter</button>
-        <button onClick={handleDeclineAll} className="decline">Tout refuser</button>
-        <button onClick={() => setExpanded(!expanded)} className="manage">
-          {expanded ? 'Fermer les options' : 'Gérer les cookies'}
-        </button>
-      </div>
+	  <div className="cookie-buttons">
+		<button onClick={handleAcceptAll} className="accept">Tout accepter</button>
+		<button onClick={handleDeclineAll} className="decline">Tout refuser</button>
+		<button onClick={() => setExpanded(!expanded)} className="manage">
+		  {expanded ? 'Fermer les options' : 'Gérer les cookies'}
+		</button>
+	  </div>
 
-      {expanded && (
-        <div className="cookie-options">
-          <label>
-            <input type="checkbox" name="functional" checked disabled /> Fonctionnels (obligatoires)
-          </label>
-          <label>
-            <input type="checkbox" name="analytics" checked={choices.analytics} onChange={handleChange} /> Analytiques
-          </label>
-          <label>
-            <input type="checkbox" name="ads" checked={choices.ads} onChange={handleChange} /> Publicitaires
-          </label>
-          <button className="save" onClick={() => saveConsent(choices)}>Enregistrer mes choix</button>
-        </div>
-      )}
-    </div>
+	  {expanded && (
+		<div className="cookie-options">
+		  <label>
+			<input type="checkbox" name="functional" checked disabled /> Fonctionnels (obligatoires)
+		  </label>
+		  <label>
+			<input type="checkbox" name="analytics" checked={choices.analytics} onChange={handleChange} /> Analytiques
+		  </label>
+		  <label>
+			<input type="checkbox" name="ads" checked={choices.ads} onChange={handleChange} /> Publicitaires
+		  </label>
+		  <button className="save" onClick={() => saveConsent(choices)}>Enregistrer mes choix</button>
+		</div>
+	  )}
+	</div>
   );
 };
 

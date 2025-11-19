@@ -173,47 +173,47 @@
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .posts-admin {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .posts-header {
-    flex-direction: column;
-    align-items: stretch;
+	flex-direction: column;
+	align-items: stretch;
   }
 
   .posts-header-actions {
-    flex-direction: column;
-    width: 100%;
+	flex-direction: column;
+	width: 100%;
   }
 
   .posts-header-actions .p-input-icon-left,
   .posts-header-actions .sort-dropdown {
-    max-width: none;
-    width: 100%;
+	max-width: none;
+	width: 100%;
   }
 
   .post-card {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .post-card-header {
-    flex-direction: column;
-    align-items: flex-start;
+	flex-direction: column;
+	align-items: flex-start;
   }
 
   .post-card-footer {
-    flex-direction: column;
-    align-items: flex-start;
+	flex-direction: column;
+	align-items: flex-start;
   }
 
   .post-info {
-    flex-direction: column;
-    gap: 0.5rem;
+	flex-direction: column;
+	gap: 0.5rem;
   }
 
   .post-actions {
-    width: 100%;
-    justify-content: flex-end;
+	width: 100%;
+	justify-content: flex-end;
   }
 }
 

@@ -104,79 +104,79 @@
 /* Responsive */
 @media (max-width: 1024px) {
   .personalized-recipes-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .personalized-recommendations-section {
-    padding: 1.5rem;
-    margin-top: 1.5rem;
+	padding: 1.5rem;
+	margin-top: 1.5rem;
   }
 
   .personalized-recommendations-section h3 {
-    font-size: 1.4rem;
-    margin-bottom: 1.25rem;
+	font-size: 1.4rem;
+	margin-bottom: 1.25rem;
   }
 
   .personalized-recipes-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 1rem;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 1rem;
   }
 
   .personalized-recipe-image {
-    height: 130px;
+	height: 130px;
   }
 
   .personalized-recipe-content {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .personalized-recipe-content h4 {
-    font-size: 0.95rem;
+	font-size: 0.95rem;
   }
 
   .personalized-recipe-content .recipe-type {
-    font-size: 0.75rem;
+	font-size: 0.75rem;
   }
 }
 
 @media (max-width: 600px) {
   .personalized-recommendations-section {
-    padding: 1rem;
-    margin-top: 1rem;
+	padding: 1rem;
+	margin-top: 1rem;
   }
 
   .personalized-recommendations-section h3 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
+	font-size: 1.2rem;
+	margin-bottom: 1rem;
+	padding-bottom: 0.5rem;
   }
 
   .personalized-recipes-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 0.75rem;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	gap: 0.75rem;
   }
 
   .personalized-recipe-image {
-    height: 100px;
+	height: 100px;
   }
 
   .personalized-recipe-content {
-    padding: 0.75rem;
+	padding: 0.75rem;
   }
 
   .personalized-recipe-content h4 {
-    font-size: 0.85rem;
-    margin-bottom: 0.3rem;
+	font-size: 0.85rem;
+	margin-bottom: 0.3rem;
   }
 
   .personalized-recipe-content .recipe-type {
-    font-size: 0.7rem;
+	font-size: 0.7rem;
   }
 
   .personalized-recipe-content .recipe-time {
-    font-size: 0.8rem;
+	font-size: 0.8rem;
   }
 }

@@ -45,7 +45,7 @@ const AddRecetteForm: React.FC = () => {
   const { showToast } = useToast();
 
   const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+	if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
   const [title, setTitle] = useState('');
@@ -56,10 +56,10 @@ const AddRecetteForm: React.FC = () => {
   const [videoError, setVideoError] = useState('');
   const [isRecetteCreated, setIsRecetteCreated] = useState<boolean>(false);
   const [recipeParts, setRecipeParts] = useState<RecipePart[]>([{
-    title: 'Recette 1',
-    steps: [],
-    ingredients: {},
-    selectedIngredients: []
+	title: 'Recette 1',
+	steps: [],
+	ingredients: {},
+	selectedIngredients: []
   }]);
 
   const [regions, setRegions] = useState<Department[]>([]);
@@ -180,222 +180,222 @@ const AddRecetteForm: React.FC = () => {
 	};
 
   const types = [
-    { id: 1, name: 'Entrée' },
-    { id: 2, name: 'Plat' },
-    { id: 3, name: 'Dessert' },
-    { id: 4, name: 'Boisson' },
+	{ id: 1, name: 'Entrée' },
+	{ id: 2, name: 'Plat' },
+	{ id: 3, name: 'Dessert' },
+	{ id: 4, name: 'Boisson' },
   ];
 
   const addStep = (partIndex: number) => {
-    const newParts = [...recipeParts];
-    newParts[partIndex].steps.push('');
-    setRecipeParts(newParts);
+	const newParts = [...recipeParts];
+	newParts[partIndex].steps.push('');
+	setRecipeParts(newParts);
   };
 
    const removeStep = (partIndex: number, stepIndex: number) => {
-     const newParts = [...recipeParts];
-     newParts[partIndex].steps = newParts[partIndex].steps.filter((_, i) => i !== stepIndex);
-     setRecipeParts(newParts);
+	 const newParts = [...recipeParts];
+	 newParts[partIndex].steps = newParts[partIndex].steps.filter((_, i) => i !== stepIndex);
+	 setRecipeParts(newParts);
    };
 
   const handleStepChange = (partIndex: number, stepIndex: number, value: string) => {
-    const newParts = [...recipeParts];
-    newParts[partIndex].steps[stepIndex] = value;
-    setRecipeParts(newParts);
+	const newParts = [...recipeParts];
+	newParts[partIndex].steps[stepIndex] = value;
+	setRecipeParts(newParts);
    };
 
   const handleIngredientQuantityChange = (partIndex: number, ingredientId: string, value: string) => {
-    const newParts = [...recipeParts];
-    newParts[partIndex].ingredients[ingredientId] = value;
-    setRecipeParts(newParts);
+	const newParts = [...recipeParts];
+	newParts[partIndex].ingredients[ingredientId] = value;
+	setRecipeParts(newParts);
   };
 
   function generateKeywords(title: string): string[] {
-    return title.toLowerCase().split(" ");
+	return title.toLowerCase().split(" ");
   }
 
   const slugify = (str: string) =>
-    str.normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^\w\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "_")
-      .toLowerCase();
+	str.normalize("NFD")
+	  .replace(/[\u0300-\u036f]/g, "")
+	  .replace(/[^\w\s-]/g, "")
+	  .trim()
+	  .replace(/\s+/g, "_")
+	  .toLowerCase();
 
   function generateUrl(title: string): string {
-    return slugify(title);
+	return slugify(title);
   }
 
   function isValidVideoUrl(url: string) {
-    const regex = /^(https?:\/\/)?(www\.)?(tiktok\.com|instagram\.com|youtu\.be|youtube\.com|facebook\.com)\/.+$/i;
-    return regex.test(url);
+	const regex = /^(https?:\/\/)?(www\.)?(tiktok\.com|instagram\.com|youtu\.be|youtube\.com|facebook\.com)\/.+$/i;
+	return regex.test(url);
   }
 
   const handleSubmit = async (event: React.FormEvent) => {
 	console.log('Submitting form...');
-    event.preventDefault();
+	event.preventDefault();
 
-    setPreparationTime(preparationTime ?? 0);
-    setCookingTime(cookingTime ?? 0);
+	setPreparationTime(preparationTime ?? 0);
+	setCookingTime(cookingTime ?? 0);
 
-    if (!title || !type || preparationTime === null || cookingTime === null ||
-      !recipeParts.every(part => part.steps.every(step => step.trim() !== ''))) {
-      alert('Veuillez remplir tous les champs');
-      return;
-    }
+	if (!title || !type || preparationTime === null || cookingTime === null ||
+	  !recipeParts.every(part => part.steps.every(step => step.trim() !== ''))) {
+	  alert('Veuillez remplir tous les champs');
+	  return;
+	}
 
-    if (video && !isValidVideoUrl(video)) {
-      setVideoError("Veuillez entrer une URL vidéo TikTok, Instagram ou YouTube valide.");
-      return;
-    } else {
-      setVideoError('');
-    }
+	if (video && !isValidVideoUrl(video)) {
+	  setVideoError("Veuillez entrer une URL vidéo TikTok, Instagram ou YouTube valide.");
+	  return;
+	} else {
+	  setVideoError('');
+	}
 
-    const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
-    const selectedType = types.find(t => t.id === type)?.name;
+	const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
+	const selectedType = types.find(t => t.id === type)?.name;
 
-    const formattedRecipeParts = recipeParts.map(part => ({
-      ...part,
-      ingredients: part.selectedIngredients.map(id => {
-        const ingredient = ingredientsList.find(i => i.id === id.toString());
-        return ingredient ? {
-          id: ingredient.id,
-          name: ingredient.name,
-          quantity: part.ingredients[id] || '0',
-          unit: ingredient.unit || ''
-        } : null;
-      }).filter(Boolean)
-    }));
+	const formattedRecipeParts = recipeParts.map(part => ({
+	  ...part,
+	  ingredients: part.selectedIngredients.map(id => {
+		const ingredient = ingredientsList.find(i => i.id === id.toString());
+		return ingredient ? {
+		  id: ingredient.id,
+		  name: ingredient.name,
+		  quantity: part.ingredients[id] || '0',
+		  unit: ingredient.unit || ''
+		} : null;
+	  }).filter(Boolean)
+	}));
 
-    if (!isRecetteCreated) {
+	if (!isRecetteCreated) {
 		console.log('Creating new recette...');
-      try {
-        const docRef = await addDoc(collection(db, 'recipesRequest'), {
-          title: '',
-          type: '',
-          preparationTime: '',
-          cookingTime: '',
-          video: '',
-          images: [],
-          recipeParts: [],
-          position: '',
-          createdBy: '',
-          titleKeywords: [],
-          url: '',
-        });
+	  try {
+		const docRef = await addDoc(collection(db, 'recipesRequest'), {
+		  title: '',
+		  type: '',
+		  preparationTime: '',
+		  cookingTime: '',
+		  video: '',
+		  images: [],
+		  recipeParts: [],
+		  position: '',
+		  createdBy: '',
+		  titleKeywords: [],
+		  url: '',
+		});
 
 
-        recetteId = docRef.id;
-        setIsRecetteCreated(true);
-      } catch (error) {
-        console.error('Error creating recette:', error);
-      }
+		recetteId = docRef.id;
+		setIsRecetteCreated(true);
+	  } catch (error) {
+		console.error('Error creating recette:', error);
+	  }
 	  console.log('Recette ID after creation:', recetteId);
-      try {
-        const recetteRef = doc(db, 'recipesRequest', recetteId);
-        if (formattedRecipeParts.length == 1) {
-          formattedRecipeParts[0].title = capitalizedTitle;
-        }
-        await updateDoc(recetteRef, {
-          title: capitalizedTitle,
-          type: selectedType,
-          preparationTime,
-          cookingTime,
-          video,
-          id: recetteId,
-          createdAt: new Date(),
-          recipeParts: formattedRecipeParts,
-          position: position?.code || 'none',
-          createdBy: user?.uid,
-          images: imageURLs,
-          titleKeywords: generateKeywords(capitalizedTitle),
-          url: generateUrl(capitalizedTitle),
-        });
+	  try {
+		const recetteRef = doc(db, 'recipesRequest', recetteId);
+		if (formattedRecipeParts.length == 1) {
+		  formattedRecipeParts[0].title = capitalizedTitle;
+		}
+		await updateDoc(recetteRef, {
+		  title: capitalizedTitle,
+		  type: selectedType,
+		  preparationTime,
+		  cookingTime,
+		  video,
+		  id: recetteId,
+		  createdAt: new Date(),
+		  recipeParts: formattedRecipeParts,
+		  position: position?.code || 'none',
+		  createdBy: user?.uid,
+		  images: imageURLs,
+		  titleKeywords: generateKeywords(capitalizedTitle),
+		  url: generateUrl(capitalizedTitle),
+		});
 
-        setTitle('');
-        setType(null);
-        setPreparationTime(0);
-        setCookingTime(0);
-        setVideo('');
-        setRecipeParts([{ title: 'Recette 1', steps: [], ingredients: {}, selectedIngredients: [] }]);
-        setPosition(defaultDepartment);
-        setImageURLs([]);
-        setIsRecetteCreated(false);
-        navigateBack();
-        toast.success('Recette envoyée à la vérification admin');
-      } catch (error) {
-        console.error('Error updating recette:', error);
-      }
-    }
+		setTitle('');
+		setType(null);
+		setPreparationTime(0);
+		setCookingTime(0);
+		setVideo('');
+		setRecipeParts([{ title: 'Recette 1', steps: [], ingredients: {}, selectedIngredients: [] }]);
+		setPosition(defaultDepartment);
+		setImageURLs([]);
+		setIsRecetteCreated(false);
+		navigateBack();
+		toast.success('Recette envoyée à la vérification admin');
+	  } catch (error) {
+		console.error('Error updating recette:', error);
+	  }
+	}
   };
 
   useEffect(() => {
-    fetch("https://geo.api.gouv.fr/departements")
-      .then(res => res.json())
-      .then(data => {
-        const departmentsWithDefault = [
-          defaultDepartment,
-          ...data.map((dept: any) => ({
-            nom: dept.nom,
-            code: dept.code
-          }))
-        ];
-        setRegions(departmentsWithDefault);
-      });
-    fetchIngredients();
+	fetch("https://geo.api.gouv.fr/departements")
+	  .then(res => res.json())
+	  .then(data => {
+		const departmentsWithDefault = [
+		  defaultDepartment,
+		  ...data.map((dept: any) => ({
+			nom: dept.nom,
+			code: dept.code
+		  }))
+		];
+		setRegions(departmentsWithDefault);
+	  });
+	fetchIngredients();
   }, []);
 
   const fetchIngredients = async () => {
-    try {
-      const recettesCollection = collection(db, "ingredients");
-      let recettesQuery = query(recettesCollection);
-      const querySnapshot = await getDocs(recettesQuery);
-      const recettesData: Ingredient[] = querySnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return { name: data.name, id: doc.id, unit: data.unit || '' };
-      });
-      setIngredientsList(recettesData);
-    } catch (error) {
-      console.error("Error getting recettes: ", error);
-    }
+	try {
+	  const recettesCollection = collection(db, "ingredients");
+	  let recettesQuery = query(recettesCollection);
+	  const querySnapshot = await getDocs(recettesQuery);
+	  const recettesData: Ingredient[] = querySnapshot.docs.map((doc) => {
+		const data = doc.data();
+		return { name: data.name, id: doc.id, unit: data.unit || '' };
+	  });
+	  setIngredientsList(recettesData);
+	} catch (error) {
+	  console.error("Error getting recettes: ", error);
+	}
   };
 
   const handleFileChange = (e: { target: { files: any; }; }) => {
-    setImages([...e.target.files]);
+	setImages([...e.target.files]);
   };
 
   const handleUpload = async () => {
-    if (images.length === 0) return;
-    setUploading(true);
-    const urls: string[] = [];
+	if (images.length === 0) return;
+	setUploading(true);
+	const urls: string[] = [];
 
-    for (let image of images) {
-      const storageRef = ref(storage, `recipes/${title}/${image.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, image);
+	for (let image of images) {
+	  const storageRef = ref(storage, `recipes/${title}/${image.name}`);
+	  const uploadTask = uploadBytesResumable(storageRef, image);
 
-      await new Promise<void>((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          null,
-          (error) => {
-            console.error("Upload failed:", error);
-            reject(error);
-          },
-          async () => {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            urls.push(downloadURL);
-            resolve();
-          }
-        );
-      });
-    }
+	  await new Promise<void>((resolve, reject) => {
+		uploadTask.on(
+		  "state_changed",
+		  null,
+		  (error) => {
+			console.error("Upload failed:", error);
+			reject(error);
+		  },
+		  async () => {
+			const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+			urls.push(downloadURL);
+			resolve();
+		  }
+		);
+	  });
+	}
 
-    setImageURLs(urls);
-    setUploading(false);
+	setImageURLs(urls);
+	setUploading(false);
   };
 
   const navigateBack = () => {
-    window.history.back();
+	window.history.back();
   };
 
   	const removePart = (partIndex: number) => {
@@ -404,8 +404,8 @@ const AddRecetteForm: React.FC = () => {
 	};
 
   return (
-    <div className="add-recipe-container">
-      	<header className="add-recipe-header">
+	<div className="add-recipe-container">
+	  	<header className="add-recipe-header">
 			<h1>Composer votre propre recette</h1>
 			<p className="subtitle">Les champs marqués d'un * sont obligatoires</p>
 		</header>
@@ -418,7 +418,7 @@ const AddRecetteForm: React.FC = () => {
 			</div>
 		</div>
 
-      	<form onSubmit={handleSubmit} className="recipe-form">
+	  	<form onSubmit={handleSubmit} className="recipe-form">
 			<div className="form-grid">
 				{currentStep === 1 && (
 					<section className="form-section basic-info">
@@ -504,7 +504,7 @@ const AddRecetteForm: React.FC = () => {
 									} else {
 										addIngredient(selected, partIndex);
 									}   // ajoute l'ingrédient
-									handleQueryChange('', partIndex);     // vide le champ après sélection
+									handleQueryChange('', partIndex);	 // vide le champ après sélection
 								}}
 								dropdown
 
@@ -712,7 +712,7 @@ const AddRecetteForm: React.FC = () => {
 				<Button type="button" label="Annuler" icon="pi pi-times" className="cancel-button" onClick={navigateBack} />
 			</footer>
 		</form>
-    </div>
+	</div>
   );
 };
 

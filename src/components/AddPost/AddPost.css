@@ -40,33 +40,33 @@
 /* Desktop styles */
 @media screen and (min-width: 769px) {
   .desktop-post {
-    display: block;
-    text-align: center;
-    padding: 2rem;
-    background: var(--surface-card);
-    border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
+	display: block;
+	text-align: center;
+	padding: 2rem;
+	background: var(--surface-card);
+	border-radius: var(--border-radius);
+	box-shadow: var(--card-shadow);
   }
 
   .desktop-post h2 {
-    color: var(--text-color);
-    margin-bottom: 1rem;
+	color: var(--text-color);
+	margin-bottom: 1rem;
   }
 
   .desktop-post p {
-    color: var(--text-color-secondary);
-    margin-bottom: 1.5rem;
+	color: var(--text-color-secondary);
+	margin-bottom: 1.5rem;
   }
 
   .mobile-floating-button {
-    display: none;
+	display: none;
   }
 }
 
 /* Mobile styles */
 @media screen and (max-width: 768px) {
   .mobile-floating-button {
-    display: block;
+	display: block;
 
 	.p-button-label{
 		display: none;
@@ -74,6 +74,6 @@
   }
 
   .desktop-post {
-    display: none;
+	display: none;
   }
 }

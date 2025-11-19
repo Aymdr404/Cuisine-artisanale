@@ -11,36 +11,36 @@ import { registerServiceWorker } from '@/utils/register-sw';
  */
 export default function PWAProvider() {
   useEffect(() => {
-    // Enregistrer le Service Worker en production uniquement
-    if (process.env.NODE_ENV === 'production') {
-      registerServiceWorker();
-    }
+	// Enregistrer le Service Worker en production uniquement
+	if (process.env.NODE_ENV === 'production') {
+	  registerServiceWorker();
+	}
 
-    // Gérer l'événement "beforeinstallprompt" (bouton d'installation)
-    let deferredPrompt: any;
+	// Gérer l'événement "beforeinstallprompt" (bouton d'installation)
+	let deferredPrompt: any;
 
-    const handleBeforeInstallPrompt = (e: Event) => {
-      // Empêcher l'affichage automatique
-      e.preventDefault();
-      deferredPrompt = e;
+	const handleBeforeInstallPrompt = (e: Event) => {
+	  // Empêcher l'affichage automatique
+	  e.preventDefault();
+	  deferredPrompt = e;
 
-      console.log('[PWA] App installable');
+	  console.log('[PWA] App installable');
 
-      // Optionnel: Afficher un bouton d'installation personnalisé
-      // Pour l'instant, on laisse le navigateur gérer
-    };
+	  // Optionnel: Afficher un bouton d'installation personnalisé
+	  // Pour l'instant, on laisse le navigateur gérer
+	};
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+	window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Détecter quand l'app est installée
-    window.addEventListener('appinstalled', () => {
-      console.log('[PWA] App installée avec succès !');
-      deferredPrompt = null;
-    });
+	// Détecter quand l'app est installée
+	window.addEventListener('appinstalled', () => {
+	  console.log('[PWA] App installée avec succès !');
+	  deferredPrompt = null;
+	});
 
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
+	return () => {
+	  window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+	};
   }, []);
 
   // Ce composant ne rend rien

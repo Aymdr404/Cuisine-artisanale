@@ -36,88 +36,88 @@ const AddPostForm: React.FC<AddPostFormProps> = ({ closeForm }) => {
   const { user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+	e.preventDefault();
+	setError(null);
 
-    if (!title.trim() || !content.trim() || !user) return;
+	if (!title.trim() || !content.trim() || !user) return;
 
-    // Check for inappropriate content
-    if (checkInappropriateContent(title) || checkInappropriateContent(content)) {
-      setError('Le contenu contient des mots inappropriés. Veuillez modifier votre message.');
-      return;
-    }
+	// Check for inappropriate content
+	if (checkInappropriateContent(title) || checkInappropriateContent(content)) {
+	  setError('Le contenu contient des mots inappropriés. Veuillez modifier votre message.');
+	  return;
+	}
 
-    setLoading(true);
-    try {
-      await addDoc(collection(db, 'posts'), {
-        title: title.trim(),
-        content: content, // Don't trim content to preserve line breaks
-        createdAt: serverTimestamp(),
-        userId: user.uid,
-        userName: user.displayName || 'Anonymous',
-        visible: false
-      });
-      closeForm();
-    } catch (error) {
-      console.error('Error adding post:', error);
-      setError('Une erreur est survenue lors de la publication du post.');
-    } finally {
-      setLoading(false);
-    }
+	setLoading(true);
+	try {
+	  await addDoc(collection(db, 'posts'), {
+		title: title.trim(),
+		content: content, // Don't trim content to preserve line breaks
+		createdAt: serverTimestamp(),
+		userId: user.uid,
+		userName: user.displayName || 'Anonymous',
+		visible: false
+	  });
+	  closeForm();
+	} catch (error) {
+	  console.error('Error adding post:', error);
+	  setError('Une erreur est survenue lors de la publication du post.');
+	} finally {
+	  setLoading(false);
+	}
   };
 
   return (
-    <div className="AddPostForm">
-      <form className="formPost" onSubmit={handleSubmit}>
-        <h3>Nouveau Post</h3>
-        {error && (
-          <Message 
-            severity="error" 
-            text={error} 
-            style={{ marginBottom: '1rem' }}
-          />
-        )}
-        <div>
-          <label htmlFor="title">Titre</label>
-          <InputText
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Entrez le titre"
-            required
-            autoFocus
-          />
-        </div>
-        <div>
-          <label htmlFor="content">Contenu</label>
-          <InputTextarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Écrivez votre post ici..."
-            required
-            rows={5}
-            autoResize
-            style={{ whiteSpace: 'pre-wrap' }}
-          />
-        </div>
-        <div className="buttons-form">
-          <Button
-            type="button"
-            label="Annuler"
-            className="p-button-outlined"
-            onClick={closeForm}
-            disabled={loading}
-          />
-          <Button
-            type="submit"
-            label="Publier"
-            loading={loading}
-            disabled={!title.trim() || !content.trim()}
-          />
-        </div>
-      </form>
-    </div>
+	<div className="AddPostForm">
+	  <form className="formPost" onSubmit={handleSubmit}>
+		<h3>Nouveau Post</h3>
+		{error && (
+		  <Message
+			severity="error"
+			text={error}
+			style={{ marginBottom: '1rem' }}
+		  />
+		)}
+		<div>
+		  <label htmlFor="title">Titre</label>
+		  <InputText
+			id="title"
+			value={title}
+			onChange={(e) => setTitle(e.target.value)}
+			placeholder="Entrez le titre"
+			required
+			autoFocus
+		  />
+		</div>
+		<div>
+		  <label htmlFor="content">Contenu</label>
+		  <InputTextarea
+			id="content"
+			value={content}
+			onChange={(e) => setContent(e.target.value)}
+			placeholder="Écrivez votre post ici..."
+			required
+			rows={5}
+			autoResize
+			style={{ whiteSpace: 'pre-wrap' }}
+		  />
+		</div>
+		<div className="buttons-form">
+		  <Button
+			type="button"
+			label="Annuler"
+			className="p-button-outlined"
+			onClick={closeForm}
+			disabled={loading}
+		  />
+		  <Button
+			type="submit"
+			label="Publier"
+			loading={loading}
+			disabled={!title.trim() || !content.trim()}
+		  />
+		</div>
+	  </form>
+	</div>
   );
 };
 

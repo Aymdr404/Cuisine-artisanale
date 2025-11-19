@@ -18,47 +18,47 @@ const Actualites: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchWeeklyRecette();
+	fetchWeeklyRecette();
   }, []);
 
   const fetchWeeklyRecette = async () => {
-    try {
-      const weeklyRef = doc(db, "weeklyRecipe", "current");
-      const weeklySnap = await getDoc(weeklyRef);
+	try {
+	  const weeklyRef = doc(db, "weeklyRecipe", "current");
+	  const weeklySnap = await getDoc(weeklyRef);
 
 
-      if (weeklySnap.exists()) {
+	  if (weeklySnap.exists()) {
 		setFeaturedRecette(weeklySnap.data() as RecetteData);
 		setLoading(false);
 		return;
 
-      }
-    } catch (error) {
-      console.error("Erreur lors du chargement de la recette de la semaine :", error);
-    } finally {
-      setLoading(false);
-    }
+	  }
+	} catch (error) {
+	  console.error("Erreur lors du chargement de la recette de la semaine :", error);
+	} finally {
+	  setLoading(false);
+	}
   };
 
   const slugify = (str: string) =>
-    str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^\w\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "_")
-      .toLowerCase();
+	str
+	  .normalize("NFD")
+	  .replace(/[\u0300-\u036f]/g, "")
+	  .replace(/[^\w\s-]/g, "")
+	  .trim()
+	  .replace(/\s+/g, "_")
+	  .toLowerCase();
 
   if (loading) {
-    return <p className="loading">Chargement de la recette de la semaine...</p>;
+	return <p className="loading">Chargement de la recette de la semaine...</p>;
   }
 
   if (!featuredRecette) {
-    return <p>Aucune recette disponible pour cette semaine.</p>;
+	return <p>Aucune recette disponible pour cette semaine.</p>;
   }
 
   return (
-    <section className="featured-recette">
+	<section className="featured-recette">
 		<h2>🥇 Recette de la semaine</h2>
 		<div className="featured-card">
 			{featuredRecette.images?.[0] && (

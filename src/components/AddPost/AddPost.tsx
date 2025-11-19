@@ -9,36 +9,36 @@ const AddPost: React.FC = () => {
   const { user } = useAuth();
 
   const handleMobileClick = () => {
-    setShowForm(true);
+	setShowForm(true);
   };
 
   const handleCloseForm = () => {
-    setShowForm(false);
+	setShowForm(false);
   };
 
   return (
-    <div className="AddPost">
-      {/* Desktop layout */}
-      <div className="desktop-post">
-        <h2>Ajouter un post</h2>
-        <p>Partagez vos pensées avec le monde !</p>
-        <Button onClick={handleMobileClick} disabled={!user}>
-          Ajouter un post
-        </Button>
-        {!user && <p>Vous devez être connecté pour ajouter un post</p>}
-      </div>
+	<div className="AddPost">
+	  {/* Desktop layout */}
+	  <div className="desktop-post">
+		<h2>Ajouter un post</h2>
+		<p>Partagez vos pensées avec le monde !</p>
+		<Button onClick={handleMobileClick} disabled={!user}>
+		  Ajouter un post
+		</Button>
+		{!user && <p>Vous devez être connecté pour ajouter un post</p>}
+	  </div>
 
-      {/* Floating mobile button */}
-      <div className="mobile-floating-button" onClick={handleMobileClick}>
-        <Button
-          icon="pi pi-plus"
-          aria-label="Ajouter un post"
-          className="p-button-rounded p-button-lg"
-        />
-      </div>
+	  {/* Floating mobile button */}
+	  <div className="mobile-floating-button" onClick={handleMobileClick}>
+		<Button
+		  icon="pi pi-plus"
+		  aria-label="Ajouter un post"
+		  className="p-button-rounded p-button-lg"
+		/>
+	  </div>
 
-      {showForm && <AddPostForm closeForm={handleCloseForm} />}
-    </div>
+	  {showForm && <AddPostForm closeForm={handleCloseForm} />}
+	</div>
   );
 };
 

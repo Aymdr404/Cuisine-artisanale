@@ -235,69 +235,69 @@
 /* Responsive Design */
 @media screen and (max-width: 992px) {
   .recipe-card-content {
-    flex-direction: column;
+	flex-direction: column;
   }
 
   .recipe-images {
-    width: 100%;
-    text-align: center;
+	width: 100%;
+	text-align: center;
   }
 
   .recipe-images img {
-    width: auto;
-    max-width: 100%;
-    height: 200px;
+	width: auto;
+	max-width: 100%;
+	height: 200px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .recipes-admin {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .recipes-header {
-    flex-direction: column;
-    align-items: stretch;
+	flex-direction: column;
+	align-items: stretch;
   }
 
   .recipes-header-actions {
-    flex-direction: column;
-    width: 100%;
+	flex-direction: column;
+	width: 100%;
   }
 
   .recipes-header-actions .p-input-icon-left,
   .recipes-header-actions .sort-dropdown {
-    max-width: none;
-    width: 100%;
+	max-width: none;
+	width: 100%;
   }
 
   .recipe-card {
-    padding: 1rem;
+	padding: 1rem;
   }
 
   .recipe-card-header {
-    flex-direction: column;
-    align-items: flex-start;
+	flex-direction: column;
+	align-items: flex-start;
   }
 
   .recipe-card-footer {
-    flex-direction: column;
-    align-items: flex-start;
+	flex-direction: column;
+	align-items: flex-start;
   }
 
   .recipe-info {
-    flex-direction: column;
-    gap: 0.5rem;
+	flex-direction: column;
+	gap: 0.5rem;
   }
 
   .recipe-actions {
-    width: 100%;
-    justify-content: flex-end;
+	width: 100%;
+	justify-content: flex-end;
   }
 
   .recipe-metadata {
-    flex-direction: column;
-    align-items: flex-start;
+	flex-direction: column;
+	align-items: flex-start;
   }
 }
 

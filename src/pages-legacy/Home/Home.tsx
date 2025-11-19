@@ -7,12 +7,12 @@ const Posts = React.lazy(() => import('../Posts/Posts'));
 
 const Home: React.FC = () => {
   return (
-    <div className="Home">
-      <Actualites />
-      <Suspense fallback={<div className="posts-skeleton">Chargement des posts...</div>}>
-        <Posts />
-      </Suspense>
-    </div>
+	<div className="Home">
+	  <Actualites />
+	  <Suspense fallback={<div className="posts-skeleton">Chargement des posts...</div>}>
+		<Posts />
+	  </Suspense>
+	</div>
   );
 };
 
