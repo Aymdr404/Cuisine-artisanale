@@ -6,7 +6,7 @@ import { doc, getDoc} from 'firebase/firestore';
 import Link from 'next/link';
 
 interface RecetteData {
-  recetteId: string;
+  id: string;
   title: string;
   type: string;
   images?: string[];
@@ -40,14 +40,6 @@ const Actualites: React.FC = () => {
 	}
   };
 
-  const slugify = (str: string) =>
-	str
-	  .normalize("NFD")
-	  .replace(/[\u0300-\u036f]/g, "")
-	  .replace(/[^\w\s-]/g, "")
-	  .trim()
-	  .replace(/\s+/g, "_")
-	  .toLowerCase();
 
   if (loading) {
 	return <p className="loading">Chargement de la recette de la semaine...</p>;
@@ -74,7 +66,7 @@ const Actualites: React.FC = () => {
 			<h3>{featuredRecette.title}</h3>
 			<p><strong>Type :</strong> {featuredRecette.type}</p>
 			{featuredRecette.position && <p>📍 {featuredRecette.position}</p>}
-			<Link href={`/recettes/${slugify(featuredRecette.title)}`}>
+			<Link href={`/recettes?id=${featuredRecette.id}`}>
 				<button className="featured-button">Voir la recette</button>
 			</Link>
 			</div>
