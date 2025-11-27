@@ -355,7 +355,7 @@
 
 /* PrimeReact Button Overrides */
 .recipe-card .p-button {
-  color: var(--text-color) !important;
+  color: var(--text-color-inverted) !important;
   transition: all 0.2s ease;
 }
 

@@ -174,7 +174,6 @@
 
 	.p-button {
 		gap: 1rem !important;
-		color: var(--button-hover-text) !important;
 	}
 
 	/* --- FIX p-input-icon-left overlapping issue --- */
