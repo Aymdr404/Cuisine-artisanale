@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './RecettesAdmin.css';
 import { db } from '@firebaseModule';
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc, getDoc, addDoc } from '@firebase/firestore';
+import { collection, onSnapshot, orderBy, query, deleteDoc, doc, getDoc, addDoc, updateDoc } from '@firebase/firestore';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
@@ -121,11 +121,14 @@ const RecettesAdmin: React.FC = () => {
 	  const recetteData = recetteSnap.data();
 
 	  // Add to recipes collection
-	  await addDoc(collection(db, 'recipes'), {
+	  const recipeRef = await addDoc(collection(db, 'recipes'), {
 		...recetteData,
 		createdAt: new Date(),
 		likes: []
 	  });
+
+	  const id = recipeRef.id;
+	  await updateDoc(recipeRef, { id });
 
 	  // Delete from recipesRequest
 	  await deleteDoc(recetteRef);
