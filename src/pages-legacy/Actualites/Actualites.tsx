@@ -66,7 +66,7 @@ const Actualites: React.FC = () => {
 			<h3>{featuredRecette.title}</h3>
 			<p><strong>Type :</strong> {featuredRecette.type}</p>
 			{featuredRecette.position && <p>📍 {featuredRecette.position}</p>}
-			<Link href={`/recettes?id=${featuredRecette.id}`}>
+			<Link href={`/recettes/?id=${featuredRecette.id}`}>
 				<button className="featured-button">Voir la recette</button>
 			</Link>
 			</div>
