@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import './EditRecette.css';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { doc, getDoc, updateDoc } from '@firebase/firestore';
 import { db, storage } from '@firebaseModule';
 import { Button } from 'primereact/button';
@@ -8,17 +10,22 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import '@/pages-legacy/EditRecette/EditRecette.css';
 
+interface RecipePart {
+  title: string;
+  steps: string[];
+  ingredients: Ingredient[];
+}
 
-interface Recette{
+interface Recette {
   id: string;
   title: string;
   type: string;
   cookingTime: number;
   preparationTime: number;
-  ingredients: Ingredient[];
+  recipeParts: RecipePart[];
   video: string;
-  steps: string[];
   position: string;
   images?: string[];
 }
@@ -30,16 +37,17 @@ interface Ingredient {
   unit: string;
 }
 
-const EditRecette: React.FC = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+function EditRecetteContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const id = searchParams?.get('id');
 
   const [recette, setRecette] = useState<Recette | null>(null);
   const [title, setTitle] = useState<string>('');
   const [type, setType] = useState<string>('');
   const [preparationTime, setPreparationTime] = useState<number>(0);
   const [cookingTime, setCookingTime] = useState<number>(0);
-  const [steps, setSteps] = useState<string[]>([]);
+  const [recipeParts, setRecipeParts] = useState<RecipePart[]>([]);
   const [video, setVideo] = useState<string>('');
   const [images, setImages] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -66,10 +74,9 @@ const EditRecette: React.FC = () => {
 	  setType(recetteData.type);
 	  setPreparationTime(recetteData.preparationTime);
 	  setCookingTime(recetteData.cookingTime);
-	  setSteps(recetteData.steps);
+	  setRecipeParts(recetteData.recipeParts);
 	  setVideo(recetteData.video || '');
 	  setImageURLs(recetteData.images || []);
-
 	} catch (error) {
 	  console.error("Erreur lors de la récupération de la recette :", error);
 	}
@@ -92,7 +99,7 @@ const EditRecette: React.FC = () => {
 	  type,
 	  preparationTime,
 	  cookingTime,
-	  steps,
+	  recipeParts,
 	  video,
 	  images: imageURLs,
 	};
@@ -101,26 +108,13 @@ const EditRecette: React.FC = () => {
 
 	try {
 	  await updateDoc(recetteRef, updatedRecette);
-	  if (window.history.length > 1) {
-		navigate(-1);
-	  } else {
-		navigate('/recettes');
-	  }
+	  router.push(`/recettes?id=${id}`);
 	} catch (error) {
 	  console.error("Erreur lors de la mise à jour de la recette :", error);
 	}
   };
 
-  const addStep = () => setSteps([...steps, '']);
-  const handleStepChange = (index: number, value: string) => {
-	const updatedSteps = [...steps];
-	updatedSteps[index] = value;
-	setSteps(updatedSteps);
-  };
-  const removeStep = (index: number) => setSteps(steps.filter((_, i) => i !== index));
-
-
-  const handleFileChange = (e: { target: { files: any; }; }) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 	// Valider les fichiers avant de les ajouter
 	const newImages: File[] = Array.from(e.target.files || []);
 
@@ -200,7 +194,6 @@ const EditRecette: React.FC = () => {
 	setImages(images.filter((_, i) => i !== index));
   };
 
-
   const handleImageDelete = async (imageURL: string) => {
 	const imageRef = ref(storage, imageURL);
 	try {
@@ -228,31 +221,13 @@ const EditRecette: React.FC = () => {
 					onChange={(e) => setTitle(e.target.value)}
 				  />
 				</div>
-				<div className="steps-section">
-				  <h3>*Étapes de préparation:</h3>
-				  {steps.map((step, index) => (
-					<div key={index} className="step-container">
-					  <InputText
-						type="text"
-						value={step}
-						onChange={(e) => handleStepChange(index, e.target.value)}
-						placeholder={`Étape ${index + 1}`}
-						required
-					  />
-					  <Button type="button" onClick={() => removeStep(index)} className="delete-step-btn">
-						❌
-					  </Button>
-					</div>
-				  ))}
-				  <Button type="button" onClick={addStep} className="add-step-btn">+ Ajouter une étape</Button>
-				</div>
 
 				<div>
 				  <label htmlFor="type">*Type:</label>
 				  <Dropdown
 					id="type"
 					value={type}
-					options={[{ name: 'Entrée', id: '1' }, { name: 'Plat', id: '2' }, {name: 'Dessert', id: '3'}]} // Exemple d'options
+					options={[{ name: 'Entrée', id: '1' }, { name: 'Plat', id: '2' }, { name: 'Dessert', id: '3' }]}
 					onChange={(e) => setType(e.value)}
 					optionLabel="name"
 					optionValue="id"
@@ -395,6 +370,12 @@ const EditRecette: React.FC = () => {
 	  )}
 	</div>
   );
-};
+}
 
-export default EditRecette;
+export default function EditRecettePage() {
+  return (
+	<Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Chargement...</div>}>
+	  <EditRecetteContent />
+	</Suspense>
+  );
+}

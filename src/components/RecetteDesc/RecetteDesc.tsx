@@ -460,7 +460,7 @@ const RecetteDesc: React.FC = () => {
 				<div className="recette-desc-admin-buttons">
 					<Button
 						icon="pi pi-pencil"
-						onClick={() => router.push(`/recettes/${id}/edit`)}
+						onClick={() => router.push(`/recettes/edit?id=${id}`)}
 						className="p-button-text"
 					/>
 					<Button
