@@ -9,6 +9,7 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import '@/pages-legacy/EditRecette/EditRecette.css';
 
@@ -262,6 +263,83 @@ function EditRecetteContent() {
 					onChange={(e) => setVideo(e.target.value)}
 					placeholder="ex: https://youtube.com/watch?v=..."
 				  />
+				</div>
+
+				{/* Section Étapes de préparation */}
+				<div style={{ marginTop: '30px' }}>
+				  <h3>📝 Étapes de préparation</h3>
+				  {recipeParts.map((part, partIndex) => (
+					<div key={partIndex} style={{ marginBottom: '25px', padding: '15px', backgroundColor: '#f9f9f9', borderRadius: '8px', border: '1px solid #ddd' }}>
+					  <div style={{ marginBottom: '15px' }}>
+						<label>Titre de la partie {partIndex + 1}:</label>
+						<InputText
+						  type="text"
+						  value={part.title}
+						  onChange={(e) => {
+							const updatedParts = [...recipeParts];
+							updatedParts[partIndex].title = e.target.value;
+							setRecipeParts(updatedParts);
+						  }}
+						  placeholder="ex: Préparation, Cuisson..."
+						/>
+					  </div>
+
+					  <div style={{ marginBottom: '15px' }}>
+						<h4>Étapes:</h4>
+						{part.steps.map((step, stepIndex) => (
+						  <div key={stepIndex} style={{ marginBottom: '10px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+							<div style={{ flex: 1 }}>
+							  <InputTextarea
+								value={step}
+								onChange={(e) => {
+								  const updatedParts = [...recipeParts];
+								  updatedParts[partIndex].steps[stepIndex] = e.target.value;
+								  setRecipeParts(updatedParts);
+								}}
+								placeholder={`Étape ${stepIndex + 1}`}
+								rows={3}
+								style={{ width: '100%' }}
+							  />
+							</div>
+							<Button
+							  type="button"
+							  icon="pi pi-trash"
+							  onClick={() => {
+								const updatedParts = [...recipeParts];
+								updatedParts[partIndex].steps.splice(stepIndex, 1);
+								setRecipeParts(updatedParts);
+							  }}
+							  className="p-button-danger p-button-sm"
+							  style={{ marginTop: '4px' }}
+							/>
+						  </div>
+						))}
+						<Button
+						  type="button"
+						  onClick={() => {
+							const updatedParts = [...recipeParts];
+							updatedParts[partIndex].steps.push('');
+							setRecipeParts(updatedParts);
+						  }}
+						  className="p-button-info p-button-sm"
+						  style={{ marginTop: '10px' }}
+						>
+						  + Ajouter une étape
+						</Button>
+					  </div>
+					</div>
+				  ))}
+
+				  <Button
+					type="button"
+					onClick={() => {
+					  setRecipeParts([...recipeParts, { title: '', steps: [], ingredients: [] }]);
+					}}
+					className="p-button-success"
+					style={{ marginTop: '15px' }}
+				  >
+					+ Ajouter une partie
+				  </Button>
 				</div>
 
 				{/* Section Messages de succès/erreur */}
