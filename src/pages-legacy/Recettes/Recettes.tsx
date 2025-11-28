@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Filtre from '@components/Filtre/Filtre';
 import Recette from '@components/Recette/Recette';
 import AddRecette from '@components/AddRecette/AddRecette';
@@ -15,17 +15,24 @@ interface RecetteData {
 	type: string;
 	images?: string[];
 	position: string;
+	score?: number;
 }
 
 const Recettes: React.FC = () => {
 
-	const [recettes, setRecettes] = useState<RecetteData[]>([]);
+	const [displayedRecettes, setDisplayedRecettes] = useState<RecetteData[]>([]);
+	const [allRecettes, setAllRecettes] = useState<RecetteData[]>([]);
 	const searchParams = useSearchParams();
 	const [departements, setDepartements] = useState<Map<string, string>>(new Map());
+	const [itemsPerPage] = useState(12);
+	const [currentPage, setCurrentPage] = useState(0);
+	const observerTarget = useRef<HTMLDivElement>(null);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
+		setCurrentPage(0);
+		setDisplayedRecettes([]);
 		fetchRecettes();
-		// Depend on the serialized params so effect runs on change
 	}, [searchParams.toString()]);
 
 
@@ -79,7 +86,7 @@ const Recettes: React.FC = () => {
 			const position = searchParams.get("position");
 			const keywords = searchParams.get("keywords");
 
-			let allRecettes = new Map<string, RecetteData>();
+			let allRecettesMap = new Map<string, RecetteData>();
 
 			if (keywords) {
 				const words = keywords.split(" ");
@@ -103,7 +110,7 @@ const Recettes: React.FC = () => {
 
 					querySnapshot.forEach((doc) => {
 						const data = doc.data();
-						allRecettes.set(doc.id, {
+						allRecettesMap.set(doc.id, {
 						title: data.title,
 						type: data.type,
 						position: data.position,
@@ -112,15 +119,13 @@ const Recettes: React.FC = () => {
 						});
 					});
 
-					// ---------------------------
-					// Étape 2 : Fallback fuzzy si Firestore n’a rien trouvé
-					// ---------------------------
+					// Étape 2 : Fallback fuzzy si Firestore n'a rien trouvé
 					if (!found) {
 						console.log(`⚠️ Aucun match Firestore pour "${word}", fallback fuzzy`);
 						const allDocs = await getDocs(recettesCollection);
 						allDocs.forEach((doc) => {
 							const data = doc.data();
-							allRecettes.set(doc.id, {
+							allRecettesMap.set(doc.id, {
 							title: data.title,
 							type: data.type,
 							position: data.position,
@@ -135,7 +140,7 @@ const Recettes: React.FC = () => {
 				const querySnapshot = await getDocs(recettesCollection);
 				querySnapshot.forEach((doc) => {
 					const data = doc.data();
-					allRecettes.set(doc.id, {
+					allRecettesMap.set(doc.id, {
 					title: data.title,
 					type: data.type,
 					position: data.position,
@@ -145,7 +150,7 @@ const Recettes: React.FC = () => {
 				});
 			}
 
-			let recettesData = Array.from(allRecettes.values());
+			let recettesData = Array.from(allRecettesMap.values());
 			if (keywords) {
 				const cleanedKeywords = keywords.toLowerCase().split(" ");
 				const SIMILARITY_THRESHOLD = 0.6;
@@ -163,12 +168,12 @@ const Recettes: React.FC = () => {
 						r.score >= SIMILARITY_THRESHOLD ||
 						cleanedKeywords.some((k) => r.title.toLowerCase().includes(k))
 					)
-					.sort((a, b) => b.score - a.score);
+					.sort((a, b) => (b.score || 0) - (a.score || 0));
 
 				console.log("Résultats filtrés :", recettesData);
-				}
+			}
 
-			// 🔍 Filtrer selon le type et la position après récupération
+			// Filtrer selon le type et la position après récupération
 			if (type) {
 				recettesData = recettesData.filter((r) => r.type === type);
 			}
@@ -176,11 +181,54 @@ const Recettes: React.FC = () => {
 				recettesData = recettesData.filter((r) => r.position === position);
 			}
 
-			setRecettes(recettesData);
+			setAllRecettes(recettesData);
+			setCurrentPage(0);
+			setDisplayedRecettes(recettesData.slice(0, itemsPerPage));
 		} catch (error) {
 			console.error("Error getting recettes: ", error);
 		}
-  	};
+	};
+
+	// Charger plus de recettes au scroll
+	const loadMoreRecettes = useCallback(() => {
+		if (isLoading) return;
+
+		const nextPage = currentPage + 1;
+		const startIdx = nextPage * itemsPerPage;
+		const endIdx = startIdx + itemsPerPage;
+
+		if (startIdx < allRecettes.length) {
+			setIsLoading(true);
+			// Simuler un délai pour le chargement
+			setTimeout(() => {
+				setDisplayedRecettes((prev) => [...prev, ...allRecettes.slice(startIdx, endIdx)]);
+				setCurrentPage(nextPage);
+				setIsLoading(false);
+			}, 300);
+		}
+	}, [currentPage, allRecettes, itemsPerPage, isLoading]);
+
+	// Intersection Observer pour le infinite scroll
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting && !isLoading && currentPage * itemsPerPage + itemsPerPage < allRecettes.length) {
+					loadMoreRecettes();
+				}
+			},
+			{ threshold: 0.1 }
+		);
+
+		if (observerTarget.current) {
+			observer.observe(observerTarget.current);
+		}
+
+		return () => {
+			if (observerTarget.current) {
+				observer.unobserve(observerTarget.current);
+			}
+		};
+	}, [loadMoreRecettes, isLoading, currentPage, allRecettes.length, itemsPerPage]);
 
 	useEffect(() => {
 		fetch("https://geo.api.gouv.fr/departements")
@@ -192,36 +240,45 @@ const Recettes: React.FC = () => {
 	}, []);
 
 
-  return (
-	<div className="Recettes">
-		<section className='filter_section'>
-			<Filtre />
-			<AddRecette />
-		</section>
-		<section className='recettes_section'>
-			{recettes.length === 0 && !recettes && (
-				Array.from({ length: 5 }).map((_, i) => (
-				<div key={i} className="recette-skeleton">
-					<div className="skeleton-image"></div>
-					<div className="skeleton-title"></div>
-					<div className="skeleton-content"></div>
-				</div>
-				))
-			)}
+	return (
+		<div className="Recettes">
+			<section className='filter_section'>
+				<Filtre />
+				<AddRecette />
+			</section>
+			<section className='recettes_section'>
+				{displayedRecettes.length === 0 && allRecettes.length === 0 && (
+					Array.from({ length: 5 }).map((_, i) => (
+					<div key={i} className="recette-skeleton">
+						<div className="skeleton-image"></div>
+						<div className="skeleton-title"></div>
+						<div className="skeleton-content"></div>
+					</div>
+					))
+				)}
 
-			{recettes.map((recette, index) => (
-				<Recette
-					key={index}
-					recetteId={recette.recetteId}
-					title={recette.title}
-					type={recette.type}
-					images={recette.images}
-					position={departements.get(recette.position) || "Inconnu"}
-				/>
-			))}
-		</section>
-	</div>
-  );
+				{displayedRecettes.map((recette, index) => (
+					<Recette
+						key={index}
+						recetteId={recette.recetteId}
+						title={recette.title}
+						type={recette.type}
+						images={recette.images}
+						position={departements.get(recette.position) || "Inconnu"}
+					/>
+				))}
+
+				{/* Observer target pour infinite scroll */}
+				<div ref={observerTarget} style={{ height: '50px', marginTop: '20px' }} />
+
+				{isLoading && (
+					<div style={{ textAlign: 'center', padding: '20px' }}>
+						<p>Chargement de plus de recettes...</p>
+					</div>
+				)}
+			</section>
+		</div>
+	);
 };
 
 export default Recettes;
