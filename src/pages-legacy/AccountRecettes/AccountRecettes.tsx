@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import './AccountRecettes.css';
-import { collection, getDocs, query, where } from '@firebase/firestore';
+import { collection, getDocs, query, where, orderBy, limit, startAfter, QueryDocumentSnapshot, DocumentData } from '@firebase/firestore';
 import { db } from '@firebaseModule';
 import Recette from '@/components/Recette/Recette';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
@@ -9,6 +9,7 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { useRouter } from 'next/navigation';
 import { Message } from 'primereact/message';
+import { Paginator } from 'primereact/paginator';
 
 interface RecetteInterface {
   recetteId: string;
@@ -23,14 +24,22 @@ const AccountRecettes: React.FC = () => {
   const [recettes, setRecettes] = useState<RecetteInterface[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [first, setFirst] = useState(0);
+  const [rows] = useState(9);
+  const [totalRecords, setTotalRecords] = useState(0);
   const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-	fetchRecettes();
+	setFirst(0);
+	fetchRecettes(0);
   }, [user]);
 
-  const fetchRecettes = async () => {
+  useEffect(() => {
+	fetchRecettes(first);
+  }, [first]);
+
+  const fetchRecettes = async (pageIndex: number) => {
 	try {
 	  setLoading(true);
 	  setError(null);
@@ -41,13 +50,36 @@ const AccountRecettes: React.FC = () => {
 	  }
 
 	  const recettesCollection = collection(db, "recipes");
-	  const recettesQuery = query(
+
+	  // Fetch total count first (if this is the first page)
+	  if (pageIndex === 0) {
+		const countQuery = query(
+		  recettesCollection,
+		  where("createdBy", "==", user.uid)
+		);
+		const countSnapshot = await getDocs(countQuery);
+		setTotalRecords(countSnapshot.size);
+	  }
+
+	  // Fetch paginated results with cursor-based pagination
+	  let paginatedQuery = query(
 		recettesCollection,
-		where("createdBy", "==", user.uid)
+		where("createdBy", "==", user.uid),
+		orderBy("createdAt", "desc"),
+		limit(rows + 1)
 	  );
 
-	  const querySnapshot = await getDocs(recettesQuery);
-	  const recettesData: RecetteInterface[] = querySnapshot.docs.map((doc) => {
+	  // For pages after the first, we'd need to track cursors
+	  // For now, we'll fetch all and slice (simpler for small datasets)
+	  const querySnapshot = await getDocs(
+		query(
+		  recettesCollection,
+		  where("createdBy", "==", user.uid),
+		  orderBy("createdAt", "desc")
+		)
+	  );
+
+	  const allRecettesData: RecetteInterface[] = querySnapshot.docs.map((doc) => {
 		const data = doc.data();
 		return {
 		  title: data.title,
@@ -60,12 +92,10 @@ const AccountRecettes: React.FC = () => {
 		} as RecetteInterface;
 	  });
 
-	  // Sort by creation date, newest first
-	  recettesData.sort((a, b) => {
-		return (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0);
-	  });
-
-	  setRecettes(recettesData);
+	  // Slice for pagination
+	  const paginatedRecettes = allRecettesData.slice(pageIndex, pageIndex + rows);
+	  setRecettes(paginatedRecettes);
+	  setTotalRecords(allRecettesData.length);
 	} catch (error) {
 	  console.error("Error getting recettes: ", error);
 	  setError("Erreur lors du chargement des recettes");
@@ -119,18 +149,32 @@ const AccountRecettes: React.FC = () => {
 		  />
 		</div>
 	  ) : (
-		<div className="recipes-grid">
-		  {recettes.map((recette) => (
-			<Recette
-			  key={recette.recetteId}
-			  recetteId={recette.recetteId}
-			  title={recette.title}
-			  type={recette.type}
-			  images={recette.images}
-			  position={recette.position}
-			/>
-		  ))}
-		</div>
+		<>
+		  <div className="recipes-grid">
+			{recettes.map((recette) => (
+			  <Recette
+				key={recette.recetteId}
+				recetteId={recette.recetteId}
+				title={recette.title}
+				type={recette.type}
+				images={recette.images}
+				position={recette.position}
+			  />
+			))}
+		  </div>
+		  {totalRecords > rows && (
+			<div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
+			  <Paginator
+				first={first}
+				rows={rows}
+				totalRecords={totalRecords}
+				onPageChange={(e) => setFirst(e.first)}
+				template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+				currentPageReportTemplate={`Affichage de {first} à {last} sur {totalRecords}`}
+			  />
+			</div>
+		  )}
+		</>
 	  )}
 	</div>
   );

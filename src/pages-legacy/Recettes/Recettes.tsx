@@ -6,7 +6,7 @@ import AddRecette from '@components/AddRecette/AddRecette';
 import SkeletonLoader from '@components/SkeletonLoader/SkeletonLoader';
 
 import { db } from '@firebaseModule';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, limit, startAfter, orderBy, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { useSearchParams } from 'next/navigation';
 
 
@@ -22,18 +22,24 @@ interface RecetteData {
 const Recettes: React.FC = () => {
 
 	const [displayedRecettes, setDisplayedRecettes] = useState<RecetteData[]>([]);
-	const [allRecettes, setAllRecettes] = useState<RecetteData[]>([]);
 	const searchParams = useSearchParams();
 	const [departements, setDepartements] = useState<Map<string, string>>(new Map());
 	const [itemsPerPage] = useState(12);
-	const [currentPage, setCurrentPage] = useState(0);
 	const observerTarget = useRef<HTMLDivElement>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [hasMore, setHasMore] = useState(true);
+	const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+	const [currentFilters, setCurrentFilters] = useState({ type: '', position: '', keywords: '' });
 
 	useEffect(() => {
-		setCurrentPage(0);
 		setDisplayedRecettes([]);
-		fetchRecettes();
+		setLastVisible(null);
+		setHasMore(true);
+		const type = searchParams.get("type") || '';
+		const position = searchParams.get("position") || '';
+		const keywords = searchParams.get("keywords") || '';
+		setCurrentFilters({ type, position, keywords });
+		fetchRecettes(null, { type, position, keywords });
 	}, [searchParams.toString()]);
 
 
@@ -79,141 +85,184 @@ const Recettes: React.FC = () => {
 	}
 
 
-	const fetchRecettes = async () => {
+	const fetchRecettes = async (cursorDoc: QueryDocumentSnapshot<DocumentData> | null, filters: { type: string; position: string; keywords: string }) => {
 		try {
+			setIsLoading(true);
 			const recettesCollection = collection(db, "recipes");
+			const { keywords, type, position } = filters;
 
-			const type = searchParams.get("type");
-			const position = searchParams.get("position");
-			const keywords = searchParams.get("keywords");
+			if (keywords || type || position) {
+				let allRecettesMap = new Map<string, RecetteData>();
 
-			let allRecettesMap = new Map<string, RecetteData>();
+				if (keywords) {
+					// Chercher par mots-clés - charger plus de données pour la similarité
+					const words = keywords.split(" ");
+					let foundByKeywords = false;
 
-			if (keywords) {
-				const words = keywords.split(" ");
-				for (const word of words) {
-					const variants = generateWordVariants(word);
-					if (variants.length === 0) continue;
-					let found = false;
+					for (const word of words) {
+						const variants = generateWordVariants(word);
+						if (variants.length === 0) continue;
 
-					console.log();
-					const wordQuery = query(
-						recettesCollection,
-						where("titleKeywords", "array-contains-any", variants)
-					);
+						const wordQuery = query(
+							recettesCollection,
+							where("titleKeywords", "array-contains-any", variants),
+							orderBy("title"),
+							limit(itemsPerPage * 4) // Charge 4x plus pour avoir plus de résultats à filtrer
+						);
 
-					const querySnapshot = await getDocs(wordQuery);
-
-					if (querySnapshot.empty) {
-						console.log("⚠️ Aucun résultat Firestore pour :", variants);
+						const querySnapshot = await getDocs(wordQuery);
+						if (querySnapshot.size > 0) {
+							foundByKeywords = true;
+						}
+						querySnapshot.forEach((doc) => {
+							const data = doc.data();
+							allRecettesMap.set(doc.id, {
+								title: data.title,
+								type: data.type,
+								position: data.position,
+								recetteId: doc.id,
+								images: data.images ?? [],
+							});
+						});
 					}
-					if (!querySnapshot.empty) found = true;
 
+					// Si rien trouvé par keywords, charger un lot général pour faire de la similarité
+					if (!foundByKeywords || allRecettesMap.size < itemsPerPage) {
+						const generalQuery = query(
+							recettesCollection,
+							orderBy("title"),
+							limit(itemsPerPage * 3)
+						);
+						const generalSnapshot = await getDocs(generalQuery);
+						generalSnapshot.forEach((doc) => {
+							const data = doc.data();
+							allRecettesMap.set(doc.id, {
+								title: data.title,
+								type: data.type,
+								position: data.position,
+								recetteId: doc.id,
+								images: data.images ?? [],
+							});
+						});
+					}
+				} else {
+					const constraints = [
+						...(type ? [where("type", "==", type)] : []),
+						...(position ? [where("position", "==", position)] : []),
+						orderBy("title"),
+						limit(itemsPerPage * 2)
+					];
+
+					const baseQuery = query(recettesCollection, ...constraints);
+					const querySnapshot = await getDocs(baseQuery);
 					querySnapshot.forEach((doc) => {
 						const data = doc.data();
 						allRecettesMap.set(doc.id, {
-						title: data.title,
-						type: data.type,
-						position: data.position,
-						recetteId: doc.id,
-						images: data.images ?? [],
-						});
-					});
-
-					// Étape 2 : Fallback fuzzy si Firestore n'a rien trouvé
-					if (!found) {
-						console.log(`⚠️ Aucun match Firestore pour "${word}", fallback fuzzy`);
-						const allDocs = await getDocs(recettesCollection);
-						allDocs.forEach((doc) => {
-							const data = doc.data();
-							allRecettesMap.set(doc.id, {
 							title: data.title,
 							type: data.type,
 							position: data.position,
 							recetteId: doc.id,
 							images: data.images ?? [],
-							});
 						});
-					}
+					});
 				}
+
+				let recettesData = Array.from(allRecettesMap.values());
+
+				// Appliquer la similarité si mots-clés présents
+				if (keywords) {
+					const cleanedKeywords = keywords.toLowerCase().split(" ");
+					const SIMILARITY_THRESHOLD = 0.5;
+
+					recettesData = recettesData
+						.map((r) => {
+							const title = r.title.toLowerCase();
+							// Calculer le meilleur score de similarité pour chaque mot-clé
+							const maxScore = Math.max(
+								...cleanedKeywords.map((k) => {
+									const levScore = similarity(k, title);
+									const containsBonus = title.includes(k) ? 1.0 : 0;
+									const startsWithBonus = title.split(" ").some(word => word.startsWith(k)) ? 0.8 : 0;
+									return Math.max(levScore, containsBonus, startsWithBonus);
+								})
+							);
+							return { ...r, score: maxScore };
+						})
+						.filter((r) => r.score >= SIMILARITY_THRESHOLD)
+						.sort((a, b) => (b.score || 0) - (a.score || 0))
+						.slice(0, itemsPerPage);
+				}
+
+				// Filtrer selon le type et la position (si pas déjà filtré par requête)
+				if (type && keywords) {
+					recettesData = recettesData.filter((r) => r.type === type);
+				}
+				if (position && keywords) {
+					recettesData = recettesData.filter((r) => r.position === position);
+				}
+
+				setDisplayedRecettes(recettesData);
+				setHasMore(false); // Pas de pagination infini avec filtres pour l'instant
 			} else {
-				// Aucun mot-clé → récupérer tout
-				const querySnapshot = await getDocs(recettesCollection);
+				// Pas de filtres: utiliser la pagination Firebase optimisée
+				const firestoreQuery = query(
+					recettesCollection,
+					orderBy("title"),
+					...(cursorDoc ? [startAfter(cursorDoc)] : []),
+					limit(itemsPerPage + 1) // +1 pour vérifier s'il y a plus d'éléments
+				);
+
+				const querySnapshot = await getDocs(firestoreQuery);
+				const allRecettesMap = new Map<string, RecetteData>();
+
 				querySnapshot.forEach((doc) => {
 					const data = doc.data();
 					allRecettesMap.set(doc.id, {
-					title: data.title,
-					type: data.type,
-					position: data.position,
-					recetteId: doc.id,
-					images: data.images ?? [],
+						title: data.title,
+						type: data.type,
+						position: data.position,
+						recetteId: doc.id,
+						images: data.images ?? [],
 					});
 				});
+
+				let recettesData = Array.from(allRecettesMap.values());
+
+				// Vérifier s'il y a plus d'éléments
+				if (querySnapshot.docs.length > itemsPerPage) {
+					setLastVisible(querySnapshot.docs[itemsPerPage - 1]);
+					setHasMore(true);
+					recettesData = recettesData.slice(0, itemsPerPage);
+				} else {
+					setHasMore(false);
+				}
+
+				if (cursorDoc) {
+					// Ajouter aux résultats existants
+					setDisplayedRecettes((prev) => [...prev, ...recettesData]);
+				} else {
+					// Première page
+					setDisplayedRecettes(recettesData);
+				}
 			}
-
-			let recettesData = Array.from(allRecettesMap.values());
-			if (keywords) {
-				const cleanedKeywords = keywords.toLowerCase().split(" ");
-				const SIMILARITY_THRESHOLD = 0.6;
-
-				recettesData = recettesData
-					.map((r) => {
-					const title = r.title.toLowerCase();
-					const maxScore = Math.max(
-						...cleanedKeywords.map((k) => similarity(k, title))
-					);
-					return { ...r, score: maxScore };
-					})
-					.filter(
-					(r) =>
-						r.score >= SIMILARITY_THRESHOLD ||
-						cleanedKeywords.some((k) => r.title.toLowerCase().includes(k))
-					)
-					.sort((a, b) => (b.score || 0) - (a.score || 0));
-
-				console.log("Résultats filtrés :", recettesData);
-			}
-
-			// Filtrer selon le type et la position après récupération
-			if (type) {
-				recettesData = recettesData.filter((r) => r.type === type);
-			}
-			if (position) {
-				recettesData = recettesData.filter((r) => r.position === position);
-			}
-
-			setAllRecettes(recettesData);
-			setCurrentPage(0);
-			setDisplayedRecettes(recettesData.slice(0, itemsPerPage));
 		} catch (error) {
 			console.error("Error getting recettes: ", error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	// Charger plus de recettes au scroll
 	const loadMoreRecettes = useCallback(() => {
-		if (isLoading) return;
-
-		const nextPage = currentPage + 1;
-		const startIdx = nextPage * itemsPerPage;
-		const endIdx = startIdx + itemsPerPage;
-
-		if (startIdx < allRecettes.length) {
-			setIsLoading(true);
-			// Simuler un délai pour le chargement
-			setTimeout(() => {
-				setDisplayedRecettes((prev) => [...prev, ...allRecettes.slice(startIdx, endIdx)]);
-				setCurrentPage(nextPage);
-				setIsLoading(false);
-			}, 300);
-		}
-	}, [currentPage, allRecettes, itemsPerPage, isLoading]);
+		if (isLoading || !hasMore || !lastVisible) return;
+		fetchRecettes(lastVisible, currentFilters);
+	}, [isLoading, hasMore, lastVisible, currentFilters]);
 
 	// Intersection Observer pour le infinite scroll
 	useEffect(() => {
 		const observer = new IntersectionObserver(
 			(entries) => {
-				if (entries[0].isIntersecting && !isLoading && currentPage * itemsPerPage + itemsPerPage < allRecettes.length) {
+				if (entries[0].isIntersecting && !isLoading && hasMore) {
 					loadMoreRecettes();
 				}
 			},
@@ -229,7 +278,7 @@ const Recettes: React.FC = () => {
 				observer.unobserve(observerTarget.current);
 			}
 		};
-	}, [loadMoreRecettes, isLoading, currentPage, allRecettes.length, itemsPerPage]);
+	}, [loadMoreRecettes, isLoading, hasMore]);
 
 	useEffect(() => {
 		fetch("https://geo.api.gouv.fr/departements")
@@ -248,7 +297,7 @@ const Recettes: React.FC = () => {
 				<AddRecette />
 			</section>
 			<section className='recettes_section'>
-				{displayedRecettes.length === 0 && allRecettes.length === 0 && (
+				{displayedRecettes.length === 0 && !isLoading && (
 					Array.from({ length: 6 }).map((_, i) => (
 						<SkeletonLoader key={i} type="recipe-card" />
 					))

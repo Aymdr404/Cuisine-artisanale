@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './RecettesAdmin.css';
 import { db } from '@firebaseModule';
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc, getDoc, addDoc, updateDoc } from '@firebase/firestore';
+import { collection, onSnapshot, orderBy, query, deleteDoc, doc, getDoc, addDoc, updateDoc, limit } from '@firebase/firestore';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
@@ -14,6 +14,7 @@ import { Tag } from 'primereact/tag';
 import { Image } from 'primereact/image';
 import { toastMessages } from '@/utils/toast';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
+import { Paginator } from 'primereact/paginator';
 
 interface RecipePart {
   title: string;
@@ -45,10 +46,13 @@ interface RecetteInterface {
 
 const RecettesAdmin: React.FC = () => {
   const [recettes, setRecettes] = useState<RecetteInterface[]>([]);
+  const [displayedRecettes, setDisplayedRecettes] = useState<RecetteInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const [sortField, setSortField] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [first, setFirst] = useState(0);
+  const [rows] = useState(6);
   const toast = useRef<Toast>(null);
   const { showToast } = useToast();
 
@@ -64,7 +68,8 @@ const RecettesAdmin: React.FC = () => {
 	  setLoading(true);
 	  const recettesQuery = query(
 		collection(db, "recipesRequest"),
-		orderBy("createdAt", "desc")
+		orderBy("createdAt", "desc"),
+		limit(100) // Fetch max 100 for admin (reasonable limit)
 	  );
 
 	  const unsubscribe = onSnapshot(recettesQuery, (querySnapshot) => {
@@ -79,7 +84,20 @@ const RecettesAdmin: React.FC = () => {
 		  } as RecetteInterface;
 		});
 
+		// Sort based on current sort settings
+		recettesData.sort((a, b) => {
+		  let aValue: any = sortField === 'createdAt' ? a.createdAt?.getTime() : a[sortField as keyof RecetteInterface];
+		  let bValue: any = sortField === 'createdAt' ? b.createdAt?.getTime() : b[sortField as keyof RecetteInterface];
+
+		  if (sortOrder === 'asc') {
+			return aValue > bValue ? 1 : -1;
+		  } else {
+			return aValue < bValue ? 1 : -1;
+		  }
+		});
+
 		setRecettes(recettesData);
+		setDisplayedRecettes(recettesData.slice(first, first + rows));
 		setLoading(false);
 	  }, (error) => {
 		console.error("Error getting recettes:", error);
@@ -103,6 +121,11 @@ const RecettesAdmin: React.FC = () => {
 	const unsubscribe = handleFetchRecettes();
 	return () => unsubscribe();
   }, []);
+
+  // Update displayed recettes when first changes or recettes changes
+  useEffect(() => {
+	setDisplayedRecettes(recettes.slice(first, first + rows));
+  }, [first, recettes]);
 
   const handleAcceptRequest = async (recette: RecetteInterface) => {
 	try {
@@ -382,22 +405,26 @@ const RecettesAdmin: React.FC = () => {
 	);
   }
 
+  const filteredRecettes = recettes.filter(recette =>
+	recette.title.toLowerCase().includes(globalFilter.toLowerCase()) ||
+	recette.type.toLowerCase().includes(globalFilter.toLowerCase()) ||
+	recette.createdBy.toLowerCase().includes(globalFilter.toLowerCase())
+  );
+
   return (
 	<div className="recipes-admin">
 	  <Toast ref={toast} />
 	  <ConfirmDialog />
 
 	  <DataView
-		value={recettes.filter(recette =>
-		  recette.title.toLowerCase().includes(globalFilter.toLowerCase()) ||
-		  recette.type.toLowerCase().includes(globalFilter.toLowerCase()) ||
-		  recette.createdBy.toLowerCase().includes(globalFilter.toLowerCase())
-		)}
+		value={filteredRecettes}
 		layout="grid"
 		header={header()}
 		itemTemplate={itemTemplate}
 		paginator
 		rows={6}
+		first={first}
+		onPage={(e) => setFirst(e.first)}
 		emptyMessage="Aucune recette trouvée"
 	  />
 	</div>

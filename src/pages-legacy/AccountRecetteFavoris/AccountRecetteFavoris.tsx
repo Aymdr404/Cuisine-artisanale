@@ -9,6 +9,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Message } from 'primereact/message';
 import { Button } from 'primereact/button';
 import { useRouter } from 'next/navigation';
+import { Paginator } from 'primereact/paginator';
 
 interface RecetteInterface {
   recetteId: string;
@@ -20,16 +21,30 @@ interface RecetteInterface {
 
 const AccountRecetteFavoris: React.FC = () => {
   const [recettes, setRecettes] = useState<RecetteInterface[]>([]);
+  const [allRecettes, setAllRecettes] = useState<RecetteInterface[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [first, setFirst] = useState(0);
+  const [rows] = useState(9);
+  const [totalRecords, setTotalRecords] = useState(0);
   const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-	if (user) fetchRecettes();
+	if (user) {
+	  setFirst(0);
+	  fetchRecettes(0);
+	}
   }, [user]);
 
-  const fetchRecettes = async () => {
+  useEffect(() => {
+	if (allRecettes.length > 0) {
+	  const paginatedRecettes = allRecettes.slice(first, first + rows);
+	  setRecettes(paginatedRecettes);
+	}
+  }, [first]);
+
+  const fetchRecettes = async (pageIndex: number) => {
 	try {
 	  setLoading(true);
 	  setError(null);
@@ -52,36 +67,47 @@ const AccountRecetteFavoris: React.FC = () => {
 	  const likedRecipesIds: string[] = userData.likedRecipes || [];
 
 	  if (likedRecipesIds.length === 0) {
+		setAllRecettes([]);
 		setRecettes([]);
+		setTotalRecords(0);
 		return;
 	  }
 
-	  // Récupérer toutes les recettes correspondant aux IDs
+	  // Récupérer toutes les recettes correspondant aux IDs en chunks de 10
 	  const recipesCollection = collection(db, "recipes");
-	  const recettesQuery = query(
-		recipesCollection,
-		where("__name__", "in", likedRecipesIds) // on peut faire max 10 IDs par query
-	  );
+	  const allRecettesData: RecetteInterface[] = [];
 
-	  const querySnapshot = await getDocs(recettesQuery);
+	  for (let i = 0; i < likedRecipesIds.length; i += 10) {
+		const chunk = likedRecipesIds.slice(i, i + 10);
+		const recettesQuery = query(
+		  recipesCollection,
+		  where("__name__", "in", chunk)
+		);
 
-	  const recettesData: RecetteInterface[] = querySnapshot.docs.map(doc => {
-		const data = doc.data();
-		return {
-		  recetteId: doc.id,
-		  title: data.title,
-		  type: data.type,
-		  images: data.images,
-		  position: data.position
-		};
-	  });
+		const querySnapshot = await getDocs(recettesQuery);
+		querySnapshot.docs.forEach(doc => {
+		  const data = doc.data();
+		  allRecettesData.push({
+			recetteId: doc.id,
+			title: data.title,
+			type: data.type,
+			images: data.images,
+			position: data.position
+		  });
+		});
+	  }
 
-	  // Trier selon l’ordre des IDs dans likedRecipes (optionnel)
-	  recettesData.sort((a, b) => {
+	  // Trier selon l'ordre des IDs dans likedRecipes
+	  allRecettesData.sort((a, b) => {
 		return likedRecipesIds.indexOf(a.recetteId) - likedRecipesIds.indexOf(b.recetteId);
 	  });
 
-	  setRecettes(recettesData);
+	  setAllRecettes(allRecettesData);
+	  setTotalRecords(allRecettesData.length);
+
+	  // Afficher la première page
+	  const paginatedRecettes = allRecettesData.slice(pageIndex, pageIndex + rows);
+	  setRecettes(paginatedRecettes);
 
 	} catch (error) {
 	  console.error("Erreur lors du chargement des recettes favorites: ", error);
@@ -136,18 +162,32 @@ const AccountRecetteFavoris: React.FC = () => {
 		  />
 		</div>
 	  ) : (
-		<div className="favorites-grid">
-		  {recettes.map((recette) => (
-			<Recette
-			  key={recette.recetteId}
-			  recetteId={recette.recetteId}
-			  title={recette.title}
-			  type={recette.type}
-			  images={recette.images}
-			  position={recette.position}
-			/>
-		  ))}
-		</div>
+		<>
+		  <div className="favorites-grid">
+			{recettes.map((recette) => (
+			  <Recette
+				key={recette.recetteId}
+				recetteId={recette.recetteId}
+				title={recette.title}
+				type={recette.type}
+				images={recette.images}
+				position={recette.position}
+			  />
+			))}
+		  </div>
+		  {totalRecords > rows && (
+			<div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
+			  <Paginator
+				first={first}
+				rows={rows}
+				totalRecords={totalRecords}
+				onPageChange={(e) => setFirst(e.first)}
+				template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+				currentPageReportTemplate={`Affichage de {first} à {last} sur {totalRecords}`}
+			  />
+			</div>
+		  )}
+		</>
 	  )}
 	</div>
   );

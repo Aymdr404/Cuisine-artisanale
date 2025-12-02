@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from 'react';
 import './PostsAdmin.css';
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, deleteDoc, doc, addDoc, limit } from 'firebase/firestore';
 import { db } from '@firebaseModule';
 import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
@@ -12,6 +12,7 @@ import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { toastMessages } from '@/utils/toast';
 import { useToast } from '@/contexts/ToastContext/ToastContext';
+import { Paginator } from 'primereact/paginator';
 
 interface Post {
   id: string;
@@ -28,6 +29,8 @@ const PostsAdmin: React.FC = () => {
   const [globalFilter, setGlobalFilter] = useState<string>('');
   const [sortField, setSortField] = useState<string>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [first, setFirst] = useState(0);
+  const [rows] = useState(9);
   const toast = useRef<Toast>(null);
   const { showToast } = useToast();
 
@@ -54,7 +57,8 @@ const PostsAdmin: React.FC = () => {
 	  setLoading(true);
 	  const postsQuery = query(
 		collection(db, "postsRequest"),
-		orderBy("createdAt", "desc")
+		orderBy("createdAt", "desc"),
+		limit(100) // Fetch max 100 for admin (reasonable limit)
 	  );
 
 	  const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
@@ -68,6 +72,18 @@ const PostsAdmin: React.FC = () => {
 			author: data.author,
 			status: data.status
 		  } as Post;
+		});
+
+		// Sort based on current sort settings
+		postsData.sort((a, b) => {
+		  let aValue: any = sortField === 'createdAt' ? a.createdAt?.getTime() : a[sortField as keyof Post];
+		  let bValue: any = sortField === 'createdAt' ? b.createdAt?.getTime() : b[sortField as keyof Post];
+
+		  if (sortOrder === 'asc') {
+			return aValue > bValue ? 1 : -1;
+		  } else {
+			return aValue < bValue ? 1 : -1;
+		  }
 		});
 
 		setPosts(postsData);
@@ -288,22 +304,26 @@ const PostsAdmin: React.FC = () => {
 	);
   }
 
+  const filteredPosts = posts.filter(post =>
+	post.title.toLowerCase().includes(globalFilter.toLowerCase()) ||
+	post.content.toLowerCase().includes(globalFilter.toLowerCase()) ||
+	post.author?.toLowerCase().includes(globalFilter.toLowerCase())
+  );
+
   return (
 	<div className="posts-admin">
 	  <Toast ref={toast} />
 	  <ConfirmDialog />
 
 	  <DataView
-		value={posts.filter(post =>
-		  post.title.toLowerCase().includes(globalFilter.toLowerCase()) ||
-		  post.content.toLowerCase().includes(globalFilter.toLowerCase()) ||
-		  post.author?.toLowerCase().includes(globalFilter.toLowerCase())
-		)}
+		value={filteredPosts}
 		layout="grid"
 		header={header()}
 		itemTemplate={itemTemplate}
 		paginator
 		rows={9}
+		first={first}
+		onPage={(e) => setFirst(e.first)}
 		emptyMessage="Aucun post trouvé"
 	  />
 	</div>
