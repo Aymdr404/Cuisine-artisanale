@@ -16,6 +16,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { shareRecipe } from '@/services/ShareService/ShareService';
 import { exportRecipePDF, printRecipe } from '@/services/ExportService/ExportService';
 import SkeletonLoader from '@components/SkeletonLoader/SkeletonLoader';
+import RecipeMetadata from '@/app/recettes/recipe-metadata';
 
 interface RecipePart {
   title: string;
@@ -509,6 +510,13 @@ const RecetteDesc: React.FC = () => {
 
   return (
 	<>
+		{recette && (
+			<RecipeMetadata
+				title={recette.title}
+				type={recette.type}
+				image={recette.images?.[0]}
+			/>
+		)}
 		<div className="RecetteDesc">
 			<ConfirmDialog />
 			<div className="recette-desc-button-container">
