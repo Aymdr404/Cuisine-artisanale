@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './RecetteDesc.css';
 import VideoEmbed from '@components/VideoEmbed/VideoEmbed';
+import Image from 'next/image';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, getDoc, deleteDoc, onSnapshot, query, where, getDocs, collection, orderBy, serverTimestamp, addDoc } from '@firebase/firestore';
@@ -638,9 +639,13 @@ const RecetteDesc: React.FC = () => {
 					{recette?.images && recette.images.length > 0 && (
 					<div className="recette-desc-gallery">
 						<div className="recette-desc-main-image">
-						<img
+						<Image
 							src={recette.images[currentImageIndex]}
 							alt={`${recette.title} - Image ${currentImageIndex + 1}`}
+							width={600}
+							height={400}
+							priority={currentImageIndex === 0}
+							sizes="(max-width: 768px) 100vw, 50vw"
 						/>
 						</div>
 						{recette.images.length > 1 && (
@@ -651,9 +656,12 @@ const RecetteDesc: React.FC = () => {
 								className={`recette-desc-thumbnail ${index === currentImageIndex ? 'active' : ''}`}
 								onClick={() => handleImageClick(index)}
 							>
-								<img
+								<Image
 								src={image}
 								alt={`${recette.title} - Thumbnail ${index + 1}`}
+								width={100}
+								height={100}
+								sizes="100px"
 								/>
 							</div>
 							))}
@@ -782,10 +790,14 @@ const RecetteDesc: React.FC = () => {
 								style={{ cursor: 'pointer' }}
 							>
 								{recipe.images && recipe.images.length > 0 && (
-									<img
+									<Image
 										src={recipe.images[0]}
 										alt={recipe.title}
 										className="similar-recipe-image"
+										width={300}
+										height={200}
+										loading="lazy"
+										sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 									/>
 								)}
 								<div className="similar-recipe-content">

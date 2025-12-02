@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import './Recette.css';
 import { Button } from 'primereact/button';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import { toggleLikeRecipes, unlikeRecipes, countRecipeLikes, hasUserLikedRecipe } from '@/services/RecetteService/RecetteService';
 import { addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, query, where, orderBy } from '@firebase/firestore';
@@ -127,13 +128,14 @@ export const Recette: React.FC<RecetteProps> = ({recetteId, title, type, fromReq
 		}
 
 		return (
-			<img
+			<Image
 				src={images[0]}
 				alt={title}
 				className="recipe-image"
 				width={600}
 				height={400}
 				loading="lazy"
+				sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 			/>
 		);
 	};

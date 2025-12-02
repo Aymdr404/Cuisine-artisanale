@@ -4,6 +4,7 @@ import './Actualites.css';
 import { db } from '@firebaseModule';
 import { doc, getDoc} from 'firebase/firestore';
 import Link from 'next/link';
+import Image from 'next/image';
 import SkeletonLoader from '@/components/SkeletonLoader/SkeletonLoader';
 
 interface RecetteData {
@@ -68,12 +69,14 @@ const Actualites: React.FC = () => {
 		<h2>🥇 Recette de la semaine</h2>
 		<div className="featured-card">
 			{featuredRecette.images?.[0] && (
-			<img
+			<Image
 				src={featuredRecette.images[0]}
 				alt={featuredRecette.title}
 				className="featured-img"
 				height={400}
 				width={600}
+				priority
+				sizes="(max-width: 768px) 100vw, 100vw"
 			/>
 			)}
 			<div className="featured-content">
