@@ -1,12 +1,8 @@
 import type { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import Providers from './providers';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
+// Load critical CSS only - PrimeReact/PrimeIcons will be lazy-loaded in Providers
 import '@/styles/theme.css';
-import '@/styles/admin.css';
-import '@/styles/dialog.css';
-import '@/styles/toast.css';
 import '@/styles/mobile.css';
 import '@/styles/accessibility.css';
 import '@/index.css';

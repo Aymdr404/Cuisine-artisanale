@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './EditRecette.css';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { doc, getDoc, updateDoc } from '@firebase/firestore';
 import { db, storage } from '@firebaseModule';
 import { Button } from 'primereact/button';
@@ -31,8 +31,9 @@ interface Ingredient {
 }
 
 const EditRecette: React.FC = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams?.get('id');
 
   const [recette, setRecette] = useState<Recette | null>(null);
   const [title, setTitle] = useState<string>('');
@@ -101,11 +102,7 @@ const EditRecette: React.FC = () => {
 
 	try {
 	  await updateDoc(recetteRef, updatedRecette);
-	  if (window.history.length > 1) {
-		navigate(-1);
-	  } else {
-		navigate('/recettes');
-	  }
+	  router.back();
 	} catch (error) {
 	  console.error("Erreur lors de la mise à jour de la recette :", error);
 	}
