@@ -6,7 +6,7 @@ import "./RecetteMap.css";
 import geojsonData from '@assets/departementsGeoJson.json';
 import departementsCoordinates from '@assets/departementsCoord.json';
 
-import { MapContainer, Marker, Polygon, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Polygon, Popup, TileLayer, Polyline, useMap } from 'react-leaflet';
 import L from "leaflet";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -32,12 +32,24 @@ interface DepartementFeature {
   };
 }
 
+// Configuration du Spiderifier
+const SPIDERIFIER_CONFIG = {
+  radius: 0.1, // Distance en degrés depuis le centre (~10km)
+  // Ajuste cette valeur pour changer la taille du cercle :
+  // 0.01 = très petit (1km)
+  // 0.02 = petit (2km)
+  // 0.04 = moyen (4km)
+  // 0.06 = grand (6km)
+  // 0.1 = très grand (10km) - défaut
+};
+
 const RecetteMap: React.FC = () => {
   const [recettes, setRecettes] = useState<Recette[]>([]);
   const [hoveredRecette, setHoveredRecette] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [selectedDepartement, setSelectedDepartement] = useState<string | null>(null);
+  const [expandedClusters, setExpandedClusters] = useState<Set<string>>(new Set());
 
   const db = getFirestore();
   const router = useRouter();
@@ -81,7 +93,7 @@ const RecetteMap: React.FC = () => {
   };
 
 	function levenshtein(a: string, b: string): number {
-		const matrix = [];
+		const matrix: number[][] = [];
 		for (let i = 0; i <= b.length; i++) matrix[i] = [i];
 		for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
 
@@ -116,7 +128,7 @@ const RecetteMap: React.FC = () => {
 			}
 		}
 
-		// Si la distance est petite (1 ou 2 lettres d’écart), on corrige
+		// Si la distance est petite (1 ou 2 lettres d'écart), on corrige
 		if (bestScore <= 2) {
 			// console.log(`🔤 Correction "${word}" → "${bestMatch}"`);
 			return bestMatch;
@@ -175,6 +187,224 @@ const RecetteMap: React.FC = () => {
 	  iconSize: [radius * 2, radius * 2],
 	  iconAnchor: [radius, radius],
 	});
+  };
+
+  // Group recettes by their position (département)
+  const groupedRecettes = useMemo(() => {
+	const groups: { [key: string]: Recette[] } = {};
+	filteredRecettes.forEach((recette) => {
+	  if (!groups[recette.position]) {
+		groups[recette.position] = [];
+	  }
+	  groups[recette.position].push(recette);
+	});
+	return groups;
+  }, [filteredRecettes]);
+
+  // Calculate spiderfy positions for markers at the same location
+  const getSpiderfyPositions = (count: number, index: number, centerLat: number, centerLng: number) => {
+	if (count === 1) return [centerLat, centerLng];
+
+	const radius = SPIDERIFIER_CONFIG.radius;
+	const angle = (index * 360) / count;
+	const radians = (angle * Math.PI) / 180;
+
+	// Calcul du décalage en coordonnées lat/lng
+	const latOffset = radius * Math.cos(radians);
+	const lngOffset = radius * Math.sin(radians) / Math.cos((centerLat * Math.PI) / 180);
+
+	return [centerLat + latOffset, centerLng + lngOffset];
+  };
+
+  const toggleCluster = (position: string) => {
+	const newExpanded = new Set(expandedClusters);
+	if (newExpanded.has(position)) {
+	  newExpanded.delete(position);
+	} else {
+	  newExpanded.add(position);
+	}
+	setExpandedClusters(newExpanded);
+  };
+
+  // Composant enfant pour gérer le zoom et le contenu de la map
+  const MapContent = () => {
+	const map = useMap();
+
+	const handleClusterClick = (position: string, centerCoord: [number, number], recetteCount: number) => {
+	  if (recetteCount > 1) {
+		// Zoom et centre sur le cluster
+		map.flyTo(centerCoord, 10, {
+		  duration: 1,
+		});
+		toggleCluster(position);
+	  }
+	};
+
+	return (
+	  <>
+		<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+		{geojsonData.features.map((departement, index) => (
+		  <Polygon
+			key={index}
+			positions={getDepartementPolygon(departement.properties.nom)}
+			pathOptions={{
+			  color: selectedDepartement === departement.properties.code ? '#ff7800' : '#3388ff',
+			  weight: selectedDepartement === departement.properties.code ? 2 : 1,
+			  fillOpacity: 0.2
+			}}
+		  >
+			<Popup>{departement.properties.nom}</Popup>
+		  </Polygon>
+		))}
+
+		{Object.entries(groupedRecettes).map(([position, positionRecettes]) => {
+		  const coordEntry = Object.entries(departementsCoordinates).find(
+			([code]) => code === position
+		  );
+		  if (!coordEntry) return null;
+
+		  const centerCoord = coordEntry[1] as [number, number];
+		  if (!Array.isArray(centerCoord) || centerCoord.length !== 2) return null;
+
+		  const isExpanded = expandedClusters.has(position);
+		  const recetteCount = positionRecettes.length;
+
+		  // Show cluster marker if not expanded or single recette
+		  if (!isExpanded) {
+			return (
+			  <Marker
+				key={`cluster-${position}`}
+				position={centerCoord}
+				icon={L.divIcon({
+				  html: `
+					<div class="cluster-marker" style="cursor: pointer;">
+					  <div class="cluster-marker-inner">
+						${recetteCount > 1 ? recetteCount : ''}
+					  </div>
+				  </div>
+					`,
+				  className: recetteCount > 1 ? 'cluster-group' : 'cluster-single',
+				  iconSize: recetteCount > 1 ? [50, 50] : [32, 32],
+				  iconAnchor: recetteCount > 1 ? [25, 25] : [16, 16],
+				})}
+				eventHandlers={{
+				  click: () => handleClusterClick(position, centerCoord, recetteCount),
+				}}
+			  >
+				{recetteCount === 1 && (
+				  <Popup
+					closeButton={true}
+					closeOnClick={false}
+				  >
+					<div className="recipe-popup">
+					  {positionRecettes[0].images?.[0] && (
+						<img src={positionRecettes[0].images[0]} alt={positionRecettes[0].title} />
+					  )}
+					  <h3>{positionRecettes[0].title}</h3>
+					  <p className="recipe-type">{positionRecettes[0].type}</p>
+					  {positionRecettes[0].description && (
+						<p className="recipe-description">{positionRecettes[0].description}</p>
+					  )}
+					  <Button
+						icon="pi pi-eye"
+						label="Voir la recette"
+						onClick={(e) => {
+						  e.stopPropagation();
+						  router.push(`/recettes?id=${positionRecettes[0].recetteId}`);
+						}}
+					  />
+					</div>
+				  </Popup>
+				)}
+			  </Marker>
+			);
+		  }
+
+		  // Show expanded spider legs with individual recettes
+		  return (
+			<React.Fragment key={`expanded-${position}`}>
+			  {/* Center cluster marker */}
+			  <Marker
+				position={centerCoord}
+				icon={L.divIcon({
+				  html: `
+					<div class="cluster-marker active" style="cursor: pointer;">
+					  <div class="cluster-marker-inner">
+						${recetteCount}
+					  </div>
+				  </div>
+					`,
+				  className: 'cluster-group active',
+				  iconSize: [50, 50],
+				  iconAnchor: [25, 25],
+				})}
+				eventHandlers={{
+				  click: () => handleClusterClick(position, centerCoord, recetteCount),
+				}}
+			  />
+
+			  {/* Spider leg lines and markers */}
+			  {positionRecettes.map((recette, index) => {
+				const spiderfyCoord = getSpiderfyPositions(
+				  recetteCount,
+				  index,
+				  centerCoord[0],
+				  centerCoord[1]
+				) as [number, number];
+
+				return (
+				  <React.Fragment key={recette.recetteId}>
+					{/* Spider leg line */}
+					<Polyline
+					  positions={[centerCoord, spiderfyCoord]}
+					  pathOptions={{
+						color: '#ff7800',
+						weight: 2,
+						opacity: 0.4,
+					  }}
+					/>
+					{/* Individual marker */}
+					<Marker
+					  position={spiderfyCoord}
+					  icon={createMarkerIcon(hoveredRecette === recette.recetteId)}
+					  eventHandlers={{
+						mouseover: () => setHoveredRecette(recette.recetteId),
+						// mouseout: () => setHoveredRecette(null),
+					  }}
+					>
+					  <Popup
+						closeButton={true}
+						closeOnClick={false}
+					  >
+						<div className="recipe-popup">
+						  {recette.images?.[0] && (
+							<img src={recette.images[0]} alt={recette.title} />
+						  )}
+						  <h3>{recette.title}</h3>
+						  <p className="recipe-type">{recette.type}</p>
+						  {recette.description && (
+							<p className="recipe-description">{recette.description}</p>
+						  )}
+						  <Button
+							icon="pi pi-eye"
+							label="Voir la recette"
+							onClick={(e) => {
+							  e.stopPropagation();
+							  router.push(`/recettes?id=${recette.recetteId}`);
+							}}
+						  />
+						</div>
+					  </Popup>
+					</Marker>
+				  </React.Fragment>
+				);
+			  })}
+			</React.Fragment>
+		  );
+		})}
+	  </>
+	);
   };
 
   return (
@@ -246,64 +476,10 @@ const RecetteMap: React.FC = () => {
 		<MapContainer
 		  center={[46.603354, 1.888334]}
 		  zoom={6}
-		  scrollWheelZoom={false}
+		  scrollWheelZoom={true}
 		  className="map-container"
 		>
-		  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-		  {geojsonData.features.map((departement, index) => (
-			<Polygon
-			  key={index}
-			  positions={getDepartementPolygon(departement.properties.nom)}
-			  pathOptions={{
-				color: selectedDepartement === departement.properties.code ? '#ff7800' : '#3388ff',
-				weight: selectedDepartement === departement.properties.code ? 2 : 1,
-				fillOpacity: 0.2
-			  }}
-			>
-			  <Popup>{departement.properties.nom}</Popup>
-			</Polygon>
-		  ))}
-
-		  {filteredRecettes.map((recette) => {
-			const coordEntry = Object.entries(departementsCoordinates).find(
-			  ([code]) => code === recette.position
-			);
-			if (!coordEntry) return null;
-
-			const coord = coordEntry[1] as [number, number];
-			if (!Array.isArray(coord) || coord.length !== 2) return null;
-
-			return (
-			  <Marker
-				key={recette.recetteId}
-				position={coord}
-				icon={createMarkerIcon(hoveredRecette === recette.recetteId)}
-				eventHandlers={{
-				  mouseover: () => setHoveredRecette(recette.recetteId),
-				  mouseout: () => setHoveredRecette(null),
-				}}
-			  >
-				<Popup>
-				  <div className="recipe-popup">
-					{recette.images?.[0] && (
-					  <img src={recette.images[0]} alt={recette.title} />
-					)}
-					<h3>{recette.title}</h3>
-					<p className="recipe-type">{recette.type}</p>
-					{recette.description && (
-					  <p className="recipe-description">{recette.description}</p>
-					)}
-					<Button
-					  icon="pi pi-eye"
-					  label="Voir la recette"
-					  onClick={() => router.push(`/recettes?id=${recette.recetteId}`)}
-					/>
-				  </div>
-				</Popup>
-			  </Marker>
-			);
-		  })}
+		  <MapContent />
 		</MapContainer>
 	  </main>
 	</div>
