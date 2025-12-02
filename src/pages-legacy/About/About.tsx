@@ -4,6 +4,7 @@ import './About.css';
 import LienUtiles from '@components/LienUtiles/LienUtiles';
 import { Card } from 'primereact/card';
 import { Divider } from 'primereact/divider';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
 const About: React.FC = () => {
   const features = [
@@ -26,6 +27,7 @@ const About: React.FC = () => {
 
   return (
 	<div className="about-container">
+	  <Breadcrumb />
 	  <section className="about-hero">
 		<h1>Bienvenue sur <span className="highlight">Cuisine Artisanale</span></h1>
 		<p className="subtitle">Où la passion de la cuisine rencontre la technologie moderne</p>

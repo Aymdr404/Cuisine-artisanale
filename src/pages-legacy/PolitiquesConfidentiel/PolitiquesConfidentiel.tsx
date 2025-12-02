@@ -1,10 +1,12 @@
 "use client";
 import React from 'react';
 import './PolitiquesConfidentiel.css';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
 const PolitiquesConfidentiel: React.FC = () => {
   return (
 	<div className="PolitiquesConfidentiel-container ">
+	  <Breadcrumb />
 	  <h1>Politique de confidentialité</h1>
 
 	  <section>

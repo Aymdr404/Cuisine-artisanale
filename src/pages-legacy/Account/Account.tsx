@@ -7,6 +7,8 @@ import { usePathname } from 'next/navigation';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
+import '@/components/Breadcrumb/Breadcrumb.css';
 
 type AccountProps = {
 	children: ReactNode;
@@ -44,6 +46,7 @@ const Account: React.FC<AccountProps> = ({ children }) => {
 
 	return (
 		<div className="account-page">
+		<Breadcrumb />
 		<div className="account-container">
 			<Card className="panel-left">
 			<div className="user-profile">

@@ -1,10 +1,12 @@
 "use client";
 import React from 'react';
 import './LegalMentions.css';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
 const LegalMentions: React.FC = () => {
   return (
 	<div className="LegalMentions-container">
+	  <Breadcrumb />
 	  <h1>Mentions légales</h1>
 
 	  <section>

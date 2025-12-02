@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import './AddRecetteForm.css';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
 
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
@@ -405,6 +406,7 @@ const AddRecetteForm: React.FC = () => {
 
   return (
 	<div className="add-recipe-container">
+	  	<Breadcrumb />
 	  	<header className="add-recipe-header">
 			<h1>Composer votre propre recette</h1>
 			<p className="subtitle">Les champs marqués d'un * sont obligatoires</p>

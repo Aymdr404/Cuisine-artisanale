@@ -6,6 +6,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { doc, getDoc, updateDoc } from '@firebase/firestore';
 import { db, storage } from '@firebaseModule';
 import { Button } from 'primereact/button';
+import Breadcrumb from '@/components/Breadcrumb/Breadcrumb';
+import '@/components/Breadcrumb/Breadcrumb.css';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
@@ -207,6 +209,7 @@ function EditRecetteContent() {
 
   return (
 	<div className="EditRecette">
+	  <Breadcrumb />
 	  <h1>Editer la recette</h1>
 	  {recette && (
 		<div>
