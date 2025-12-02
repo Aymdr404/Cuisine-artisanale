@@ -1,318 +1,83 @@
 /* ============================================
-   ACCESSIBILITY & CONTRAST IMPROVEMENTS
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================
+
+   Ce fichier complète theme.css avec des
+   améliorations d'accessibilité (focus states,
+   navigation clavier, ARIA).
+
+   ⚠️ IMPORTANT: Les couleurs viennent de theme.css
+   Ceci ajoute SEULEMENT les focus states et interactions
+*/
+
+/* ============================================
+   FOCUS STATES - Navigation clavier
    ============================================ */
 
-/* Ensure proper color contrast ratios (WCAG AA: 4.5:1 for text) */
-
-/* Base text colors - improved contrast */
-:root {
-  --text-primary: #1a1a1a;
-  --text-secondary: #333333;
-  --text-tertiary: #555555;
-  --background-light: #ffffff;
-  --background-alt: #f5f5f5;
-  --border-color: #cccccc;
-  --accent-color: #e74c3c;
-  --link-color: #0066cc;
-  --link-visited: #663399;
-  --link-hover: #004499;
-  --link-active: #002266;
-  --success-color: #27ae60;
-  --error-color: #c0392b;
-  --warning-color: #d68910;
-  --info-color: #2980b9;
-}
-
-[data-theme="dark"] {
-  --text-primary: #f5f5f5;
-  --text-secondary: #e0e0e0;
-  --text-tertiary: #b0b0b0;
-  --background-light: #1a1a1a;
-  --background-alt: #2a2a2a;
-  --border-color: #444444;
-  --accent-color: #ff6b5b;
-  --link-color: #5ba3ff;
-  --link-visited: #b8a8ff;
-  --link-hover: #7eb3ff;
-  --link-active: #9fcaff;
-  --success-color: #52d273;
-  --error-color: #ff5252;
-  --warning-color: #ffb74d;
-  --info-color: #5ba3ff;
-}
-
-/* Ensure text has sufficient contrast */
-body {
-  color: var(--text-primary);
-  background-color: var(--background-light);
-}
-
-p, span, li, label, button {
-  color: var(--text-primary);
-}
-
-/* Heading contrasts */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-/* Link colors with sufficient contrast */
-a {
-  color: var(--link-color);
-  text-decoration: underline;
-}
-
-a:visited {
-  color: var(--link-visited);
-}
-
-a:hover {
-  color: var(--link-hover);
-}
-
-a:active {
-  color: var(--link-active);
-}
-
-/* Form elements - improved contrast */
-input, textarea, select {
-  background-color: var(--background-light);
-  color: var(--text-primary);
-  border: 2px solid var(--border-color);
-  border-radius: 4px;
-  padding: 8px 12px;
-  font-size: 16px;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: 3px solid var(--link-color);
-  outline-offset: 2px;
-  border-color: var(--link-color);
-}
-
-input:disabled, textarea:disabled, select:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Button contrast improvements */
-button, .p-button {
-  min-height: 44px;
-  font-size: 16px;
-  border-radius: 4px;
-}
-
-button:focus, .p-button:focus {
-  outline: 3px solid var(--link-color);
-  outline-offset: 2px;
-}
-
-/* Primary buttons */
-.p-button-primary {
-  background-color: var(--accent-color);
-  color: #ffffff;
-  border-color: var(--accent-color);
-}
-
-.p-button-primary:hover {
-  background-color: #c0392b;
-  border-color: #c0392b;
-}
-
-/* Success buttons */
-.p-button-success {
-  background-color: var(--success-color);
-  color: #ffffff;
-}
-
-.p-button-success:hover {
-  background-color: #229954;
-}
-
-/* Error/Danger buttons */
-.p-button-danger {
-  background-color: var(--error-color);
-  color: #ffffff;
-}
-
-.p-button-danger:hover {
-  background-color: #a93226;
-}
-
-/* Warning buttons */
-.p-button-warning {
-  background-color: var(--warning-color);
-  color: #ffffff;
-}
-
-.p-button-warning:hover {
-  background-color: #b86e10;
-}
-
-/* Info buttons */
-.p-button-info {
-  background-color: var(--info-color);
-  color: #ffffff;
-}
-
-.p-button-info:hover {
-  background-color: #1f618d;
-}
-
-/* Secondary buttons */
-.p-button-secondary {
-  background-color: var(--background-alt);
-  color: var(--text-primary);
-  border: 2px solid var(--border-color);
-}
-
-.p-button-secondary:hover {
-  background-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-/* Text buttons - ensure sufficient contrast */
-.p-button-text {
-  color: var(--text-primary);
-}
-
-.p-button-text:hover {
-  background-color: rgba(0, 102, 204, 0.1);
-}
-
-/* Badge/Label contrast */
-.badge, .tag, .label {
-  background-color: var(--accent-color);
-  color: #ffffff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-/* Alert boxes - improved contrast */
-.alert, .p-message {
-  padding: 12px 16px;
-  border-radius: 4px;
-  border-left: 4px solid;
-}
-
-.alert-success, .p-message-success {
-  background-color: #e8f5e9;
-  border-color: var(--success-color);
-  color: #1b5e20;
-}
-
-[data-theme="dark"] .alert-success,
-[data-theme="dark"] .p-message-success {
-  background-color: #1b3a1b;
-  color: #52d273;
-}
-
-.alert-error, .p-message-error {
-  background-color: #ffebee;
-  border-color: var(--error-color);
-  color: #b71c1c;
-}
-
-[data-theme="dark"] .alert-error,
-[data-theme="dark"] .p-message-error {
-  background-color: #3a1a1a;
-  color: #ff5252;
-}
-
-.alert-warning, .p-message-warning {
-  background-color: #fff3e0;
-  border-color: var(--warning-color);
-  color: #e65100;
-}
-
-[data-theme="dark"] .alert-warning,
-[data-theme="dark"] .p-message-warning {
-  background-color: #3a2a1a;
-  color: #ffb74d;
-}
-
-.alert-info, .p-message-info {
-  background-color: #e3f2fd;
-  border-color: var(--info-color);
-  color: #01579b;
-}
-
-[data-theme="dark"] .alert-info,
-[data-theme="dark"] .p-message-info {
-  background-color: #1a2a3a;
-  color: #5ba3ff;
-}
-
-/* Focus visible for keyboard navigation */
+/* Focus visible pour tous les éléments interactifs */
 :focus-visible {
-  outline: 3px solid var(--link-color);
+  outline: 3px solid var(--primary-color);
   outline-offset: 2px;
 }
 
-/* Ensure images have proper alt text (this is enforced via HTML) */
-img {
-  max-width: 100%;
-  height: auto;
+/* Inputs focus */
+input:focus,
+textarea:focus,
+select:focus,
+.p-inputtext:focus,
+.p-dropdown:focus,
+.p-multiselect:focus {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
 }
+
+/* Boutons focus */
+button:focus,
+button:focus-visible,
+.p-button:focus,
+.p-button:focus-visible {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Links focus */
+a:focus,
+a:focus-visible {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   KEYBOARD NAVIGATION - Skip to main
+   ============================================ */
 
 /* Skip to main content link (visible on focus) */
 .skip-to-main {
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--accent-color);
-  color: white;
-  padding: 8px;
+  background: var(--primary-color);
+  color: var(--text-color-inverted);
+  padding: 12px 16px;
   text-decoration: none;
-  z-index: 100;
+  z-index: 1000;
+  border-radius: 0 0 var(--border-radius) 0;
+  box-shadow: var(--card-shadow);
+  font-weight: 600;
+  font-size: 16px;
 }
 
-.skip-to-main:focus {
+.skip-to-main:focus,
+.skip-to-main:focus-visible {
   top: 0;
+  outline: 3px solid var(--primary-color);
 }
 
-/* Ensure text is readable in print */
-@media print {
-  body {
-    color: #000;
-    background: #fff;
-  }
+/* ============================================
+   ACCESSIBILITY PREFERENCES
+   ============================================ */
 
-  a {
-    color: #0066cc;
-    text-decoration: underline;
-  }
-
-  button, .p-button {
-    border: 1px solid #000;
-    page-break-inside: avoid;
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: more) {
-  body {
-    color: #000;
-    background-color: #fff;
-  }
-
-  a {
-    color: #0000ee;
-    text-decoration: underline;
-  }
-
-  button, .p-button {
-    border: 2px solid #000;
-  }
-
-  input, textarea, select {
-    border: 2px solid #000;
-  }
-}
-
-/* Reduced motion support */
+/* Reduced motion support - respecte prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -321,50 +86,81 @@ img {
   }
 }
 
-/* Ensure sufficient spacing for touch targets */
-button, a.button, .p-button {
-  min-width: 44px;
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  button,
+  .p-button,
+  input,
+  textarea,
+  select {
+    border-width: 2px;
+    border-color: var(--text-color);
+  }
+}
+
+/* Print styles - accessibilité en impression */
+@media print {
+  .skip-to-main {
+    display: none;
+  }
+
+  body {
+    color: #000;
+    background: #fff;
+  }
+
+  button,
+  .p-button {
+    page-break-inside: avoid;
+  }
+}
+
+/* ============================================
+   TOUCH TARGETS & INTERACTIVE ELEMENTS
+   ============================================ */
+
+/* Touch targets minimum 44x44px (mobile accessibility) */
+button,
+a.button,
+.p-button,
+input[type="button"],
+input[type="submit"],
+[role="button"] {
   min-height: 44px;
+  min-width: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 16px;
 }
 
-/* Form field labels - ensure proper association */
+/* Form labels - proper association */
 label {
   font-weight: 600;
   margin-bottom: 8px;
   display: block;
-  color: var(--text-primary);
 }
 
-input[type="checkbox"] + label,
-input[type="radio"] + label {
-  display: inline;
-  margin-left: 8px;
-  margin-bottom: 0;
-}
-
-/* Error messages - visible and descriptive */
-.error-message, .form-error {
-  color: var(--error-color);
+/* Error messages */
+.error-message,
+.form-error {
+  color: var(--input-error-border);
   font-size: 14px;
   margin-top: 4px;
 }
 
-.form-group {
-  margin-bottom: 16px;
+/* ============================================
+   IMAGES - Alt text
+   ============================================ */
+
+/* Images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-/* Tooltip and help text */
-.tooltip, .help-text {
-  font-size: 13px;
-  color: var(--text-tertiary);
-  margin-top: 4px;
-}
-
-.aria-label {
-  clip: rect(0 0 0 0);
-  position: absolute;
-}
+/* Note: Alt text is enforced in HTML, see components:
+   - src/components/Recette/Recette.tsx
+   - src/components/RecetteDesc/RecetteDesc.tsx
+   - src/components/Post/Post.tsx
+*/
