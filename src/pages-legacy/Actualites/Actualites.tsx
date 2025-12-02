@@ -4,6 +4,7 @@ import './Actualites.css';
 import { db } from '@firebaseModule';
 import { doc, getDoc} from 'firebase/firestore';
 import Link from 'next/link';
+import SkeletonLoader from '@/components/SkeletonLoader/SkeletonLoader';
 
 interface RecetteData {
   id: string;
@@ -42,7 +43,20 @@ const Actualites: React.FC = () => {
 
 
   if (loading) {
-	return <p className="loading">Chargement de la recette de la semaine...</p>;
+	return (
+	  <section className="featured-recette">
+		<h2>🥇 Recette de la semaine</h2>
+		<div className="featured-card">
+		  <SkeletonLoader type="image" width="100%" height="300px" />
+		  <div className="featured-content">
+			<SkeletonLoader type="text" height="24px" width="80%" style={{ marginBottom: '12px' }} />
+			<SkeletonLoader type="text" height="16px" width="40%" style={{ marginBottom: '12px' }} />
+			<SkeletonLoader type="text" height="16px" width="50%" style={{ marginBottom: '16px' }} />
+			<SkeletonLoader type="rectangle" height="40px" width="150px" borderRadius="6px" />
+		  </div>
+		</div>
+	  </section>
+	);
   }
 
   if (!featuredRecette) {

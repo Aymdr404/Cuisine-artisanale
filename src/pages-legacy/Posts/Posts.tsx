@@ -7,6 +7,7 @@ import { collection, getDocs, limit, orderBy, query, startAfter } from 'firebase
 import { Button } from 'primereact/button';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
+import SkeletonLoader from '@/components/SkeletonLoader/SkeletonLoader';
 
 // Lazy-load du composant Post
 const PostComponent = React.lazy(() => import('@/components/Post/Post'));
@@ -125,9 +126,11 @@ const Posts: React.FC = () => {
 		{/* Skeleton UI si aucun post chargé */}
 		{loading && visiblePosts.length === 0 && (
 		  Array.from({ length: nbPostsToDisplay }).map((_, i) => (
-			<div key={i} className="post-skeleton">
-			  <div className="skeleton-title"></div>
-			  <div className="skeleton-content"></div>
+			<div key={i} style={{ marginBottom: '20px' }}>
+			  <SkeletonLoader type="text" height="24px" width="70%" style={{ marginBottom: '12px' }} />
+			  <SkeletonLoader type="text" height="16px" width="100%" style={{ marginBottom: '8px' }} />
+			  <SkeletonLoader type="text" height="16px" width="95%" style={{ marginBottom: '12px' }} />
+			  <SkeletonLoader type="text" height="14px" width="30%" />
 			</div>
 		  ))
 		)}
@@ -135,9 +138,11 @@ const Posts: React.FC = () => {
 		{/* Liste des posts */}
 		{visiblePosts.map((post) => (
 		  <Suspense key={post.id} fallback={
-			<div className="post-skeleton">
-			  <div className="skeleton-title"></div>
-			  <div className="skeleton-content"></div>
+			<div style={{ marginBottom: '20px' }}>
+			  <SkeletonLoader type="text" height="24px" width="70%" style={{ marginBottom: '12px' }} />
+			  <SkeletonLoader type="text" height="16px" width="100%" style={{ marginBottom: '8px' }} />
+			  <SkeletonLoader type="text" height="16px" width="95%" style={{ marginBottom: '12px' }} />
+			  <SkeletonLoader type="text" height="14px" width="30%" />
 			</div>
 		  }>
 			<PostComponent
