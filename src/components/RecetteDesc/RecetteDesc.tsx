@@ -521,7 +521,7 @@ const RecetteDesc: React.FC = () => {
 					/>
 					<Button
 						icon="pi pi-home"
-						onClick={() => router.push("/")}
+						onClick={() => router.push("/recettes/")}
 						className="p-button-text"
 						tooltipOptions={{ position: 'bottom' }}
 					/>
