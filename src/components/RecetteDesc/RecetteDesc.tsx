@@ -517,23 +517,27 @@ const RecetteDesc: React.FC = () => {
 						icon="pi pi-arrow-left"
 						onClick={() => router.back()}
 						className="p-button-text"
+						tooltipOptions={{ position: 'bottom' }}
 					/>
 					<Button
 						icon="pi pi-home"
 						onClick={() => router.push("/")}
 						className="p-button-text"
+						tooltipOptions={{ position: 'bottom' }}
 					/>
 					<Button
 						icon={hasLiked ? 'pi pi-heart-fill' : 'pi pi-heart'}
 						onClick={handleLike}
 						className="p-button-text"
 						severity={hasLiked ? 'danger' : 'info'}
+						tooltipOptions={{ position: 'bottom' }}
 					/>
 					<Button
 						icon="pi pi-share-alt"
 						onClick={handleShare}
 						className="p-button-text"
 						tooltip="Partager cette recette"
+						tooltipOptions={{ position: 'bottom' }}
 					/>
 					<Button
 						icon="pi pi-download"
@@ -542,12 +546,14 @@ const RecetteDesc: React.FC = () => {
 						loading={isExporting}
 						disabled={isExporting}
 						tooltip="Télécharger en PDF"
+						tooltipOptions={{ position: 'bottom' }}
 					/>
 					<Button
 						icon="pi pi-print"
 						onClick={handlePrintRecipe}
 						className="p-button-text"
 						tooltip="Imprimer la recette"
+						tooltipOptions={{ position: 'bottom' }}
 					/>
 					</div>
 				{role === 'admin' && (
