@@ -12,8 +12,6 @@ interface RecipeMetadataProps {
 /**
  * Composant pour mettre à jour dynamiquement les métadonnées Open Graph
  * Utilisé pour la vue détail d'une recette
- * Note: Utilise l'image de la recette directement au lieu du API route
- * pour la compatibilité avec le static export
  */
 export default function RecipeMetadata({
   recipeId,
@@ -21,10 +19,17 @@ export default function RecipeMetadata({
   type = 'Recette',
   image,
 }: RecipeMetadataProps) {
+  // Use props directly - they come from the loaded recipe data
+  const finalTitle = title;
+  const finalImage = image;
+  const finalDescription = title
+    ? `Découvrez la recette "${title}" sur Cuisine Artisanale`
+    : 'Découvrez cette délicieuse recette sur Cuisine Artisanale';
+
   useEffect(() => {
-    if (title) {
+    if (finalTitle) {
       // Mettre à jour le titre du document
-      document.title = `${title} | Cuisine Artisanale`;
+      document.title = `${finalTitle} | Cuisine Artisanale`;
 
       // Meta OG:Title
       let metaOGTitle = document.querySelector('meta[property="og:title"]');
@@ -33,7 +38,7 @@ export default function RecipeMetadata({
         metaOGTitle.setAttribute('property', 'og:title');
         document.head.appendChild(metaOGTitle);
       }
-      metaOGTitle.setAttribute('content', title);
+      metaOGTitle.setAttribute('content', finalTitle);
 
       // Meta OG:Description
       let metaOGDescription = document.querySelector(
@@ -46,18 +51,18 @@ export default function RecipeMetadata({
       }
       metaOGDescription.setAttribute(
         'content',
-        `Découvrez la recette "${title}" sur Cuisine Artisanale`
+        finalDescription
       );
 
       // Meta OG:Image
-      if (image) {
+      if (finalImage) {
         let metaOGImage = document.querySelector('meta[property="og:image"]');
         if (!metaOGImage) {
           metaOGImage = document.createElement('meta');
           metaOGImage.setAttribute('property', 'og:image');
           document.head.appendChild(metaOGImage);
         }
-        metaOGImage.setAttribute('content', image);
+        metaOGImage.setAttribute('content', finalImage);
       }
 
       // Meta OG:Image:Width
@@ -112,7 +117,7 @@ export default function RecipeMetadata({
         metaTwitterTitle.setAttribute('name', 'twitter:title');
         document.head.appendChild(metaTwitterTitle);
       }
-      metaTwitterTitle.setAttribute('content', title);
+      metaTwitterTitle.setAttribute('content', finalTitle);
 
       // Twitter Description
       let metaTwitterDescription = document.querySelector(
@@ -125,11 +130,11 @@ export default function RecipeMetadata({
       }
       metaTwitterDescription.setAttribute(
         'content',
-        `Découvrez la recette "${title}" sur Cuisine Artisanale`
+        finalDescription
       );
 
       // Twitter Image
-      if (image) {
+      if (finalImage) {
         let metaTwitterImage = document.querySelector(
           'meta[name="twitter:image"]'
         );
@@ -138,10 +143,10 @@ export default function RecipeMetadata({
           metaTwitterImage.setAttribute('name', 'twitter:image');
           document.head.appendChild(metaTwitterImage);
         }
-        metaTwitterImage.setAttribute('content', image);
+        metaTwitterImage.setAttribute('content', finalImage);
       }
     }
-  }, [title, type, image]);
+  }, [finalTitle, finalDescription, finalImage]);
 
   return null; // Ce composant ne rend rien, il gère juste les métadonnées
 }
