@@ -8,10 +8,12 @@ import '@/styles/admin.css';
 import '@/styles/dialog.css';
 import '@/styles/toast.css';
 import '@/styles/mobile.css';
+import '@/styles/accessibility.css';
 import '@/index.css';
 import Navbar from '@/components/Navbar/Navbar';
 import LegalMention from '@/components/LegalMention/LegalMention';
 import PWAProvider from '@/components/PWAProvider/PWAProvider';
+import SkipToMain from '@/components/SkipToMain/SkipToMain';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -64,6 +66,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		<html lang="fr">
 			<body>
 				<Providers>
+					<SkipToMain />
 					<PWAProvider />
 					<Navbar />
 					<div className="wrapper">

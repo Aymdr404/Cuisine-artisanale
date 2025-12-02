@@ -14,6 +14,8 @@ import { useToast } from '@/contexts/ToastContext/ToastContext';
 import { Rating } from 'primereact/rating';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { shareRecipe } from '@/services/ShareService/ShareService';
+import { exportRecipePDF, printRecipe } from '@/services/ExportService/ExportService';
+import SkeletonLoader from '@components/SkeletonLoader/SkeletonLoader';
 
 interface RecipePart {
   title: string;
@@ -60,6 +62,7 @@ const RecetteDesc: React.FC = () => {
 	const [newRating, setNewRating] = useState<number | null>(null);
 	const [similarRecipes, setSimilarRecipes] = useState<any[]>([]);
 	const [loadingSimilar, setLoadingSimilar] = useState(false);
+	const [isExporting, setIsExporting] = useState(false);
 
 
 	const getRecetteById = async (docId: string) => {
@@ -359,6 +362,83 @@ const RecetteDesc: React.FC = () => {
 		}
 	};
 
+	const handleDownloadPDF = async () => {
+		if (!recette) {
+			showToast({
+				severity: 'warn',
+				summary: 'Erreur',
+				detail: 'Impossible de télécharger cette recette'
+			});
+			return;
+		}
+
+		setIsExporting(true);
+		try {
+			await exportRecipePDF({
+				title: recette.title,
+				type: recette.type,
+				preparationTime: recette.preparationTime,
+				cookingTime: recette.cookingTime,
+				position: recette.position,
+				departementName: departements.get(recette.position),
+				recipeParts: recette.recipeParts,
+				images: recette.images
+			});
+
+			showToast({
+				severity: 'success',
+				summary: 'Succès',
+				detail: 'Recette téléchargée en PDF'
+			});
+		} catch (error) {
+			console.error("Erreur lors du téléchargement:", error);
+			showToast({
+				severity: 'error',
+				summary: 'Erreur',
+				detail: 'Impossible de télécharger la recette'
+			});
+		} finally {
+			setIsExporting(false);
+		}
+	};
+
+	const handlePrintRecipe = () => {
+		if (!recette) {
+			showToast({
+				severity: 'warn',
+				summary: 'Erreur',
+				detail: 'Impossible d\'imprimer cette recette'
+			});
+			return;
+		}
+
+		try {
+			printRecipe({
+				title: recette.title,
+				type: recette.type,
+				preparationTime: recette.preparationTime,
+				cookingTime: recette.cookingTime,
+				position: recette.position,
+				departementName: departements.get(recette.position),
+				recipeParts: recette.recipeParts,
+				images: recette.images
+			});
+
+			showToast({
+				severity: 'success',
+				summary: 'Succès',
+				detail: 'Ouverture de la fenêtre d\'impression'
+			});
+		} catch (error) {
+			console.error("Erreur lors de l'impression:", error);
+			showToast({
+				severity: 'error',
+				summary: 'Erreur',
+				detail: 'Impossible d\'imprimer la recette'
+			});
+		}
+	};
+
   	const handleAddReview = async () => {
 		if (!userId) {
 			showToast({
@@ -455,6 +535,20 @@ const RecetteDesc: React.FC = () => {
 						className="p-button-text"
 						tooltip="Partager cette recette"
 					/>
+					<Button
+						icon="pi pi-download"
+						onClick={handleDownloadPDF}
+						className="p-button-text"
+						loading={isExporting}
+						disabled={isExporting}
+						tooltip="Télécharger en PDF"
+					/>
+					<Button
+						icon="pi pi-print"
+						onClick={handlePrintRecipe}
+						className="p-button-text"
+						tooltip="Imprimer la recette"
+					/>
 					</div>
 				{role === 'admin' && (
 				<div className="recette-desc-admin-buttons">
@@ -472,20 +566,29 @@ const RecetteDesc: React.FC = () => {
 				)}
 			</div>
 
-			<h1 className="recette-desc-title">{recette?.title}</h1>
+			{recette ? (
+				<>
+					<h1 className="recette-desc-title">{recette.title}</h1>
 
-			{/* Affichage de la note moyenne en haut */}
-			<div className="recette-overall-rating">
-				{averageRating && (
-					<div className="recette-average-rating-display">
-						<Rating value={parseFloat(averageRating)} readOnly cancel={false} />
-						<span className="rating-text">{averageRating} / 5 ({reviews.length} avis)</span>
+					{/* Affichage de la note moyenne en haut */}
+					<div className="recette-overall-rating">
+						{averageRating && (
+							<div className="recette-average-rating-display">
+								<Rating value={parseFloat(averageRating)} readOnly cancel={false} />
+								<span className="rating-text">{averageRating} / 5 ({reviews.length} avis)</span>
+							</div>
+						)}
+						{!averageRating && (
+							<p className="no-rating-text">Aucun avis pour le moment</p>
+						)}
 					</div>
-				)}
-				{!averageRating && (
-					<p className="no-rating-text">Aucun avis pour le moment</p>
-				)}
-			</div>
+				</>
+			) : (
+				<>
+					<SkeletonLoader type="text" height="32px" width="60%" style={{ marginBottom: '16px' }} />
+					<SkeletonLoader type="text" height="20px" width="40%" />
+				</>
+			)}
 
 			<div className="recette-desc-description">
 				<div className="recette-desc-info">

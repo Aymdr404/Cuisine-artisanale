@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Filtre from '@components/Filtre/Filtre';
 import Recette from '@components/Recette/Recette';
 import AddRecette from '@components/AddRecette/AddRecette';
+import SkeletonLoader from '@components/SkeletonLoader/SkeletonLoader';
 
 import { db } from '@firebaseModule';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -248,12 +249,8 @@ const Recettes: React.FC = () => {
 			</section>
 			<section className='recettes_section'>
 				{displayedRecettes.length === 0 && allRecettes.length === 0 && (
-					Array.from({ length: 5 }).map((_, i) => (
-					<div key={i} className="recette-skeleton">
-						<div className="skeleton-image"></div>
-						<div className="skeleton-title"></div>
-						<div className="skeleton-content"></div>
-					</div>
+					Array.from({ length: 6 }).map((_, i) => (
+						<SkeletonLoader key={i} type="recipe-card" />
 					))
 				)}
 
@@ -268,14 +265,14 @@ const Recettes: React.FC = () => {
 					/>
 				))}
 
+				{isLoading && (
+					Array.from({ length: 3 }).map((_, i) => (
+						<SkeletonLoader key={`loading-${i}`} type="recipe-card" />
+					))
+				)}
+
 				{/* Observer target pour infinite scroll */}
 				<div ref={observerTarget} style={{ height: '50px', marginTop: '20px' }} />
-
-				{isLoading && (
-					<div style={{ textAlign: 'center', padding: '20px' }}>
-						<p>Chargement de plus de recettes...</p>
-					</div>
-				)}
 			</section>
 		</div>
 	);
