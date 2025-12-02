@@ -370,7 +370,6 @@ const RecetteMap: React.FC = () => {
 					  icon={createMarkerIcon(hoveredRecette === recette.recetteId)}
 					  eventHandlers={{
 						mouseover: () => setHoveredRecette(recette.recetteId),
-						// mouseout: () => setHoveredRecette(null),
 					  }}
 					>
 					  <Popup
