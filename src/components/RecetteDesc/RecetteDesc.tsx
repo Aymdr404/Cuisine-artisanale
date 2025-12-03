@@ -35,6 +35,7 @@ interface Recette {
   video?: string;
   position: string;
   images?: string[];
+  createdBy?: string;
 }
 
 interface Ingredient {
@@ -65,6 +66,7 @@ const RecetteDesc: React.FC = () => {
 	const [similarRecipes, setSimilarRecipes] = useState<any[]>([]);
 	const [loadingSimilar, setLoadingSimilar] = useState(false);
 	const [isExporting, setIsExporting] = useState(false);
+	const [creatorInfo, setCreatorInfo] = useState<any>(null);
 
 
 	const getRecetteById = async (docId: string) => {
@@ -122,6 +124,23 @@ const RecetteDesc: React.FC = () => {
 			getRecetteById(recipeId);
 		}
 	}, [recipeId]);
+
+	// Fetch creator info when recipe is loaded
+	useEffect(() => {
+		const fetchCreatorInfo = async () => {
+			if (!recette?.createdBy) return;
+			try {
+				const creatorRef = doc(db, "users", recette.createdBy);
+				const creatorSnap = await getDoc(creatorRef);
+				if (creatorSnap.exists()) {
+					setCreatorInfo(creatorSnap.data());
+				}
+			} catch (error) {
+				console.error("Error fetching creator info:", error);
+			}
+		};
+		fetchCreatorInfo();
+	}, [recette?.createdBy]);
 
 	useEffect(() => {
 		fetch("https://geo.api.gouv.fr/departements")
@@ -610,6 +629,17 @@ const RecetteDesc: React.FC = () => {
 			{recette ? (
 				<>
 					<h1 className="recette-desc-title">{recette.title}</h1>
+
+					{/* Creator Info */}
+					{recette.createdBy && creatorInfo && (
+						<div className="recette-creator-info">
+							<p>
+								Créée par <a href={`/Cuisine-artisanale/profil?id=${recette.createdBy}`} className="creator-link">
+									{creatorInfo.displayName || "Utilisateur"}
+								</a>
+							</p>
+						</div>
+					)}
 
 					{/* Affichage de la note moyenne en haut */}
 					<div className="recette-overall-rating">

@@ -30,13 +30,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	return null;
   };
 
-  const createUserInFirestore = async (userId: string, email: string) => {
+  const createUserInFirestore = async (userId: string, email: string, displayName: string) => {
 	const db = getFirestore();
 	const userRef = doc(db, "users", userId);
 	await setDoc(userRef, {
 	  email: email,
 	  role: "user",
 	  createdAt: new Date(),
+	  displayName: displayName
 	});
   };
 
@@ -49,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 		  const userRole = await fetchUserRole(currentUser.uid);
 
 		  if (!userRole) {
-			await createUserInFirestore(currentUser.uid, currentUser.email || "");
+			await createUserInFirestore(currentUser.uid, currentUser.email || "", currentUser.displayName || "");
 			setRole("user");
 		  } else {
 			setRole(userRole);
@@ -90,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 	  if (result.user) {
 		const userRole = await fetchUserRole(result.user.uid);
 		if (!userRole) {
-		  await createUserInFirestore(result.user.uid, result.user.email || "");
+		  await createUserInFirestore(result.user.uid, result.user.email || "", result.user.displayName || "");
 		  setRole("user");
 		}
 	  }

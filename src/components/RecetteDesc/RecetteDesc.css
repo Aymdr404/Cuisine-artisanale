@@ -34,6 +34,32 @@
   font-weight: 700;
 }
 
+/* Creator Info */
+.recette-creator-info {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 0;
+}
+
+.recette-creator-info p {
+  margin: 0;
+  color: var(--text-color-secondary);
+  font-size: 0.95rem;
+}
+
+.creator-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.creator-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
 .recette-desc-description {
   display: flex;
   flex-direction: column;
