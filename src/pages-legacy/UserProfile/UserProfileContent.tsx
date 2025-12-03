@@ -40,7 +40,7 @@ const UserProfileContent: React.FC<UserProfileContentProps> = ({ userId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [first, setFirst] = useState(0);
-  const [rows] = useState(9);
+  const [rows] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
 
   useEffect(() => {
@@ -100,7 +100,6 @@ const UserProfileContent: React.FC<UserProfileContentProps> = ({ userId }) => {
 		setTotalRecords(countSnapshot.size);
 	  }
 
-	  // Fetch all recipes for this user
 	  const allRecettesQuery = query(
 		recipesCollection,
 		where('createdBy', '==', userId)
