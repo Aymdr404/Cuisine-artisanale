@@ -154,7 +154,6 @@ const AccountDetail: React.FC = () => {
 		});
 	  });
 
-	  // Sort by date (newest first) and keep only 5
 	  activities.sort((a, b) => b.date.getTime() - a.date.getTime());
 	  setRecentActivity(activities.slice(0, 5));
 	} catch (error) {
@@ -163,10 +162,13 @@ const AccountDetail: React.FC = () => {
   };
 
   const handleSaveProfile = async () => {
-	// Profile editing would be implemented here
-	// For now, just show a toast
 	if (toast.current) {
-	  toast.current.show({ severity: 'info', summary: 'Profil', detail: 'Fonctionnalité de modification du profil à venir', life: 3000 });
+	  toast.current.show({
+		severity: 'info',
+		summary: 'Profil',
+		detail: 'Les modifications seront disponibles quand vous aurez créé un compte personnalisé sur le site',
+		life: 4000
+	  });
 	}
 	setEditDialogVisible(false);
   };
