@@ -11,7 +11,7 @@ import ButtonLinkNav from '@components/ButtonLinkNav/ButtonLinkNav';
 import { usePathname, useRouter } from 'next/navigation';
 
 const Navbar: React.FC = () => {
-  const { user, logout, signInWithGoogle, role } = useAuth();
+  const { user, logout, signInWithGoogle, role, displayName } = useAuth();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const pathname = usePathname();
   const router = useRouter();
@@ -140,12 +140,12 @@ const Navbar: React.FC = () => {
 					<Avatar image={user.photoURL} shape="circle" />
 				  ) : (
 					<Avatar
-					  label={user.displayName?.charAt(0) || "U"}
+					  label={displayName?.charAt(0) || "U"}
 					  shape="circle"
 					  style={{ backgroundColor: 'var(--primary-color)' }}
 					/>
 				  )}
-				  <span className="user-name">{user.displayName || "Utilisateur"}</span>
+				  <span className="user-name">{displayName || "Utilisateur"}</span>
 				  {role === 'admin' && (
 					<span className="user-role">Admin</span>
 				  )}

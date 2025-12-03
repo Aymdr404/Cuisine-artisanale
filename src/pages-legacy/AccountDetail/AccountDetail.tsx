@@ -4,7 +4,7 @@ import './AccountDetail.css';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import PersonalizedRecommendations from '@/components/PersonalizedRecommendations/PersonalizedRecommendations';
 import UserStats from '@/components/UserStats/UserStats';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { doc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore';
 import { db } from '@firebaseModule';
 import { Card } from 'primereact/card';
 import { Timeline } from 'primereact/timeline';
@@ -23,10 +23,10 @@ interface RecentActivity {
 }
 
 const AccountDetail: React.FC = () => {
-  const { user } = useAuth();
+  const { user, displayName, refreshUserData } = useAuth();
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
   const [editDialogVisible, setEditDialogVisible] = useState(false);
-  const [displayName, setDisplayName] = useState(user?.displayName || '');
+  const [displayNameInput, setDisplayNameInput] = useState(displayName || '');
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
@@ -34,6 +34,12 @@ const AccountDetail: React.FC = () => {
 	  fetchRecentActivity();
 	}
   }, [user]);
+
+  useEffect(() => {
+	if (displayName) {
+	  setDisplayNameInput(displayName);
+	}
+  }, [displayName]);
 
   const fetchRecentActivity = async () => {
 	if (!user) return;
@@ -86,14 +92,35 @@ const AccountDetail: React.FC = () => {
   };
 
   const handleSaveProfile = async () => {
-	if (toast.current) {
-	  toast.current.show({
-		severity: 'info',
-		summary: 'Profil',
-		detail: 'Les modifications seront disponibles quand vous aurez créé un compte personnalisé sur le site',
-		life: 4000
-	  });
+	if (user) {
+	  try {
+		const userRef = doc(db, 'users', user.uid);
+		await updateDoc(userRef, { displayName: displayNameInput });
+
+		// Rafraîchir les données utilisateur dans le contexte
+		await refreshUserData();
+
+		if (toast.current) {
+		  toast.current.show({
+			severity: 'success',
+			summary: 'Profil',
+			detail: 'Profil mis à jour avec succès',
+			life: 4000
+		  });
+		}
+	  } catch (error) {
+		console.error('Error updating profile:', error);
+		if (toast.current) {
+		  toast.current.show({
+			severity: 'error',
+			summary: 'Profil',
+			detail: 'Erreur lors de la mise à jour du profil',
+			life: 4000
+		  });
+		}
+	  }
 	}
+
 	setEditDialogVisible(false);
   };
 
@@ -126,7 +153,7 @@ const AccountDetail: React.FC = () => {
 	  {/* Header with greeting and edit profile button */}
 	  <div className="dashboard-header">
 		<div className="welcome-section">
-		  <h2>Bienvenue, {user?.displayName}! 👋</h2>
+		  <h2>Bienvenue, {displayName || user?.email}! 👋</h2>
 		  <p>Voici un aperçu de votre profil et de votre activité</p>
 		</div>
 		<Button
@@ -177,8 +204,8 @@ const AccountDetail: React.FC = () => {
 			<label htmlFor="displayName">Nom d'affichage</label>
 			<InputText
 			  id="displayName"
-			  value={displayName}
-			  onChange={(e) => setDisplayName(e.target.value)}
+			  value={displayNameInput}
+			  onChange={(e) => setDisplayNameInput(e.target.value)}
 			  placeholder="Votre nom"
 			/>
 		  </div>
