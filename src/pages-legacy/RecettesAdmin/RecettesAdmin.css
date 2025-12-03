@@ -213,12 +213,6 @@
   margin: 0;
 }
 
-.p-dataview .p-paginator {
-  background: transparent;
-  border: none;
-  padding: 1rem 0;
-}
-
 .loading-container {
   display: flex;
   flex-direction: column;

@@ -534,6 +534,18 @@
 		border-radius: var(--border-radius) !important;
 	}
 
+	.p-paginator {
+		background: transparent;
+		border: none;
+		padding: 1rem 0;
+		gap: 1rem;
+	}
+
+	.p-paginator-pages {
+		display: flex;
+		gap: 0.5rem;
+	}
+
 	/* Dark Theme Adjustments */
 	[data-theme="dark"] .p-multiselect-panel {
 		background: var(--surface-card) !important;
