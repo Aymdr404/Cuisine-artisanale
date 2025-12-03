@@ -91,7 +91,7 @@ service cloud.firestore {
       allow read: if true;
 
       // Écriture uniquement pour les admins
-      allow create, update, delete: if isAdmin(request.auth.uid);
+      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
     }
 
     // === Units (unités de mesure) ===
@@ -109,7 +109,7 @@ service cloud.firestore {
       allow create: if true;
 
       // Lecture/suppression uniquement pour les admins
-      allow read, delete: if isAdmin(request.auth.uid);
+      allow read, delete: if request.auth != null && isAdmin(request.auth.uid);
     }
 
     // === Consentement cookies ===
@@ -118,7 +118,7 @@ service cloud.firestore {
       allow create: if true;
 
       // Lecture uniquement pour les admins
-      allow read: if isAdmin(request.auth.uid);
+      allow read: if request.auth != null && isAdmin(request.auth.uid);
     }
 
     // === Recette de la semaine ===
