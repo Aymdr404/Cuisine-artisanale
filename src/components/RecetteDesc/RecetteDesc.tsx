@@ -801,7 +801,7 @@ const RecetteDesc: React.FC = () => {
 									<li key={r.id} className="recette-review">
 										<div className="recette-review-header">
 											<div className="review-user-info">
-												<strong>{r.userName}</strong>
+												<strong ><a href={`/Cuisine-artisanale/profil?id=${r.userId}`}>{r.userName}</a></strong>
 												<Rating value={r.rating} readOnly cancel={false} />
 											</div>
 											{user && role == "admin" && (
