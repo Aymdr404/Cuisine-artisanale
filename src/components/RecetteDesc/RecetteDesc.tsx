@@ -125,7 +125,6 @@ const RecetteDesc: React.FC = () => {
 		}
 	}, [recipeId]);
 
-	// Fetch creator info when recipe is loaded
 	useEffect(() => {
 		const fetchCreatorInfo = async () => {
 			if (!recette?.createdBy) return;
