@@ -20,32 +20,34 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 async function generateSitemap() {
-	const sitemapStream = new SitemapStream({ hostname: "https://aymeric-sabatier.fr" });
+	const sitemapStream = new SitemapStream({ hostname: "https://www.aymeric-sabatier.fr" });
 
 	const writeStream = createWriteStream("./public/sitemap.xml");
 	sitemapStream.pipe(writeStream);
 
-	const baseUrl = "https://www.aymeric-sabatier.fr/Cuisine-artisanale"; // URL sans le #/
-	const urls = [
-		"/",
-		"/recettes",
-		"/about",
-		"/recettes/add-recipe",
-		"/map",
-		"/account",
-		"/account/mes-recettes",
-		"/account/mes-favoris",
-		// Ajoute d'autres routes de ton application ici
-	].map(route => `${baseUrl}${route}`);
+	const basePath = "/Cuisine-artisanale";
 
-	urls.forEach(route => sitemapStream.write({ url: route, changefreq: "weekly", priority: 0.8 }));
+	// Static routes (public pages only)
+	const staticRoutes = [
+		{ url: `${basePath}/`, changefreq: "weekly", priority: 1.0 },
+		{ url: `${basePath}/recettes/`, changefreq: "weekly", priority: 0.9 },
+		{ url: `${basePath}/about/`, changefreq: "monthly", priority: 0.7 },
+		{ url: `${basePath}/map/`, changefreq: "weekly", priority: 0.8 },
+		{ url: `${basePath}/mentions-legales/`, changefreq: "yearly", priority: 0.3 },
+		{ url: `${basePath}/politique-confidentialite/`, changefreq: "yearly", priority: 0.3 },
+	];
+
+	staticRoutes.forEach(route => sitemapStream.write(route));
 
 	try {
 		const recettesSnap = await getDocs(collection(db, "recipes"));
 		recettesSnap.forEach(doc => {
-			const recette = doc.data();
-			const recipeSlug = recette.title.replace(/\s+/g, "_").toLowerCase(); // Transforme le titre en slug
-			sitemapStream.write({ url: `${baseUrl}/recettes/${recipeSlug}`, changefreq: "weekly", priority: 0.9 });
+			const recetteId = doc.id;
+			sitemapStream.write({
+				url: `${basePath}/recettes/?id=${recetteId}`,
+				changefreq: "weekly",
+				priority: 0.9
+			});
 		});
 
 		sitemapStream.end();
