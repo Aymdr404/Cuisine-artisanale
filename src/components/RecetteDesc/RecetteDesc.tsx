@@ -173,39 +173,65 @@ const RecetteDesc: React.FC = () => {
 	useEffect(() => {
 		if (!recette) return;
 
-		const structuredData = {
+		// Calculate total time
+		const totalMinutes = recette.preparationTime + recette.cookingTime;
+		const hours = Math.floor(totalMinutes / 60);
+		const minutes = totalMinutes % 60;
+		const totalTimeStr = hours > 0
+			? `PT${hours}H${minutes}M`
+			: `PT${minutes}M`;
+
+		// Build structured data with ratings
+		const structuredData: any = {
 			"@context": "https://schema.org",
 			"@type": "Recipe",
 			"name": recette.title,
 			"image": recette.images?.[0] || "",
+			"description": `Recette de ${recette.title} - Type: ${recette.type}`,
 			"author": {
-			"@type": "Person",
-			"name": user?.displayName || "Auteur inconnu"
+				"@type": "Person",
+				"name": user?.displayName || "Cuisine Artisanale"
 			},
 			"recipeCuisine": departements.get(recette.position) || "France",
 			"recipeCategory": recette.type,
 			"prepTime": `PT${recette.preparationTime}M`,
 			"cookTime": `PT${recette.cookingTime}M`,
+			"totalTime": totalTimeStr,
 			"recipeIngredient": recette.recipeParts.flatMap(part =>
-			part.ingredients.map(ing => `${ing.quantity} ${ing.unit} ${ing.name}`)
+				part.ingredients.map(ing => `${ing.quantity} ${ing.unit} ${ing.name}`)
 			),
 			"recipeInstructions": recette.recipeParts.flatMap(part =>
-			part.steps.map(step => ({
-				"@type": "HowToStep",
-				"text": step
-			}))
-			),
-			"video": recette.video
-			? {
+				part.steps.map(step => ({
+					"@type": "HowToStep",
+					"text": step
+				}))
+			)
+		};
+
+		// Add rating if reviews exist
+		const averageRatingValue = reviews.length > 0
+			? (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length).toFixed(1)
+			: null;
+
+		if (averageRatingValue && parseFloat(averageRatingValue) > 0) {
+			structuredData.aggregateRating = {
+				"@type": "AggregateRating",
+				"ratingValue": averageRatingValue,
+				"ratingCount": reviews.length.toString()
+			};
+		}
+
+		// Add video if exists
+		if (recette.video) {
+			structuredData.video = {
 				"@type": "VideoObject",
 				"name": recette.title,
 				"description": `Vidéo de la recette ${recette.title}`,
 				"thumbnailUrl": recette.images?.[0] || "",
 				"uploadDate": new Date().toISOString(),
 				"contentUrl": recette.video
-				}
-			: undefined
-		};
+			};
+		}
 
 		// Supprime tout ancien script JSON-LD
 		const oldScript = document.getElementById("jsonld-recipe");
@@ -222,7 +248,7 @@ const RecetteDesc: React.FC = () => {
 			const existing = document.getElementById("jsonld-recipe");
 			if (existing) existing.remove();
 		};
-	}, [recette, departements]);
+	}, [recette, departements, reviews, user?.displayName]);
 
 	useEffect(() => {
 		if (!id) return;
