@@ -9,7 +9,6 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 import { useAuth } from '@/contexts/AuthContext/AuthContext';
 import SkeletonLoader from '@/components/SkeletonLoader/SkeletonLoader';
 
-// Lazy-load du composant Post
 const PostComponent = React.lazy(() => import('@/components/Post/Post'));
 
 interface Post {
@@ -41,7 +40,6 @@ const Posts: React.FC = () => {
 	  minute: "2-digit"
 	});
 
-  // 📌 Initial fetch des posts
   const fetchInitialPosts = async () => {
 	setLoading(true);
 	try {
@@ -103,7 +101,6 @@ const Posts: React.FC = () => {
 	setLoading(false);
   };
 
-  // 👀 Scroll to top
   const handleScroll = () => setShowScrollTop(window.scrollY > 300);
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -123,7 +120,6 @@ const Posts: React.FC = () => {
 	  <ConfirmDialog />
 	  <section className="Posts_section">
 
-		{/* Skeleton UI si aucun post chargé */}
 		{loading && visiblePosts.length === 0 && (
 		  Array.from({ length: nbPostsToDisplay }).map((_, i) => (
 			<div key={i} style={{ marginBottom: '20px' }}>
@@ -135,7 +131,6 @@ const Posts: React.FC = () => {
 		  ))
 		)}
 
-		{/* Liste des posts */}
 		{visiblePosts.map((post) => (
 		  <Suspense key={post.id} fallback={
 			<div style={{ marginBottom: '20px' }}>
@@ -179,12 +174,10 @@ const Posts: React.FC = () => {
 		</section>
 	  </section>
 
-	  {/* Ajouter un post */}
 	  <section className="AddPost_section">
 		<AddPost />
 	  </section>
 
-	  {/* Bouton scroll-top */}
 	  <Button
 		className={`scroll-top-button ${showScrollTop ? 'visible' : ''}`}
 		onClick={scrollToTop}

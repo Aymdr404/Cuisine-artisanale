@@ -50,7 +50,6 @@ const AccountDetail: React.FC = () => {
 
 	  const activities: RecentActivity[] = [];
 
-	  // Fetch recent recipes
 	  const recipesQuery = query(
 		recipesCollection,
 		where('createdBy', '==', user.uid)
@@ -67,7 +66,6 @@ const AccountDetail: React.FC = () => {
 		});
 	  });
 
-	  // Fetch recent posts
 	  const postsQuery = query(
 		postsCollection,
 		where('userId', '==', user.uid)
@@ -150,7 +148,6 @@ const AccountDetail: React.FC = () => {
 	<div className="AccountDetail">
 	  <Toast ref={toast} />
 
-	  {/* Header with greeting and edit profile button */}
 	  <div className="dashboard-header">
 		<div className="welcome-section">
 		  <h2>Bienvenue, {displayName || user?.email}! 👋</h2>
@@ -164,10 +161,8 @@ const AccountDetail: React.FC = () => {
 		/>
 	  </div>
 
-	  {/* Statistics Cards */}
 	  {user && <UserStats userId={user.uid} isPublicProfile={false} />}
 
-	  {/* Recent Activity Section */}
 	  {recentActivity.length > 0 && (
 		<Card className="activity-card">
 		  <h3 className="activity-title">Activité Récente</h3>
@@ -184,13 +179,11 @@ const AccountDetail: React.FC = () => {
 		</Card>
 	  )}
 
-	  {/* Personalized Recommendations */}
 	  <Card className="recommendations-card">
 		<h3 className="recommendations-title">Recommandations Personnalisées</h3>
 		<PersonalizedRecommendations />
 	  </Card>
 
-	  {/* Edit Profile Dialog */}
 	  <Dialog
 		visible={editDialogVisible}
 		onHide={() => setEditDialogVisible(false)}

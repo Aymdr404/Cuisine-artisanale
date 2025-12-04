@@ -90,7 +90,6 @@ const UserProfileContent: React.FC<UserProfileContentProps> = ({ userId }) => {
 	try {
 	  const recipesCollection = collection(db, 'recipes');
 
-	  // Fetch total count first (if this is the first page)
 	  if (pageIndex === 0) {
 		const countQuery = query(
 		  recipesCollection,
@@ -118,7 +117,6 @@ const UserProfileContent: React.FC<UserProfileContentProps> = ({ userId }) => {
 		} as RecetteInterface;
 	  });
 
-	  // Slice for pagination
 	  const paginatedRecettes = allRecettesData.slice(pageIndex, pageIndex + rows);
 	  setRecipes(paginatedRecettes);
 	} catch (error) {
@@ -149,7 +147,6 @@ const UserProfileContent: React.FC<UserProfileContentProps> = ({ userId }) => {
 	<div className="user-profile-container">
 	  <Breadcrumb />
 
-	  {/* User Profile Header */}
 	  <Card className="profile-header-card">
 		<div className="profile-header">
 		  <div className="profile-info">
@@ -171,10 +168,8 @@ const UserProfileContent: React.FC<UserProfileContentProps> = ({ userId }) => {
 		</div>
 	  </Card>
 
-	  {/* Statistics Section */}
 	  {user && <UserStats userId={user.uid} isPublicProfile={true} />}
 
-	  {/* User's Recipes Section */}
 	  <Card className="recipes-card">
 		<div className="recipes-header">
 		  <h2>Recettes créées par {user.displayName}</h2>
